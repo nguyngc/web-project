@@ -36,5 +36,5 @@ Admin users oversee the overall system, including managing user accounts, doctor
   - Oversee appointment data and maintain website content
 
 ## Links
-- [Prototype](https://www.figma.com/proto/aNZ5B5JyiQrypt2AMb2EQo/iVision-Clinic?node-id=96-153&t=cMnfBZxMYj5j9Hn7-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=96%3A153&show-proto-sidebar=1)
+- [Prototype](https://www.figma.com/proto/aNZ5B5JyiQrypt2AMb2EQo/iVision-Clinic?node-id=1-2&t=cMnfBZxMYj5j9Hn7-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=1%3A2)
 - [Trello Board](https://trello.com/invite/b/690063a6eb80f66edae12c9c/ATTIbebada3f0735c7715eee895db8059970E23B540A/ivision)
