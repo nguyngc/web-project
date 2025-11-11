@@ -1,10 +1,14 @@
 import { Outlet, Link } from "react-router-dom";
-import Navigation from "../components/Navigation";
+import Topbar from "../components/topbar";
+import Header from "../components/Header";
+import Hero from "../components/Hero";
 
 const Layout = () => {
   return (
     <>
-      <Navigation />
+      <Topbar />
+      <Header />
+      <Hero />
       <Outlet />
     </>
   );
