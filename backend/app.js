@@ -1,18 +1,17 @@
 const express = require("express");
 const app = express();
-const userRouter = require('./routes/userRouter');
+const faqRoutes = require("./routes/faqRoutes");
+const bannerRoutes = require("./routes/bannerRoutes")
+    
 
-// Middleware to parse JSON
 app.use(express.json());
-
-// ROUTES
-// Use the userRouter for all /users routes
-app.use('/users', userRouter);
+app.use("/faq", faqRoutes);
+app.use("/banner", bannerRoutes);
 
 
 
-const port = 4000;
-// Start the server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// 404
+app.use((req, res) => res.status(404).json({ message: "Not found" }));
+
+app.listen(4000, () => console.log("API running on http://localhost:4000"));
+
