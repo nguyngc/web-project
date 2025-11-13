@@ -13,7 +13,7 @@ const websiteInfo = {
   workingHours: "Mon-Fri: 9AM-5PM, Sat: 9AM-12PM"
 };
 
-export const pageLinks = [
+const pageLinks = [
   { id: 1, href: "/", text: "home" },
   { id: 2, href: "/about", text: "about" },
   { id: 3, href: "/services", text: "services" },
@@ -111,4 +111,4 @@ const socialLinks = [
   { id: 4, label: "LinkedIn", link: "https://www.linkedin.com/company/ivisionclinic", Icon: Linkedin},
 ];
 
-export { websiteInfo, heroSlides, services, socialLinks };
+export { websiteInfo, pageLinks, heroSlides, services, socialLinks };

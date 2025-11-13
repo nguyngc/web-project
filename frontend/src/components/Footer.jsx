@@ -39,14 +39,14 @@ const Footer = () => {
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-5 h-5 text-white flex-shrink-0 mt-0.5" strokeWidth={1.6} />
-                <span className="text-white text-sm">{websiteInfo.address}</span>
+                <span className="text-[#DBEAFE] text-sm">{websiteInfo.address}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="w-5 h-5 text-white flex-shrink-0" strokeWidth={1.6} />
+                <Phone className="w-5 h-5 text-white flex-shrink-0 mt-0.5" strokeWidth={1.6} />
                 <span className="text-[#DBEAFE] text-sm">{websiteInfo.phone}</span>
               </div>
               <div className="flex items-start gap-2.5">
-                <Mail className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
+                <Mail className="w-5 h-5 text-white flex-shrink-0 mt-0.5" strokeWidth={1.6} />
                 <span className="text-[#DBEAFE] text-sm">{websiteInfo.email}</span>
               </div>
             </div>

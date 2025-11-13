@@ -23,6 +23,7 @@ const featuredArticle = {
 const recentArticles = [
   {
     id: 2,
+    category: "Technology",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -33,6 +34,7 @@ const recentArticles = [
   },
   {
     id: 3,
+    category: "Technology",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -43,6 +45,7 @@ const recentArticles = [
   },
   {
     id: 4,
+    category: "Tips & Advice",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -53,6 +56,7 @@ const recentArticles = [
   },
   {
     id: 5,
+    category: "Eye Health",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -63,6 +67,7 @@ const recentArticles = [
   },
   {
     id: 6,
+    category: "Eye Health",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -73,6 +78,7 @@ const recentArticles = [
   },
   {
     id: 7,
+    category: "Eye Health",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -85,6 +91,7 @@ const recentArticles = [
 
 const article = {
   id: 1,
+  category: "Eye Health",
   title: "Advancements in Eye Care Technology",
   subtitle:
     "Explore the latest innovations in eye care that are transforming how we diagnose and treat vision problems.",
@@ -95,7 +102,7 @@ const article = {
   readTime: "7 min read",
   image:
     "https://api.builder.io/api/v1/image/assets/TEMP/3d6f0f4f4e1b4c3b9f8e4c8e2a1b2c3d4e5f6a7b?width=800",
-  content:`
+  content: `
       <h2 className="text-[#101828] font-inter text-xl leading-6">
         Why Regular Eye Exams Matter
       </h2>
@@ -242,6 +249,7 @@ const article = {
 const relatedArticles = [
   {
     id: 2,
+    category: "Technology",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -252,6 +260,7 @@ const relatedArticles = [
   },
   {
     id: 3,
+    category: "Eye Health",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
@@ -262,6 +271,7 @@ const relatedArticles = [
   },
   {
     id: 4,
+    category: "Technology",
     title: "New Technology in LASIK Surgery",
     subtitle:
       "Discover the latest advances in laser vision correction that make the procedure safer and more effective than ever before.",
