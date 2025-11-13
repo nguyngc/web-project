@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
 import Layout from './pages/Layout';
 import Home from './pages/Home';
 import About from './pages/About';
@@ -6,6 +7,7 @@ import Services from './pages/Services';
 import Articles from './pages/Articles';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
+import ArticleDetail from './pages/ArticleDetail';
 
 function App() {
   return (
@@ -18,6 +20,7 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
           <Route path="news" element={<Articles />} />
+          <Route path="news/1" element={<ArticleDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="*" element={<NotFound />} /> {/* Catch-all for undefined routes */}
         </Route>
