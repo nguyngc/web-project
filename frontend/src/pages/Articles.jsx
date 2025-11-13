@@ -10,6 +10,7 @@ const Articles = () => {
   const [activeCategory, setActiveCategory] = useState("All Articles");
   const [isSearching, setIsSearching] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const articlesPerPage = 6;
 
   // Combine featured article with recent articles for searching
   const allArticles = [featuredArticle, ...recentArticles];
@@ -44,6 +45,13 @@ const Articles = () => {
     setIsSearching(false);
     setActiveCategory("All Articles");
   };
+
+  // Calculate pagination
+  const indexOfLastArticle = currentPage * articlesPerPage;
+  const indexOfFirstArticle = indexOfLastArticle - articlesPerPage;
+  const currentArticles = allArticles.slice(indexOfFirstArticle, indexOfLastArticle);
+
+  const totalPages = Math.ceil(allArticles.length / articlesPerPage);
 
   return (
     <div>
@@ -163,33 +171,41 @@ const Articles = () => {
           <h2 className="text-[#1C398E] font-inter text-2xl font-medium leading-6">
             Recent Articles
           </h2>
+
+          {/* Articles List */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recentArticles.map((article) => {
+            {currentArticles.map((article) => {
               return <ArticleItem key={article.id} article={article} />;
             })}
           </div>
 
+          {/* Pagination */}
           <div className="flex items-center justify-center gap-2">
             <button
               onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+              disabled={currentPage === 1}
               className="h-8 px-3 rounded-lg border border-black/10 bg-white font-inter text-sm font-medium leading-5 text-[#0A0A0A] hover:bg-gray-50 transition-colors"
             >
               Previous
             </button>
-            {[1, 2, 3].map((page) => (
-              <button
-                key={page}
-                onClick={() => setCurrentPage(page)}
-                className={`h-8 px-3 rounded-lg font-inter text-sm font-medium leading-5 transition-colors ${currentPage === page
-                  ? "bg-[#159EEC] text-white"
-                  : "border border-black/10 bg-white text-[#0A0A0A] hover:bg-gray-50"
-                  }`}
-              >
-                {page}
-              </button>
-            ))}
+            {[...Array(totalPages)].map((_, i) => {
+              const page = i + 1;
+              return (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`h-8 px-3 rounded-lg font-inter text-sm font-medium leading-5 transition-colors ${currentPage === page
+                    ? "bg-[#159EEC] text-white"
+                    : "border border-black/10 bg-white text-[#0A0A0A] hover:bg-gray-50"
+                    }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
             <button
-              onClick={() => setCurrentPage((prev) => Math.min(3, prev + 1))}
+              onClick={() => setCurrentPage((prev) => Math.min(totalPages, prev + 1))}
+              disabled={currentPage === totalPages}
               className="h-8 px-3 rounded-lg border border-black/10 bg-white font-inter text-sm font-medium leading-5 text-[#0A0A0A] hover:bg-gray-50 transition-colors"
             >
               Next
