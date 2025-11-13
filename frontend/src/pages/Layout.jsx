@@ -1,7 +1,7 @@
 import { Outlet, Link } from "react-router-dom";
 import Topbar from "../components/topbar";
 import Header from "../components/Header";
-import Hero from "../components/Hero";
+import ContactSection from "../components/ContactSection";
 import Footer from "../components/Footer";
 
 const Layout = () => {
@@ -9,7 +9,6 @@ const Layout = () => {
     <>
       <Topbar />
       <Header />
-      <Hero />
       <Outlet />
       <Footer />
     </>

@@ -12,7 +12,7 @@ export default function Header() {
         <div className="bg-[#505B96] rounded-full p-2.5">
           <Eye className="w-5 h-5 text-white" strokeWidth={2} />
         </div>
-        <h1 className="text-vision-primary font-kaushan text-3xl md:text-5xl tracking-[4.8px]">
+        <h1 className="text-vision-primary font-kaushan text-3xl md:text-5xl tracking-normal">
           Vision
         </h1>
       </Link>
