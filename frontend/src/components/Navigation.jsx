@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import BookButton from './BookButton';
 
 function Navigation({ mobileMenuOpen }) {
   return (
@@ -36,9 +37,7 @@ function Navigation({ mobileMenuOpen }) {
       >
         Contact Us
       </Link>
-      <button className="bg-linear-to-b from-[#1C398E] to-[#6E85C3] text-white px-6 md:px-[30px] py-3 rounded-[10px] shadow-[0_4px_4px_0_rgba(37,57,169,0.25)] text-sm font-poppins font-semibold uppercase hover:opacity-90 transition-opacity">
-        BOOK AN APPOINTMENT
-      </button>
+      <BookButton className="bg-linear-to-b from-[#1C398E] to-[#6E85C3] text-white" />
     </nav>
   );
 }

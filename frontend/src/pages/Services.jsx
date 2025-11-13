@@ -1,8 +1,11 @@
+import Hero from "../components/Hero";
+import ContactSection from "../components/ContactSection";
+
 function Services() {
   return (
     <div>
-      <h2>Our Services</h2>
-      <p>Our Services Page</p>
+      <Hero page="services" />
+      <ContactSection />
     </div>
   );
 }

@@ -1,8 +1,11 @@
+import Hero from "../components/Hero";
+import ContactSection from "../components/ContactSection";
+
 function About() {
   return (
     <div>
-      <h2>About Page</h2>
-      <p>Learn more about our company.</p>
+      <Hero page="about" />
+      <ContactSection />
     </div>
   );
 }
