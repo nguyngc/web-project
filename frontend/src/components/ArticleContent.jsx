@@ -73,8 +73,6 @@ const ArticleContent = ({ article }) => {
               />
               <p className="flex-1 text-[#364153] font-inter text-xl leading-[50px]">
                 {subtitle}
-                checking if you need new glasses, comprehensive eye exams can detect serious health
-                conditions early, potentially saving your vision and even your life.
               </p>
             </div>
 
