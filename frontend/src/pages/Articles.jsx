@@ -145,7 +145,7 @@ const Articles = () => {
                   {featuredArticle.title}
                 </h2>
                 <p className="text-[#4A5565] font-inter text-base leading-6 flex-1">
-                  {featuredArticle.excerpt}
+                  {featuredArticle.subtitle}
                 </p>
                 <div className="flex items-center gap-2">
                   <User className="w-4 h-4 text-[#6A7282]" strokeWidth={1.33} />
