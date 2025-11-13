@@ -88,8 +88,8 @@ const Articles = () => {
 
       {/* Search Results or Featured Article */}
       {isSearching || activeCategory !== "All Articles" ? (
-        <section className="py-20 bg-white">
-          <div className="container mx-auto px-4">
+        <section className="py-10 bg-white lg:px-[200px]">
+          <div className="container mx-auto">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-blue-900">
                 {searchQuery ? `Search Results for "${searchQuery}"` : activeCategory}
