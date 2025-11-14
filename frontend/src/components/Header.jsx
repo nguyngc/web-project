@@ -7,7 +7,7 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="px-4 lg:px-[200px] py-6 flex justify-between items-center bg-white">
+    <header className="relative px-4 lg:px-[200px] py-6 flex justify-between items-center bg-white">
       <Link to="/" className="flex items-center gap-2">
         <div className="bg-[#505B96] rounded-full p-2.5">
           <Eye className="w-5 h-5 text-white" strokeWidth={2} />

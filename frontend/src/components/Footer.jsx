@@ -1,7 +1,9 @@
 import { Eye, MapPin, Phone, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import { websiteInfo } from "../data/data";
 import BottomBar from "./BottomBar";
 import SocialLinks from "./SocialLinks";
+import ServiceLinks from "./ServiceLinks";
+import PageLinks from "./PageLinks";
 
 const Footer = () => {
   return (
@@ -18,53 +20,18 @@ const Footer = () => {
               </h3>
             </div>
             <p className="text-[#DBEAFE] text-sm leading-[25px]">
-              Providing exceptional eye care services to the community for over 25 years.
+              {websiteInfo.description}
             </p>
           </div>
 
           <div className="flex flex-col gap-4">
             <h4 className="text-white text-base">Quick Links</h4>
-            <nav className="flex flex-col gap-2">
-              <Link to="/" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Home
-              </Link>
-              <Link to="/about" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                About Us
-              </Link>
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Services
-              </Link>
-              <Link to="/news" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                News
-              </Link>
-              <Link to="/contact" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Contact Us
-              </Link>
-            </nav>
+            <PageLinks parentClass="flex flex-col gap-2" itemClass="text-[#DBEAFE] text-sm hover:text-white transition-colors capitalize" />
           </div>
 
           <div className="flex flex-col gap-4">
             <h4 className="text-white text-base">Services</h4>
-            <nav className="flex flex-col gap-2">
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Eye Examinations
-              </Link>
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Eyeglasses & Frames
-              </Link>
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Contact Lenses
-              </Link>
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                LASIK Surgery
-              </Link>
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Disease Management
-              </Link>
-              <Link to="/services" className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
-                Pediatric Eye Care
-              </Link>
-            </nav>
+            <ServiceLinks />
           </div>
 
           <div className="flex flex-col gap-4">
@@ -72,15 +39,15 @@ const Footer = () => {
             <div className="flex flex-col gap-4">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-5 h-5 text-white flex-shrink-0 mt-0.5" strokeWidth={1.6} />
-                <span className="text-white text-sm">Myllypurontie 1, Helsinki</span>
+                <span className="text-[#DBEAFE] text-sm">{websiteInfo.address}</span>
               </div>
               <div className="flex items-center gap-2.5">
-                <Phone className="w-5 h-5 text-white flex-shrink-0" strokeWidth={1.6} />
-                <span className="text-[#DBEAFE] text-sm">(000) 123-4567</span>
+                <Phone className="w-5 h-5 text-white flex-shrink-0 mt-0.5" strokeWidth={1.6} />
+                <span className="text-[#DBEAFE] text-sm">{websiteInfo.phone}</span>
               </div>
               <div className="flex items-start gap-2.5">
-                <Mail className="w-5 h-5 text-white flex-shrink-0 mt-0.5" />
-                <span className="text-[#DBEAFE] text-sm">info@ivisionclinic.com</span>
+                <Mail className="w-5 h-5 text-white flex-shrink-0 mt-0.5" strokeWidth={1.6} />
+                <span className="text-[#DBEAFE] text-sm">{websiteInfo.email}</span>
               </div>
             </div>
             <SocialLinks />

@@ -1,4 +1,5 @@
 import { Phone, Clock, MapPin, LogIn } from "lucide-react";
+import { websiteInfo } from "../data/data.js";
 
 export default function Topbar() {
   return (
@@ -6,15 +7,15 @@ export default function Topbar() {
       <div className="flex flex-col md:flex-row items-center gap-4 md:gap-10 lg:gap-[69px]">
         <div className="flex items-center gap-2">
           <Phone className="w-4 h-4 text-white" strokeWidth={1.6} />
-          <span className="text-white text-xs">(000) 123-4567</span>
+          <span className="text-white text-xs">{websiteInfo.phone}</span>
         </div>
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4 text-white" strokeWidth={1.6} />
-          <span className="text-white text-xs">Mon-Fri: 9AM-5PM, Sat: 9AM-12PM</span>
+          <span className="text-white text-xs">{websiteInfo.workingHours}</span>
         </div>
         <div className="flex items-center gap-2">
           <MapPin className="w-4 h-4 text-white" strokeWidth={1.6} />
-          <span className="text-white text-xs">Myllypurontie 1, Helsinki</span>
+          <span className="text-white text-xs">{websiteInfo.address}</span>
         </div>
       </div>
       <button className="flex items-center gap-2 text-white text-xs hover:opacity-80 transition-opacity">
