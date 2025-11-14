@@ -1,5 +1,5 @@
 import { Phone, Clock, MapPin, LogIn } from "lucide-react";
-import { websiteInfo } from "../data/data";
+import { websiteInfo } from "../data/data.js";
 
 export default function Topbar() {
   return (
