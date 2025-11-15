@@ -1,6 +1,8 @@
 import eyeExamImage from "../assets/images/eye-exam.png";
 import articleImage1 from "../assets/images/article-1.jpeg";
 import articleImage2 from "../assets/images/article-2.jpeg";
+import doctorDashboard from "../assets/images/doctor-dashboard.jpg";
+import adminDashboard from "../assets/images/doctor-dashboard.jpg";
 import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 
 const websiteInfo = {
@@ -101,7 +103,30 @@ const heroSlides = {
     {
       image: eyeExamImage,
       title: "Welcome to iVision",
-      subtitle: "Access your saved information and appointment history easily.",
+      subtitle: "Access your saved information and appointment history easily",
+    },
+  ],
+  profile: [
+    {
+      image: eyeExamImage,
+      title: "My Account",
+      subtitle: "Manage my profile, appointments, and prescriptions",
+    },
+  ],
+
+  
+  doctor: [
+    {
+      image: doctorDashboard,
+      title: "Dashboard",
+      subtitle: "Manage appointments and patients",
+    },
+  ],
+  admin: [
+    {
+      image: adminDashboard,
+      title: "Administrator Dashboard",
+      subtitle: "Manage users, appointments, content, and site settings",
     },
   ],
   404: [
@@ -109,7 +134,6 @@ const heroSlides = {
       image: eyeExamImage
     },
   ],
-
 };
 // Sample data for services cards
 const servicesCard = [
