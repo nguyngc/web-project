@@ -13,7 +13,7 @@ const ServiceCard = ({ id, image, name, shortDescription,features, CTA, url, rev
             ></div>
 
             {/* Text */}
-            <div className="flex flex-col items-start px-[30px] pb-[30px] gap-[12px] w-full lg:w-[505px] bg-[#F2F2F7] border border-[rgba(191,210,248,0.2)] rounded-[20px]">
+            <div className="flex flex-col items-start px-[30px] pb-[30px] gap-[12px] w-full lg:w-[505px]  border border-[rgba(191,210,248,0.2)] rounded-[20px]">
                 {/* Title */}
                 <h2 className="w-full text-[#B43F3F] text-[20px] leading-[24px] font-inter font-medium tracking-[2px] text-center mt-4">
                     {name}

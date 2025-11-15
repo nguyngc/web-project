@@ -9,6 +9,7 @@ import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import ArticleDetail from './pages/ArticleDetail';
 import ServiceDetail from './pages/ServiceDetail';
+import BookApp from './pages/BookApp';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="news" element={<Articles />} />
           <Route path="news/1" element={<ArticleDetail />} />
           <Route path="contact" element={<Contact />} />
+          <Route path="bookApp" element={<BookApp />} />
           <Route path="*" element={<NotFound />} /> {/* Catch-all for undefined routes */}
         </Route>
       </Routes>

@@ -93,6 +93,10 @@ const heroSlides = {
     {image: eyeExamImage,title: "",subtitle: "",
       badge: "",},
   ],
+  bookApp: [
+    {image: eyeExamImage,title: "",subtitle: "",
+      badge: "",},
+  ],
   404: [
     {
       image: eyeExamImage
