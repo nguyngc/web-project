@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import {startOfMonth,endOfMonth,eachDayOfInterval,format,addMonths,subMonths,startOfWeek,endOfWeek,} from "date-fns";
+import { isBefore, startOfDay, startOfMonth, endOfMonth, eachDayOfInterval, format, addMonths, subMonths, startOfWeek, endOfWeek, } from "date-fns";
 
 function Calendar({ selectedDate, setSelectedDate }) {
   const [currentDate, setCurrentDate] = useState(new Date());
-  
+
   //calculate day in month
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
@@ -39,8 +39,7 @@ function Calendar({ selectedDate, setSelectedDate }) {
               <ChevronRight className="w-4 h-4 text-vision-primary" strokeWidth={1.33} />
             </button>
           </div>
-
-          {/* Grid ngày */}
+          {/* Grid day */}
           <div className="grid grid-cols-7 gap-2">
             {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((day) => (
               <div
@@ -50,7 +49,6 @@ function Calendar({ selectedDate, setSelectedDate }) {
                 {day}
               </div>
             ))}
-
             {calendarDays.map((day) => {
               const isCurrentMonth = format(day, "MM") === format(currentDate, "MM");
               const isSelected = selectedDate && format(day, "yyyy-MM-dd") === format(selectedDate, "yyyy-MM-dd");
@@ -58,11 +56,17 @@ function Calendar({ selectedDate, setSelectedDate }) {
               return (
                 <button
                   key={day}
-                  onClick={() => setSelectedDate(day)}
+                  onClick={() => {
+                    if (!isBefore(startOfDay(day), startOfDay(new Date()))) {
+                      setSelectedDate(day);
+                    }
+                  }}
+                  disabled={isBefore(startOfDay(day), startOfDay(new Date()))} 
                   className={`aspect-square flex items-center justify-center rounded-lg text-sm font-normal
-                    ${isSelected ? "bg-[#159EEC] text-white" : ""}
-                    ${isCurrentMonth ? "text-vision-primary hover:bg-gray-100" : "text-[#717182] opacity-50"}
-                  `}
+                      ${isSelected ? "bg-[#159EEC] text-white" : ""}
+                      ${isCurrentMonth ? "text-vision-primary hover:bg-gray-100" : "text-[#717182] opacity-50"}
+                      ${isBefore(startOfDay(day), startOfDay(new Date())) ? "opacity-50 cursor-not-allowed" : ""}
+                    `}
                 >
                   {format(day, "d")}
                 </button>

@@ -5,8 +5,6 @@ import Calendar from "./Calendar";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
 
-
-
 const timeSlots = [
   { id: "1", time: "9:00 AM - 10:00 AM", duration: "60 minutes", available: false },
   { id: "2", time: "10:00 AM - 11:00 AM", duration: "60 minutes", available: false },
@@ -19,7 +17,7 @@ const timeSlots = [
 function BookAppointment() {
   const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
-
+  
   return (
     <div className="min-h-screen bg-white">
       <section

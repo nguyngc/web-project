@@ -97,6 +97,10 @@ const heroSlides = {
     {image: eyeExamImage,title: "",subtitle: "",
       badge: "",},
   ],
+  confirm: [
+    {image: eyeExamImage,title: "",subtitle: "",
+      badge: "",},
+  ],
   404: [
     {
       image: eyeExamImage
