@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Mail, Eye, EyeOff } from "lucide-react";
 import Form from "react-bootstrap/Form";
 import GradientButton from "./GradientButton";
@@ -8,6 +9,7 @@ const LoginForm = ({ onForgot }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
 
   const validate = () => {
     let valid = true;
@@ -52,9 +54,9 @@ const LoginForm = ({ onForgot }) => {
     localStorage.setItem("currentUser", JSON.stringify(user));
     window.dispatchEvent(new Event("userLogin"));
 
-    if (role === "doctor") window.location.hash = "#doctor-dashboard";
-    else if (role === "admin") window.location.hash = "#admin-dashboard";
-    else window.location.hash = "#account";
+    if (role === "doctor") navigate("/doctor/dashboard");
+    else if (role === "admin") navigate("/admin/users");
+    else navigate("/profile");
   };
 
   return (
