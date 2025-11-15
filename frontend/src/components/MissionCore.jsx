@@ -1,50 +1,52 @@
-import { Award, Heart, Star } from "lucide-react";
+import { Award, Heart } from "lucide-react";
+import coresImage from "../assets/images/cores.png";
 
-function MissionVisionCore() {
+function MissionVision() {
   return (
-    <section className="flex flex-col items-center px-4 lg:px-[200px] py-[50px] gap-10 w-full max-w-[1440px]">
-      {/* Heading */}
-      <h2 className="mt-[100px] text-[#1C398E] text-[28px] leading-[30px] font-inter font-medium uppercase tracking-[0.1em] text-center">
-        Mission - Vision - Core
+    <section className="flex flex-col items-center px-[200px] py-[50px] gap-10 w-full max-w-[1440px] mx-auto">
+      {/* Title */}
+      <h2 className="w-[1040px] text-center font-inter font-medium text-[36px] leading-[44px] tracking-[0.1em] uppercase text-[#1C398E]">
+        Mission - Vision
       </h2>
 
-      {/* Mission + Vision cards */}
-      <div className="flex flex-col md:flex-row gap-6 w-full max-w-[1040px]">
-        {/* Mission card */}
-        <div className="flex flex-col items-center p-[30px] gap-[15px] w-full md:w-[510px] h-[309px] border-2 border-[#00C8B3] rounded-[20px] shadow-md">
-          <div className="flex items-center justify-center w-10 h-10 bg-[#159EEC] rounded-full">
-            <Award className="w-5 h-5 text-white" />
+      {/* Cards */}
+      <div className="flex flex-row gap-5 w-[1040px]">
+        {/* Mission Card */}
+        <div className="flex flex-col items-center p-8 border-2 border-[#00C8B3] rounded-2xl shadow-lg w-[510px]">
+          <div className="flex justify-center items-center w-12 h-12 rounded-full bg-[#159EEC]">
+            <Award className="w-6 h-6 text-white" />
           </div>
-          <p className="text-[#0C0646] text-[20px] leading-[24px] text-center font-inter font-normal ">
-            Our Mission <br />
-            To provide exceptional, comprehensive eye care services that enhance our patients' vision and quality of life. We strive to deliver personalized care using advanced technology in a welcoming, professional environment.
+          <p className="mt-4 w-[450px] font-inter text-[20px] leading-[24px] text-[#0C0646] shadow-md text-center">
+            Our Mission: To provide exceptional, comprehensive eye care services that enhance our
+            patients' vision and quality of life. We strive to deliver personalized care using
+            advanced technology in a welcoming, professional environment.
           </p>
         </div>
 
-        {/* Vision card */}
-        <div className="flex flex-col items-center p-[30px] gap-[15px] w-full md:w-[510px] h-[309px] border-2 border-[#00C8B3] rounded-[20px] shadow-lg">
-          <div className="flex items-center justify-center w-10 h-10 bg-[#159EEC] rounded-full">
-            <Heart className="w-5 h-5 text-white" />
+        {/* Vision Card */}
+        <div className="flex flex-col items-center p-8 border-2 border-[#00C8B3] rounded-2xl shadow-lg w-[510px]">
+          <div className="flex justify-center items-center w-12 h-12 rounded-full bg-[#159EEC]">
+            <Heart className="w-6 h-6 text-white" />
           </div>
-          <p className="text-[#0C0646] text-[20px] leading-[24px] text-center font-inter font-normal">
-            Our Vision <br />
-            To be the most trusted eye care provider in our community, recognized for clinical excellence, innovative treatments, and unwavering commitment to patient satisfaction and lifelong vision health.
+          <p className="mt-4 w-[450px] font-inter text-[20px] leading-[24px] text-[#0C0646] shadow-lg text-center">
+            Our Vision: To be the most trusted eye care provider in our community, recognized for
+            clinical excellence, innovative treatments, and unwavering commitment to patient
+            satisfaction and lifelong vision health.
           </p>
         </div>
       </div>
 
-      {/* Core Values card */}
-      <div className="flex flex-col items-center p-[30px] gap-[15px] w-full max-w-[1040px] h-[309px] border-2 border-[#00C8B3] rounded-[20px] shadow-lg">
-        <div className="flex items-center justify-center w-10 h-10 bg-[#159EEC] rounded-full">
-          <Star className="w-5 h-5 text-white" />
-        </div>
-        <p className="text-[#0C0646] text-[20px] leading-[24px] text-center font-inter font-normal">
-          Our Core Values <br />
-          Compassion, Innovation, Integrity, and Excellence in every aspect of patient care.
-        </p>
+      {/* Banner Image dưới 2 card */}
+      <div className="w-[1040px] h-[430px] flex justify-center items-center mt-6">
+        <img
+          src={coresImage}
+          className="w-full h-full object-cover rounded-lg shadow-md"
+        />
       </div>
+
+
     </section>
   );
 }
 
-export default MissionVisionCore;
+export default MissionVision;

@@ -8,6 +8,7 @@ import Articles from './pages/Articles';
 import Contact from './pages/Contact';
 import NotFound from './pages/NotFound';
 import ArticleDetail from './pages/ArticleDetail';
+import ServiceDetail from './pages/ServiceDetail';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route index element={<Home />} /> {/* Default Route */}
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
+          <Route path="services/:slug" element={<ServiceDetail />} />
           <Route path="news" element={<Articles />} />
           <Route path="news/1" element={<ArticleDetail />} />
           <Route path="contact" element={<Contact />} />

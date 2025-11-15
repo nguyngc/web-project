@@ -9,3 +9,17 @@
   list-style-type: disc;
   padding-left: 2rem;
 }
+html, body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background: repeating-linear-gradient(
+    to right,
+    #fdf2f7,  
+    #fdf2f7 30px,
+    #fffafa 30px, 
+    #fffafa 50px
+  );
+}
+
+
