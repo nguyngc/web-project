@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Mail, Eye, EyeOff } from "lucide-react";
-import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import GradientButton from "./GradientButton";
 
-const LoginForm = () => {
+const LoginForm = ({ onForgot }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -72,9 +72,8 @@ const LoginForm = () => {
           <Form.Control
             type="email"
             placeholder="email@example.com"
-            className={`w-full pl-10 h-12 bg-gray-50 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 ${
-              errors.email ? "border-red-500" : "border-gray-200"
-            }`}
+            className={`w-full pl-10 h-12 bg-gray-50 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 ${errors.email ? "border-red-500" : "border-gray-200"
+              }`}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -89,9 +88,8 @@ const LoginForm = () => {
           <Form.Control
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
-            className={`h-12 w-full bg-gray-50 pl-3 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-10 ${
-              errors.password ? "border-red-500" : "border-gray-200"
-            }`}
+            className={`h-12 w-full bg-gray-50 pl-3 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-10 ${errors.password ? "border-red-500" : "border-gray-200"
+              }`}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -108,22 +106,23 @@ const LoginForm = () => {
 
       {/* Remember + Forgot */}
       <div className="flex justify-between items-center mb-4 text-sm">
-        <label className="flex items-center gap-2">
+        <label className="flex items-center gap-2 cursor-pointer">
           <Form.Check type="checkbox" />
           Remember me
         </label>
-        <a href="#" className="text-blue-600 hover:text-blue-800 font-medium">
+        <button
+          type="button"
+          onClick={onForgot}
+          className="text-blue-600 hover:text-blue-800 font-medium"
+        >
           Forgot password?
-        </a>
+        </button>
       </div>
 
       {/* Submit Button */}
-      <Button
-        type="submit"
-        className="px-6 md:px-[30px] py-3 rounded-[10px] text-sm font-poppins font-semibold uppercase hover:opacity-90 transition-opacity text-white bg-gradient-to-b from-[rgba(21,158,236,0.5)] to-[#159EEC] w-full"
-      >
+      <GradientButton type="submit">
         Login
-      </Button>
+      </GradientButton>
     </Form>
   );
 };

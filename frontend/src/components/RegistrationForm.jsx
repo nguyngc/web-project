@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { User, Phone, Mail, Eye, EyeOff } from "lucide-react";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
+import GradientButton from "./GradientButton";
 
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
@@ -21,11 +21,36 @@ const RegistrationForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
+
+    let newValue = type === "checkbox" ? checked : value;
+
+    // Auto-format phone number
+    if (name === "phone" && type !== "checkbox") {
+      newValue = formatPhoneNumber(value);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: newValue,
     }));
   };
+
+  const formatPhoneNumber = (value) => {
+    if (!value) return value;
+
+    // Remove all non-digits
+    const digits = value.replace(/\D/g, "");
+
+    // Format based on number of digits
+    if (digits.length <= 3) {
+      return `(${digits}`;
+    }
+    if (digits.length <= 6) {
+      return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+    }
+    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+  };
+
 
   const validate = () => {
     const newErrors = {};
@@ -94,9 +119,8 @@ const RegistrationForm = () => {
               onChange={handleChange}
               type="text"
               placeholder="John"
-              className={`pl-10 h-12 bg-gray-50 border ${
-                errors.firstName ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border ${errors.firstName ? "border-red-500" : "border-gray-200"
+                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
             />
           </div>
           {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
@@ -114,9 +138,8 @@ const RegistrationForm = () => {
               onChange={handleChange}
               type="text"
               placeholder="Doe"
-              className={`pl-10 h-12 bg-gray-50 border ${
-                errors.lastName ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border ${errors.lastName ? "border-red-500" : "border-gray-200"
+                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
             />
           </div>
           {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
@@ -136,9 +159,8 @@ const RegistrationForm = () => {
             onChange={handleChange}
             type="email"
             placeholder="john.doe@example.com"
-            className={`w-full pl-10 h-12 bg-gray-50 border ${
-              errors.email ? "border-red-500" : "border-gray-200"
-            } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-10 h-12 bg-gray-50 border ${errors.email ? "border-red-500" : "border-gray-200"
+              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
         </div>
         {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -156,10 +178,9 @@ const RegistrationForm = () => {
             value={formData.phone}
             onChange={handleChange}
             type="tel"
-            placeholder="(555) 123-4567"
-            className={`w-full pl-10 h-12 bg-gray-50 border ${
-              errors.phone ? "border-red-500" : "border-gray-200"
-            } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            placeholder="(123) 123-4567"
+            className={`w-full pl-10 h-12 bg-gray-50 border ${errors.phone ? "border-red-500" : "border-gray-200"
+              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
         </div>
         {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
@@ -177,9 +198,8 @@ const RegistrationForm = () => {
             onChange={handleChange}
             type={showPassword ? "text" : "password"}
             placeholder="Create a password"
-            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${
-              errors.password ? "border-red-500" : "border-gray-200"
-            } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${errors.password ? "border-red-500" : "border-gray-200"
+              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
           <button
             type="button"
@@ -204,9 +224,8 @@ const RegistrationForm = () => {
             onChange={handleChange}
             type={showConfirmPassword ? "text" : "password"}
             placeholder="Re-enter your password"
-            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${
-              errors.confirmPassword ? "border-red-500" : "border-gray-200"
-            } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${errors.confirmPassword ? "border-red-500" : "border-gray-200"
+              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
           <button
             type="button"
@@ -224,13 +243,18 @@ const RegistrationForm = () => {
       {/* Terms & Promotional */}
       <Form.Group className="mb-4 flex items-start space-x-2">
         <Form.Check
+          id="terms"
           type="checkbox"
           name="terms"
           checked={formData.terms}
           onChange={handleChange}
-          className="mt-1"
+          className="mt-1 cursor-pointer"
         />
-        <label htmlFor="terms" className="text-sm text-gray-600 cursor-pointer">
+
+        <label
+          htmlFor="terms"
+          className="text-sm cursor-pointer leading-relaxed"
+        >
           I agree to the{" "}
           <a href="#" className="text-blue-600 hover:text-blue-700 font-medium">
             Terms of Service
@@ -241,28 +265,35 @@ const RegistrationForm = () => {
           </a>
         </label>
       </Form.Group>
-      {errors.terms && <p className="text-red-500 text-sm mb-4">{errors.terms}</p>}
+
+      {errors.terms && (
+        <p className="text-red-500 text-sm mb-4">{errors.terms}</p>
+      )}
+
 
       <Form.Group className="mb-6 flex items-start space-x-2">
         <Form.Check
+          id="promotional"
           type="checkbox"
           name="promotional"
           checked={formData.promotional}
           onChange={handleChange}
-          className="mt-1"
+          className="mt-1 cursor-pointer"
         />
-        <label htmlFor="promotional" className="text-sm text-gray-600 cursor-pointer">
+
+        <label
+          htmlFor="promotional"
+          className="text-sm cursor-pointer leading-relaxed"
+        >
           I want to receive promotional emails and health tips from Vision Clinic
         </label>
       </Form.Group>
 
+
       {/* Register Button */}
-      <Button
-        type="submit"
-        className="w-full h-12 rounded-lg bg-gradient-to-b from-blue-400 to-blue-500 text-white font-semibold shadow-md hover:opacity-90"
-      >
+      <GradientButton type="submit">
         Create Account
-      </Button>
+      </GradientButton>
     </Form>
   );
 };
