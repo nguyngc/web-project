@@ -1,5 +1,6 @@
 import { Phone, Clock, MapPin, LogIn } from "lucide-react";
-import { websiteInfo } from "../data/data.js";
+import { Link } from 'react-router-dom';
+import { websiteInfo } from "../data/data";
 
 export default function Topbar() {
   return (
@@ -18,10 +19,10 @@ export default function Topbar() {
           <span className="text-white text-xs">{websiteInfo.address}</span>
         </div>
       </div>
-      <button className="flex items-center gap-2 text-white text-xs hover:opacity-80 transition-opacity">
+      <Link to="/login" className="flex items-center gap-2 text-white text-xs hover:opacity-80 transition-opacity">
         <LogIn className="w-5 h-5" />
         <span>Login</span>
-      </button>
+      </Link>
     </div>
   );
 }
