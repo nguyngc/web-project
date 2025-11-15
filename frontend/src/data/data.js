@@ -101,8 +101,8 @@ const heroSlides = {
   contact: [
     {
       image: eyeExamImage,
-      title: "Get in Touch",
-      subtitle: "Contact us for appointments, inquiries, or support.",
+      title: "Contact us",
+      subtitle: "We're here to answer your questions and schedule your appointment",
     },
   ],
   404: [
@@ -158,40 +158,11 @@ const servicesCard = [
   },
 ];
 
-// Sample data for doctors cards
 const doctorsCard = [
-    {
-      Image: eyeExamImage,
-      name: "Dr. Jane Smith1",
-      specialty: "Lead Optometrist",
-      bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.",
-      rate: "4.9/5",
-
-    },
-    {
-      Image: eyeExamImage,
-      name: "Dr. Jane Smith2",
-      specialty: "Ophthalmologist",
-      bio: "DSpecializes in LASIK surgery and advanced treatment of eye diseases.",
-      rate: "4.9/5",
-
-    },
-    {
-      Image: eyeExamImage,
-      name: "Dr. Jane Smith3",
-      specialty: "Pediatric Eye Specialist",
-      bio: "Dedicated to providing gentle, expert care for children's vision needs.",
-      rate: "4.9/5",
-
-    },
-    {
-      Image: eyeExamImage,
-      name: "Dr. Jane Smith4",
-      specialty: "Optometrist",
-      bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.",
-      rate: "4.9/5",
-
-    },
+    {Image: eyeExamImage,name: "Dr. Jane Smith1",specialty: "Lead Optometrist",bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.",rate: "4.9/5"},
+    {Image: eyeExamImage,name: "Dr. Jane Smith2",specialty: "Ophthalmologist",bio: "DSpecializes in LASIK surgery and advanced treatment of eye diseases.",rate: "4.9/5"},
+    {Image: eyeExamImage,name: "Dr. Jane Smith3",specialty: "Pediatric Eye Specialist",bio: "Dedicated to providing gentle, expert care for children's vision needs.",rate: "4.9/5",},
+    {Image: eyeExamImage,name: "Dr. Jane Smith4",specialty: "Optometrist",bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.",rate: "4.9/5",},
   ];
 
 const services = [
