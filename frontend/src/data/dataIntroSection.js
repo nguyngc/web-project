@@ -1,4 +1,7 @@
-import { Eye, Award, Heart, Wallet, HeartPulse, ShieldCheck, PhoneCall, Mail, Clock, PinIcon, MapPin,} from "lucide-react";
+import { Eye, Award, Heart, Wallet, HeartPulse, ShieldCheck, PhoneCall, Mail, Clock, MapPin,} from "lucide-react";
+
+import { NumberCircleOne, NumberCircleTwo, NumberCircleThree, NumberCircleFour,NumberCircleFive } from "phosphor-react";
+
 const introSection = {
     home: {
         title: "Welcome to Vision Clinic",
@@ -36,6 +39,18 @@ const introSection = {
             {icon: Mail,title: "",description: "info@visionclinic.com",},
             {icon: MapPin,title: "",description: "Myllypurotie 1, Helsinki",},
             {icon: Clock,title: "",description: "Mon-Fri: 9AM-5PM\nSat: 10AM-2PM",},
+        ]
+    },
+    serviceDetail: {
+        title: "How It Works",
+        description: "Getting start with your choice is easy. Hear's what to expect:",
+        card: [
+            {icon: NumberCircleOne,title: "Schedule",description: "Book your appointment online or by phone",},
+            {icon: NumberCircleTwo,title: "Consultation",description: "Meet with our specialists for evaluation",},
+            {icon: NumberCircleThree,title: "Treatment",description: "Receive personalized care and treatment",},
+            {icon: NumberCircleFour,title: "Follow-up",description: "Ongoing support and monitoring",},
+            {icon: NumberCircleFive,title: "Insurance",description: "All types of signals are accepted.",},
+
         ]
     },
     

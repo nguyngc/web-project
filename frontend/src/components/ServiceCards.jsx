@@ -11,7 +11,7 @@ function ServiceCards() {
       <div className="flex flex-col gap-16 w-full max-w-[1040px] mx-auto">
         {dataServices.map((service, index) => (
           <ServiceCard
-            key={service.title}
+            key={service.serviceID}
             {...service}
             reverse={index % 2 !== 0}
           />

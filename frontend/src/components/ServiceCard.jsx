@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { Check } from "lucide-react";
 
-const ServiceCard = ({ image, title, description, extra, features, CTA, url, reverse }) => {
+const ServiceCard = ({ id, image, name, shortDescription,features, CTA, url, reverse }) => {
     return (
         <div
             className={`flex flex-col lg:flex-row items-stretch gap-[25px] w-[1040px] shadow-[0_12px_4px_rgba(0,0,0,0.25)] ${reverse ? "lg:flex-row-reverse" : ""
@@ -17,20 +16,17 @@ const ServiceCard = ({ image, title, description, extra, features, CTA, url, rev
             <div className="flex flex-col items-start px-[30px] pb-[30px] gap-[12px] w-full lg:w-[505px] bg-[#F2F2F7] border border-[rgba(191,210,248,0.2)] rounded-[20px]">
                 {/* Title */}
                 <h2 className="w-full text-[#B43F3F] text-[20px] leading-[24px] font-inter font-medium tracking-[2px] text-center mt-4">
-                    {title}
+                    {name}
                 </h2>
 
                 {/* Description */}
                 <p className="text-[#102C56] text-[14px] leading-[22px]">
-                    {description}
+                    {shortDescription}
                 </p>
-
                 {/* Extra */}
-                {extra && (
                     <p className="text-[#102C56] text-[14px] leading-[20px] font-semibold">
-                        {extra}
+                        What's inclued:
                     </p>
-                )}
 
                 {/* Features list */}
                 {features && (
@@ -46,7 +42,7 @@ const ServiceCard = ({ image, title, description, extra, features, CTA, url, rev
                     </ul>
                 )}
 
-                {/* CTA - Learn more (căn trái) */}
+                {/* CTA - Learn more*/}
                 <Link
                     to={url}
                     className="mt-auto text-[14px] leading-[20px] text-[#0088FF] font-poppins font-semibold hover:opacity-90 transition-opacity"

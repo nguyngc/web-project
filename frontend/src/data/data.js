@@ -72,26 +72,14 @@ const heroSlides = {
     }
   ],
   about: [
-    {
-      image: eyeExamImage,
-      title: "Our Story",
-      subtitle: "Dedicated to excellence in eye care for over 25 years",
-    },
+    {image: eyeExamImage,title: "Our Story",subtitle: "Dedicated to excellence in eye care for over 25 years",},
   ],
   services: [
-    {
-      image: eyeExamImage,
-      title: "Our services",
-      subtitle: "Comprehensive eye care solutions for your entire family",
-      badge: "Summer promotion: 20% off all services",
-    },
+    {image: eyeExamImage,title: "Our services",subtitle: "Comprehensive eye care solutions for your entire family",
+      badge: "Summer promotion: 20% off all services",},
   ],
   news: [
-    {
-      image: eyeExamImage,
-      title: "Latest Updates",
-      subtitle: "Stay informed with our clinic's news and announcements.",
-    },
+    {image: eyeExamImage,title: "Latest Updates",subtitle: "Stay informed with our clinic's news and announcements.",},
   ],
   newsDetail: [
     {
@@ -99,17 +87,18 @@ const heroSlides = {
     },
   ],
   contact: [
-    {
-      image: eyeExamImage,
-      title: "Contact us",
-      subtitle: "We're here to answer your questions and schedule your appointment",
-    },
+    {image: eyeExamImage,title: "Contact us",subtitle: "We're here to answer your questions and schedule your appointment",},
+  ],
+  serviceDetail: [
+    {image: eyeExamImage,title: "",subtitle: "",
+      badge: "",},
   ],
   404: [
     {
       image: eyeExamImage
     },
   ],
+
 };
 // Sample data for services cards
 const servicesCard = [
