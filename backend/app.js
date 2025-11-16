@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db"); 
 const faqRoutes = require("./routes/faqRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
+const articleRoutes = require("./routes/articleRoutes");
 
 const app = express();
 
@@ -9,6 +10,7 @@ connectDB();
 
 app.use(express.json());
 app.use("/faq", faqRoutes);
+app.use("/articles", articleRoutes);
 app.use("/banner", bannerRoutes);
 
 // 404
