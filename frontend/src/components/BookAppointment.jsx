@@ -17,7 +17,7 @@ const timeSlots = [
 function BookAppointment() {
   const [selectedDate, setSelectedDate] = useState(null);
   const navigate = useNavigate();
-  
+
   return (
     <div className="min-h-screen bg-white">
       <section
@@ -98,51 +98,54 @@ function BookAppointment() {
 
                 <div className="flex flex-col gap-6">
                   <div className="flex flex-col gap-3">
-                    {timeSlots.map((slot) => (
-                      <div
-                        key={slot.id}
-                        onClick={() => {
-                          if (slot.available) {
-                            navigate("/confirm", { state: { date: selectedDate, slot } });
-                          }
-                        }}
-                        className={cn(
-                          "flex items-center justify-between p-3 rounded-xl border-2",
-                          slot.available
-                            ? "border-[#E5E7EB] bg-white"
-                            : "border-[#F3F4F6] bg-[#F9FAFB] opacity-50"
-                        )}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
-                            <Clock className="w-5 h-5 text-[#155DFC]" strokeWidth={1.67} />
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-[#101828] text-base leading-6">{slot.time}</span>
-                            <span className="text-[#6A7282] text-sm leading-5">{slot.duration}</span>
-                          </div>
-                        </div>
+                    {timeSlots.map((slot) => {
+                      const isAvailable = !selectedDate || slot.available;
+                      // nếu chưa chọn ngày => luôn available
+                      // nếu đã chọn ngày => chỉ slot.available mới available
+
+                      return (
                         <div
+                          key={slot.id}
+                          onClick={() => {
+                            if (isAvailable) {
+                              navigate("/confirm", { state: { date: selectedDate, slot } });
+                            }
+                          }}
                           className={cn(
-                            "px-2 py-0.5 rounded-lg border flex items-center justify-center",
-                            slot.available
-                              ? "border-[#3F9C36] bg-white"
-                              : "border-[#99A1AF] bg-white"
+                            "flex items-center justify-between p-3 rounded-xl border-2 cursor-pointer",
+                            isAvailable
+                              ? "border-[#E5E7EB] bg-white"
+                              : "border-[#F3F4F6] bg-[#F9FAFB] opacity-50 cursor-not-allowed"
                           )}
                         >
-                          <span
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-[#DBEAFE] flex items-center justify-center flex-shrink-0">
+                              <Clock className="w-5 h-5 text-[#155DFC]" strokeWidth={1.67} />
+                            </div>
+                            <div className="flex flex-col">
+                              <span className="text-[#101828] text-base leading-6">{slot.time}</span>
+                              <span className="text-[#6A7282] text-sm leading-5">{slot.duration}</span>
+                            </div>
+                          </div>
+                          <div
                             className={cn(
-                              "text-xs font-medium leading-4",
-                              slot.available ? "text-[#3F9C36]" : "text-[#99A1AF]"
+                              "px-2 py-0.5 rounded-lg border flex items-center justify-center",
+                              isAvailable ? "border-[#3F9C36] bg-white" : "border-[#99A1AF] bg-white"
                             )}
                           >
-                            {slot.available ? "Available" : "Booked"}
-                          </span>
+                            <span
+                              className={cn(
+                                "text-xs font-medium leading-4",
+                                isAvailable ? "text-[#3F9C36]" : "text-[#99A1AF]"
+                              )}
+                            >
+                              {isAvailable ? "Available" : "Booked"}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
-
                   <div className="pt-6 border-t border-[rgba(0,0,0,0.1)]">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
