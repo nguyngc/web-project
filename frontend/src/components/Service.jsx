@@ -1,21 +1,21 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
-const Service = ({ Image, title, description, CTA, url }) => {
+const Service = ({ serviceID,image, name, shortDescription, CTA, url }) => {
   return (
     <article className="flex flex-col rounded-[14px] border border-black/10 bg-white overflow-hidden hover:shadow-lg transition-shadow">
       {/* Image */}
       <div className="relative h-[239px] overflow-hidden">
-        <img src={Image} alt={title} className="w-full h-full object-cover" />
+        <img src={image} className="w-full h-full object-cover" />
       </div>
 
       {/* Info */}
       <div className="p-6 flex flex-col gap-6">
         <h3 className="text-[#0f55e1] text-lg font-inter font-medium leading-[27px] text-center">
-          {title}
+          {name}
         </h3>
         <p className="text-vision-text-light text-base leading-6">
-          {description}
+          {shortDescription}
         </p>
 
         {/* CTA */}

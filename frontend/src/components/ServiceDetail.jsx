@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import dataServices from "../data/dataServices";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, Currency, Wallet2 } from "lucide-react";
+import { Calendar, Clock, Currency, DollarSign, Wallet2 } from "lucide-react";
 
 function ServiceDetail() {
     const { slug } = useParams();
@@ -28,22 +28,22 @@ function ServiceDetail() {
                     className="w-full h-full object-cover"
                 />
 
-                {/* Nút quay lại */}
+                {/* back button */}
                 <div className="absolute top-4 left-4 z-10">
                     <Link
                         to="/services"
-                        className="inline-flex items-center gap-2 bg-[#4458cb] text-white font-bold hover:underline"
+                        className="inline-flex items-center gap-2  text-[#2b3eac] text-[28px] font-bold hover:underline"
                     >
-                        ← Back to Services
+                        ← Back
                     </Link>
                 </div>
 
                 {/* Overlay */}
-                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[1040px] bg-[#4458cb] flex flex-col items-center justify-center text-center py-6 rounded-t-lg">
-                    <h1 className="text-white text-3xl md:text-4xl font-bold">
+                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[1040px] bg-white flex flex-col  justify-center py-6 rounded-t-lg ">
+                    <h1 className="text-[#2b3eac] text-3xl md:text-4xl font-medium ml-10 ">
                         {service.name}
                     </h1>
-                    <p className="text-white text-lg md:text-xl font-medium mt-2">
+                    <p className="text-[#2b3eac] text-lg md:text-xl font-medium mt-5 ml-10" >
                         {service.shortDescription}
                     </p>
                 </div>
@@ -52,17 +52,23 @@ function ServiceDetail() {
             <section className="py-12 w-[1040px] mx-auto">
                 <div className="grid md:grid-cols-3 gap-6 mb-12">
                     <div className="bg-[#FEE9E9] rounded-lg p-6 text-center flex flex-col items-center gap-2">
-                        <Clock className="w-8 h-8 text-[#0b219c] " />
+                        <div className="flex justify-center items-center w-12 h-12 rounded-full bg-[#159EEC]">
+                            <Clock className="w-6 h-6 text-white" />
+                        </div>
                         <h3 className="font-semibold">Duration</h3>
                         <p>{service.duration}</p>
                     </div>
                     <div className="bg-[#FEE9E9] rounded-lg p-6 text-center flex flex-col items-center gap-2">
-                        <Wallet2 className="w-8 h-8 text-[#0b219c] " />
+                        <div className="flex justify-center items-center w-12 h-12 rounded-full bg-[#159EEC]">
+                            <DollarSign className="w-6 h-6 text-white" />
+                        </div>
                         <h3 className="font-semibold">Price</h3>
                         <p>{service.price}</p>
                     </div>
                     <div className="bg-[#FEE9E9] rounded-lg p-6 text-center flex flex-col items-center gap-2">
-                        <Calendar className="w-8 h-8 text-[#0b219c] " />
+                        <div className="flex justify-center items-center w-12 h-12 rounded-full bg-[#159EEC]">
+                            <Calendar className="w-6 h-6 text-white" />
+                        </div>
                         <h3 className="font-semibold">Frequency</h3>
                         <p>{service.frequency}</p>
                     </div>
