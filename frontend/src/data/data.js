@@ -129,6 +129,14 @@ const heroSlides = {
       subtitle: "Manage users, appointments, content, and site settings",
     },
   ],
+  bookApp: [
+    {image: eyeExamImage,title: "",subtitle: "",
+      badge: "",},
+  ],
+  confirm: [
+    {image: eyeExamImage,title: "",subtitle: "",
+      badge: "",},
+  ],
   404: [
     {
       image: eyeExamImage
