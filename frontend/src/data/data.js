@@ -1,7 +1,9 @@
 import eyeExamImage from "../assets/images/eye-exam.png";
 import articleImage1 from "../assets/images/article-1.jpeg";
 import articleImage2 from "../assets/images/article-2.jpeg";
-import {Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import doctorDashboard from "../assets/images/doctor-dashboard.jpg";
+import adminDashboard from "../assets/images/doctor-dashboard.jpg";
+import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
 
 const websiteInfo = {
   name: "iVision Eye Clinic",
@@ -72,14 +74,16 @@ const heroSlides = {
     }
   ],
   about: [
-    {image: eyeExamImage,title: "Our Story",subtitle: "Dedicated to excellence in eye care for over 25 years",},
+    { image: eyeExamImage, title: "Our Story", subtitle: "Dedicated to excellence in eye care for over 25 years", },
   ],
   services: [
-    {image: eyeExamImage,title: "Our services",subtitle: "Comprehensive eye care solutions for your entire family",
-      badge: "Summer promotion: 20% off all services",},
+    {
+      image: eyeExamImage, title: "Our services", subtitle: "Comprehensive eye care solutions for your entire family",
+      badge: "Summer promotion: 20% off all services",
+    },
   ],
   news: [
-    {image: eyeExamImage,title: "Latest Updates",subtitle: "Stay informed with our clinic's news and announcements.",},
+    { image: eyeExamImage, title: "Latest Updates", subtitle: "Stay informed with our clinic's news and announcements.", },
   ],
   newsDetail: [
     {
@@ -87,11 +91,43 @@ const heroSlides = {
     },
   ],
   contact: [
-    {image: eyeExamImage,title: "Contact us",subtitle: "We're here to answer your questions and schedule your appointment",},
+    { image: eyeExamImage, title: "Contact us", subtitle: "We're here to answer your questions and schedule your appointment", },
   ],
   serviceDetail: [
-    {image: eyeExamImage,title: "",subtitle: "",
-      badge: "",},
+    {
+      image: eyeExamImage, title: "", subtitle: "",
+      badge: "",
+    },
+  ],
+  login: [
+    {
+      image: eyeExamImage,
+      title: "Welcome to iVision",
+      subtitle: "Access your saved information and appointment history easily",
+    },
+  ],
+  profile: [
+    {
+      image: eyeExamImage,
+      title: "My Account",
+      subtitle: "Manage my profile, appointments, and prescriptions",
+    },
+  ],
+
+  
+  doctor: [
+    {
+      image: doctorDashboard,
+      title: "Dashboard",
+      subtitle: "Manage appointments and patients",
+    },
+  ],
+  admin: [
+    {
+      image: adminDashboard,
+      title: "Administrator Dashboard",
+      subtitle: "Manage users, appointments, content, and site settings",
+    },
   ],
   bookApp: [
     {image: eyeExamImage,title: "",subtitle: "",
@@ -106,7 +142,6 @@ const heroSlides = {
       image: eyeExamImage
     },
   ],
-
 };
 // Sample data for services cards
 const servicesCard = [
@@ -156,11 +191,11 @@ const servicesCard = [
 ];
 
 const doctorsCard = [
-    {Image: eyeExamImage,name: "Dr. Jane Smith1",specialty: "Lead Optometrist",bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.",rate: "4.9/5"},
-    {Image: eyeExamImage,name: "Dr. Jane Smith2",specialty: "Ophthalmologist",bio: "DSpecializes in LASIK surgery and advanced treatment of eye diseases.",rate: "4.9/5"},
-    {Image: eyeExamImage,name: "Dr. Jane Smith3",specialty: "Pediatric Eye Specialist",bio: "Dedicated to providing gentle, expert care for children's vision needs.",rate: "4.9/5",},
-    {Image: eyeExamImage,name: "Dr. Jane Smith4",specialty: "Optometrist",bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.",rate: "4.9/5",},
-  ];
+  { Image: eyeExamImage, name: "Dr. Jane Smith1", specialty: "Lead Optometrist", bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.", rate: "4.9/5" },
+  { Image: eyeExamImage, name: "Dr. Jane Smith2", specialty: "Ophthalmologist", bio: "DSpecializes in LASIK surgery and advanced treatment of eye diseases.", rate: "4.9/5" },
+  { Image: eyeExamImage, name: "Dr. Jane Smith3", specialty: "Pediatric Eye Specialist", bio: "Dedicated to providing gentle, expert care for children's vision needs.", rate: "4.9/5", },
+  { Image: eyeExamImage, name: "Dr. Jane Smith4", specialty: "Optometrist", bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.", rate: "4.9/5", },
+];
 
 const services = [
   { id: 1, name: "Eye Examinations", link: "/services#eye-examinations" },
@@ -172,11 +207,11 @@ const services = [
 ];
 
 const socialLinks = [
-  { id: 1, label: "Facebook", link: "https://www.facebook.com/ivisionclinic", Icon: Facebook},
-  { id: 2, label: "Twitter", link: "https://www.twitter.com/ivisionclinic", Icon: Twitter},
-  { id: 3, label: "Instagram", link: "https://www.instagram.com/ivisionclinic", Icon: Instagram},
-  { id: 4, label: "LinkedIn", link: "https://www.linkedin.com/company/ivisionclinic", Icon: Linkedin},
+  { id: 1, label: "Facebook", link: "https://www.facebook.com/ivisionclinic", Icon: Facebook },
+  { id: 2, label: "Twitter", link: "https://www.twitter.com/ivisionclinic", Icon: Twitter },
+  { id: 3, label: "Instagram", link: "https://www.instagram.com/ivisionclinic", Icon: Instagram },
+  { id: 4, label: "LinkedIn", link: "https://www.linkedin.com/company/ivisionclinic", Icon: Linkedin },
 ];
 
-export { websiteInfo, pageLinks, heroSlides, services, socialLinks, servicesCard, doctorsCard, aboutSectionCard};
+export { websiteInfo, pageLinks, heroSlides, services, socialLinks, servicesCard, doctorsCard, aboutSectionCard };
 

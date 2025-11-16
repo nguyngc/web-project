@@ -1,10 +1,12 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { heroSlides } from "../data/data.js";
+import useRole from "../hooks/userRole.jsx";
 
 function Hero({ page }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+  const role = useRole();
 
   const slides = heroSlides[page] || [];
 
@@ -132,7 +134,9 @@ function Hero({ page }) {
     // Single slide (no controls)
     const slide = slides[0];
     return (
-      <div className="h-[224px] px-4 lg:px-[200px] flex items-center bg-cover bg-center relative">
+      <div className={`px-4 lg:px-[200px] flex items-center bg-cover bg-center relative
+          ${role === 'doctor' || role === 'admin' ? "h-[132px]" : "h-[224px]"
+        }`}>
         <img
           src={slide.image}
           alt={slide.title}
@@ -140,7 +144,7 @@ function Hero({ page }) {
         />
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 to-blue-900/50" />
 
-        <div className="relative h-full px-4 py-12 flex items-center">
+        <div className="relative h-full py-12 flex items-center">
           <div className="max-w-[672px]">
             {slide.badge && (
               <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm mb-6">
