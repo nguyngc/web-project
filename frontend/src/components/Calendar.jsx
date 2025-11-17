@@ -1,9 +1,23 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { isBefore, startOfDay, startOfMonth, endOfMonth, eachDayOfInterval, format, addMonths, subMonths, startOfWeek, endOfWeek, } from "date-fns";
 
 function Calendar({ selectedDate, setSelectedDate }) {
   const [currentDate, setCurrentDate] = useState(new Date());
+  const calendarRef = useRef(null);
+
+  // Reset selectedDate
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (calendarRef.current && !calendarRef.current.contains(event.target)) {
+        setSelectedDate(null);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [setSelectedDate]);
 
   //calculate day in month
   const monthStart = startOfMonth(currentDate);
@@ -18,7 +32,7 @@ function Calendar({ selectedDate, setSelectedDate }) {
   const currentMonthLabel = format(currentDate, "MMMM yyyy");
 
   return (
-    <div className="flex flex-col gap-6">
+    <div ref={calendarRef} className="flex flex-col gap-6">
       <div className="p-3 rounded-lg border border-[rgba(0,0,0,0.1)]">
         <div className="flex flex-col gap-4">
           {/* Header */}

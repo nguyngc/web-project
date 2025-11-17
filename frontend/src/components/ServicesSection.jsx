@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { servicesCard } from "../data/data";
+import { Link } from "react-router-dom";
 import Service from "./Service";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import dataServices from "../data/dataServices";
 
 function ServicesSection() {
   const [startIndex, setStartIndex] = useState(0);
   const visibleCount = 3; // Number of services to show at once
 
   const handleNext = () => {
-    if (startIndex + visibleCount < servicesCard.length) {
+    if (startIndex + visibleCount < dataServices.length) {
       setStartIndex(startIndex + 1);
     }
   };
@@ -19,7 +20,7 @@ function ServicesSection() {
     }
   };
 
-  const visibleServices = servicesCard.slice(startIndex, startIndex + visibleCount);
+  const visibleServices = dataServices.slice(startIndex, startIndex + visibleCount);
 
   return (
     <section className="px-4 lg:px-[200px] py-12 md:py-[50px] flex flex-col items-center gap-10">
@@ -48,14 +49,14 @@ function ServicesSection() {
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 flex-1">
           {visibleServices.map((service) => (
-            <Service {...service} key={service.title} />
+            <Service {...service} key={service.serviceID} />
           ))}
         </div>
 
         {/* Next button */}
         <button
           onClick={handleNext}
-          disabled={startIndex + visibleCount >= servicesCard.length}
+          disabled={startIndex + visibleCount >= dataServices.length}
           className="p-2 border rounded-full disabled:opacity-50"
         >
           <ArrowRight className="w-5 h-5" />
@@ -63,11 +64,14 @@ function ServicesSection() {
       </div>
 
       {/* View all */}
-      {/* 
-<button className="border border-[#155DFC] text-[#155DFC] bg-white px-4 py-2 rounded-[10px] text-sm font-poppins font-medium hover:bg-[#155DFC] hover:text-white transition-colors">
-  View All Services
-</button> 
-*/}
+
+      <Link 
+        to ="/services" 
+        className="border border-[#155DFC] text-[#155DFC] bg-white px-4 py-2 rounded-[10px] text-sm font-poppins font-medium hover:bg-[#155DFC] hover:text-white transition-colors"
+      >
+        View All Services
+      </Link>
+
 
     </section>
   );

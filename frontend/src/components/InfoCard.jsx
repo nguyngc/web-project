@@ -4,15 +4,7 @@ import { Check } from "lucide-react";
 const InfoCard = ({ image, title, description, features, CTA, url}) => {
     return (
         <div className={"flex flex-col lg:flex-row items-stretch gap-12"}>
-            {/* Image */}
-            <div className="flex-1">
-                <img
-                    src={image}
-                    alt={title}
-                    className="w-full h-full object-cover rounded-[10px] shadow"
-                />
-            </div>
-
+            
             {/* Text */}
             <div className="flex-1 flex flex-col gap-6 max-w-[472px]">
                 <h2 className="text-[#1C398E] text-3xl md:text-4xl font-inter font-medium tracking-[2px]">
@@ -42,6 +34,15 @@ const InfoCard = ({ image, title, description, features, CTA, url}) => {
                     {CTA}
                 </Link>
             </div>
+            {/* Image */}
+            <div className="flex-1">
+                <img
+                    src={image}
+                    alt={title}
+                    className="w-full h-full object-cover rounded-[10px] shadow"
+                />
+            </div>
+
         </div>
     );
 };

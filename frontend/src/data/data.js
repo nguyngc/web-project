@@ -143,67 +143,12 @@ const heroSlides = {
     },
   ],
 };
-// Sample data for services cards
-const servicesCard = [
-  {
-    Image: "https://api.builder.io/api/v1/image/assets/TEMP/2bd094ea241132f388e2724df967b69d8941060f?width=716",
-    title: "Comprehensive Eye Exams",
-    description:
-      "Comprehensive vision testing and eye health evaluations to ensure optimal eye health.",
-    CTA: "Learn More",
-    url: "/services",
-  },
-  {
-    Image: "https://api.builder.io/api/v1/image/assets/TEMP/41716772802cdcc1e9e1f5cffa255c322612f197?width=625",
-    title: "Eyeglasses & Contact Lenses",
-    description: "Wide selection of frames and lens options to suit your style and vision needs.",
-    CTA: "Learn More",
-    url: "/services/eyeglasses-contact-lenses",
-  },
-  {
-    Image: "https://api.builder.io/api/v1/image/assets/TEMP/9d0840834b612bbdce6bb7d4f95c237b6134aa35?width=625",
-    title: "Advanced Eye Care",
-    description: "Treatment for eye diseases and surgical procedures using the latest technology.",
-    CTA: "Learn More",
-    url: "/services/advanced-eye-care",
-  },
-  {
-    Image: "https://api.builder.io/api/v1/image/assets/TEMP/9d0840834b612bbdce6bb7d4f95c237b6134aa35?width=625",
-    title: "LASIK Surgery",
-    description: "State-of-the-art LASIK procedures to correct vision and reduce dependence on glasses or contacts.",
-    CTA: "Learn More",
-    url: "/services/lasik-surgery",
-  },
-  {
-    Image: "https://api.builder.io/api/v1/image/assets/TEMP/2bd094ea241132f388e2724df967b69d8941060f?width=716",
-    title: "Eye Disease Management",
-    description: "Comprehensive care and treatment plans for various eye diseases to preserve vision and eye health.",
-    CTA: "Learn More",
-    url: "/services/eye-disease-management",
-  },
-  {
-    Image: "https://api.builder.io/api/v1/image/assets/TEMP/41716772802cdcc1e9e1f5cffa255c322612f197?width=625",
-    title: "Pediatric Eye Care",
-    description: "Specialized eye care services for children to ensure healthy vision development.",
-    CTA: "Learn More",
-    url: "/services/pediatric-eye-care",
-  },
-];
 
 const doctorsCard = [
   { Image: eyeExamImage, name: "Dr. Jane Smith1", specialty: "Lead Optometrist", bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.", rate: "4.9/5" },
   { Image: eyeExamImage, name: "Dr. Jane Smith2", specialty: "Ophthalmologist", bio: "DSpecializes in LASIK surgery and advanced treatment of eye diseases.", rate: "4.9/5" },
   { Image: eyeExamImage, name: "Dr. Jane Smith3", specialty: "Pediatric Eye Specialist", bio: "Dedicated to providing gentle, expert care for children's vision needs.", rate: "4.9/5", },
   { Image: eyeExamImage, name: "Dr. Jane Smith4", specialty: "Optometrist", bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.", rate: "4.9/5", },
-];
-
-const services = [
-  { id: 1, name: "Eye Examinations", link: "/services#eye-examinations" },
-  { id: 2, name: "Eyeglasses & Frames", link: "/services#eyeglasses-frames" },
-  { id: 3, name: "Contact Lenses", link: "/services#contact-lenses" },
-  { id: 4, name: "LASIK Surgery", link: "/services#lasik-surgery" },
-  { id: 5, name: "Disease Management", link: "/services#disease-management" },
-  { id: 6, name: "Pediatric Eye Care", link: "/services#pediatric-eye-care" },
 ];
 
 const socialLinks = [
@@ -213,5 +158,5 @@ const socialLinks = [
   { id: 4, label: "LinkedIn", link: "https://www.linkedin.com/company/ivisionclinic", Icon: Linkedin },
 ];
 
-export { websiteInfo, pageLinks, heroSlides, services, socialLinks, servicesCard, doctorsCard, aboutSectionCard };
+export { websiteInfo, pageLinks, heroSlides, socialLinks, doctorsCard, aboutSectionCard };
 
