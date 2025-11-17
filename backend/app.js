@@ -2,15 +2,21 @@ const express = require("express");
 const connectDB = require("./config/db"); 
 const faqRoutes = require("./routes/faqRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
-
+const articleRoutes = require("./routes/articleRoutes");
+const categoryRoutes = require("./routes/articleCategoryRoutes");
+const serviceRoutes = require("./routes/serviceRoutes");
+const appointmentRoutes = require("./routes/appointmentRoutes");
 const app = express();
 
 connectDB(); 
 
 app.use(express.json());
 app.use("/faq", faqRoutes);
+app.use("/articles", articleRoutes);
 app.use("/banner", bannerRoutes);
-
+app.use("/categories", categoryRoutes);
+app.use("/services", serviceRoutes);
+app.use("/appointments", appointmentRoutes);
 // 404
 app.use((req, res) => res.status(404).json({ message: "Not found" }));
 

@@ -1,8 +1,16 @@
+import Hero from "../components/Hero";
+import IntroSectionCard from "../components/IntroSectionCard";
+import { introSection } from "../data/dataIntroSection.js"; 
+import ContactFormMap from "../components/ContactFormMap.jsx";
+import ContactQA from "../components/ContactQA.jsx";
+
 function Contact() {
   return (
     <div>
-      <h2>Contact Page</h2>
-      <p>Reach out to us for inquiries.</p>
+      <Hero page="contact" />
+      <IntroSectionCard section={introSection.contact} />
+      <ContactFormMap />
+      <ContactQA />
     </div>
   );
 }
