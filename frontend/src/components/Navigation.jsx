@@ -1,8 +1,17 @@
-import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import BookButton from './BookButton';
 import PageLinks from './PageLinks';
 
-function Navigation({ mobileMenuOpen }) {
+function Navigation({ mobileMenuOpen, currentUser }) {
+  const userRole = currentUser?.role;
+  let link = "/bookApp";
+  let text = "Book An Appointment";
+
+  if (userRole === 'doctor' || userRole === 'admin') {
+    link = "/" + userRole;
+    text = "Dashboard";
+  }
+
   return (
     <nav
       className={`${mobileMenuOpen ? "flex" : "hidden"} lg:flex flex-col lg:flex-row 
@@ -10,7 +19,9 @@ function Navigation({ mobileMenuOpen }) {
                   gap-6 lg:gap-8 p-6 lg:p-0 shadow-lg lg:shadow-none z-50`}
     >
       <PageLinks parentClass="flex flex-col lg:flex-row gap-6 lg:gap-8" itemClass="text-vision-primary text-sm font-poppins font-semibold uppercase hover:text-vision-secondary transition-colors" />
-      <BookButton className="bg-linear-to-b from-[#1C398E] to-[#6E85C3] text-white" />
+      <BookButton className="bg-linear-to-b from-[#1C398E] to-[#6E85C3] text-white"
+        link={link} text={text}
+      />
     </nav>
   );
 }
