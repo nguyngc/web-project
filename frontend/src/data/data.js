@@ -3,7 +3,7 @@ import articleImage1 from "../assets/images/article-1.jpeg";
 import articleImage2 from "../assets/images/article-2.jpeg";
 import doctorDashboard from "../assets/images/doctor-dashboard.jpg";
 import adminDashboard from "../assets/images/doctor-dashboard.jpg";
-import { Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Instagram, User, Users, FileText, Calendar, LayoutDashboard, Activity, Grid, Settings } from "lucide-react";
 
 const websiteInfo = {
   name: "iVision Eye Clinic",
@@ -79,7 +79,7 @@ const heroSlides = {
   services: [
     {
       image: eyeExamImage, title: "Our services", subtitle: "Comprehensive eye care solutions for your entire family",
-      badge: "Summer promotion: 20% off all services",
+      badge: "Black Friday promotion: 20% off all services",
     },
   ],
   news: [
@@ -114,7 +114,7 @@ const heroSlides = {
     },
   ],
 
-  
+
   doctor: [
     {
       image: doctorDashboard,
@@ -130,12 +130,16 @@ const heroSlides = {
     },
   ],
   bookApp: [
-    {image: eyeExamImage,title: "",subtitle: "",
-      badge: "",},
+    {
+      image: eyeExamImage, title: "", subtitle: "",
+      badge: "",
+    },
   ],
   confirm: [
-    {image: eyeExamImage,title: "",subtitle: "",
-      badge: "",},
+    {
+      image: eyeExamImage, title: "", subtitle: "",
+      badge: "",
+    },
   ],
   404: [
     {
@@ -158,5 +162,29 @@ const socialLinks = [
   { id: 4, label: "LinkedIn", link: "https://www.linkedin.com/company/ivisionclinic", Icon: Linkedin },
 ];
 
-export { websiteInfo, pageLinks, heroSlides, socialLinks, doctorsCard, aboutSectionCard };
+const menuItems = {
+  user: [
+    { key: "profile", Icon: User, label: "My Profile" },
+    { key: "appointments", Icon: Calendar, label: "Appointments" },
+    { key: "prescriptions", Icon: FileText, label: "Prescriptions" },
+  ],
+  doctor: [
+    { key: "dashboard", Icon: LayoutDashboard, label: "Dashboard" },
+    { key: "appointments", Icon: Calendar, label: "Appointments" },
+    { key: "patients", Icon: Users, label: "Patients" },
+    { key: "availability", Icon: Activity, label: "Availability" },
+    { key: "profile", Icon: User, label: "My Profile" },
+  ],
+  admin: [
+    { key: "users", Icon: Users, label: "Users" },
+    { key: "appointments", Icon: Calendar, label: "Appointments" },
+    { key: "services", Icon: Settings, label: "Services" },
+    { key: "contents", Icon: FileText, label: "Contents" },
+    { key: "banners", Icon: Grid, label: "Banners" },
+    { key: "activities", Icon: Activity, label: "Recent Activities" },
+    { key: "profile", Icon: User, label: "My Profile" },
+  ]
+};
+
+export { websiteInfo, pageLinks, heroSlides, socialLinks, doctorsCard, aboutSectionCard, menuItems };
 

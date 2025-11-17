@@ -51,12 +51,12 @@ const LoginForm = ({ onForgot }) => {
     }
 
     const user = { email, firstName, lastName, phone: "(000) 123-4567", role };
+    
     localStorage.setItem("currentUser", JSON.stringify(user));
     window.dispatchEvent(new Event("userLogin"));
 
-    if (role === "doctor") navigate("/doctor/dashboard");
-    else if (role === "admin") navigate("/admin/users");
-    else navigate("/profile");
+    if (role === "user") navigate("/profile");
+    else navigate("/" + role);
   };
 
   return (

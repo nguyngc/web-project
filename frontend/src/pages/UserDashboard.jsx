@@ -1,11 +1,10 @@
 import { useState } from "react";
-import Hero from "../../components/Hero";
-import DashboardSidebar from "./DashboardSidebar";
-import AppointmentCard from "./AppointmentCard";
-import UserProfile from "./UserProfile";
+import Hero from "../components/Hero";
+import DashboardSidebar from "../components/DashboardSidebar";
+import AppointmentCard from "../components/AppointmentCard";
+import UserProfile from "../components/UserProfile";
 
-
-const Profile = () => {
+const UserDashboard = () => {
   const [activeTab, setActiveTab] = useState("profile"); // mặc định là profile
 
   return (
@@ -15,7 +14,7 @@ const Profile = () => {
         <main className="flex-1 bg-vision-bg-light px-4 md:px-8 lg:px-[200px] py-8">
           <div className="flex flex-col lg:flex-row gap-8">
             <aside className="w-full lg:w-auto lg:min-w-[228px]">
-              <DashboardSidebar onSelect={setActiveTab} />
+              <DashboardSidebar onSelect={setActiveTab} activeTab={activeTab} />
             </aside>
 
             <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-10">
@@ -45,4 +44,4 @@ const Profile = () => {
   );
 };
 
-export default Profile;
+export default UserDashboard;
