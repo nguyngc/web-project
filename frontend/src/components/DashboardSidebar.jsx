@@ -5,8 +5,6 @@ import { menuItems } from "../data/data";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const DashboardSidebar = ({ onSelect, activeTab }) => {
-  console.log("onSelect received:", onSelect);
-
   const navigate = useNavigate();
   const { getItem, removeItem } = useLocalStorage("currentUser");
 

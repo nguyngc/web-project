@@ -1,38 +1,93 @@
+const mongoose = require("mongoose");
 const Article = require("../models/articleModel");
 
-const getAll = (req, res) => {
-  const list = Article.getAll({ published: req.query.published, q: req.query.q });
-  res.json(list);
+const getAll = async (req, res) => {
+  const { q, categoryId, isPublished } = req.query;
+
+  try {
+    const filter = {};
+    if (categoryId) filter.categoryId = categoryId;
+    if (isPublished !== undefined) filter.isPublished = isPublished;
+    if (q) {
+      const regex = new RegExp(q, "i");
+      filter.$or = [{ title: regex }, { subtitle: regex }, { content: regex }];
+    }
+
+    const articles = await Article.find(filter)
+      .populate("categoryId")
+      .sort({ createdDateTime: -1 });
+
+    res.json(articles);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve articles" });
+  }
 };
 
-const getById = (req, res) => {
-  const a = Article.findById(req.params.articleId);
-  if (!a) return res.status(404).json({ message: "Article not found" });
-  res.json(a);
+const getById = async (req, res) => {
+  const { articleId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(articleId)) {
+    return res.status(400).json({ message: "Invalid Article ID" });
+  }
+
+  try {
+    const article = await Article.findById(articleId).populate("categoryId");
+    if (!article) return res.status(404).json({ message: "Article not found" });
+    res.json(article);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to retrieve article" });
+  }
 };
 
-const create = (req, res) => {
-  const created = Article.addOne(req.body, req.user?.id || "api");
-  if (!created) return res.status(400).json({ message: "title & content are required" });
-  res.status(201).json(created);
+const create = async (req, res) => {
+  try {
+    const { categoryId, title, content } = req.body;
+    if (!categoryId || !title || !content) {
+      return res.status(400).json({ message: "categoryId, title & content are required" });
+    }
+
+    const createdBy = req.user?.id || "api";
+    const article = await Article.create({ ...req.body, createdBy });
+
+    res.status(201).json(article);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create article" });
+  }
 };
 
-const update = (req, res) => {
-  const updated = Article.updateOneById(req.params.articleId, req.body, req.user?.id || "api");
-  if (!updated) return res.status(404).json({ message: "Article not found" });
-  res.json(updated);
+const update = async (req, res) => {
+  const { articleId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(articleId)) {
+    return res.status(400).json({ message: "Invalid Article ID" });
+  }
+
+  try {
+    const modifiedBy = req.user?.id || "api";
+    const updateData = { ...req.body, modifiedBy };
+
+    const updated = await Article.findByIdAndUpdate(articleId, updateData, { new: true });
+    if (!updated) return res.status(404).json({ message: "Article not found" });
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to update article" });
+  }
 };
 
-const remove = (req, res) => {
-  const ok = Article.deleteOneById(req.params.articleId);
-  if (!ok) return res.status(404).json({ message: "Article not found" });
-  res.json({ message: "Deleted" });
+const remove = async (req, res) => {
+  const { articleId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(articleId)) {
+    return res.status(400).json({ message: "Invalid Article ID" });
+  }
+
+  try {
+    const deleted = await Article.findByIdAndDelete(articleId);
+    if (!deleted) return res.status(404).json({ message: "Article not found" });
+    res.json({ message: "Deleted" });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to delete article" });
+  }
 };
 
-const toggle = (req, res) => {
-  const a = Article.togglePublished(req.params.articleId);
-  if (!a) return res.status(404).json({ message: "Article not found" });
-  res.json(a);
-};
-
-module.exports = { getAll, getById, create, update, remove, toggle };
+module.exports = { getAll, getById, create, update, remove };

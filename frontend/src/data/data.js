@@ -181,7 +181,7 @@ const menuItems = {
     { key: "services", Icon: Settings, label: "Services" },
     { key: "contents", Icon: FileText, label: "Contents" },
     { key: "banners", Icon: Grid, label: "Banners" },
-    { key: "activities", Icon: Activity, label: "Recent Activities" },
+    // { key: "activities", Icon: Activity, label: "Recent Activities" },
     { key: "profile", Icon: User, label: "My Profile" },
   ]
 };
