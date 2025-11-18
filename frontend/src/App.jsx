@@ -10,11 +10,11 @@ import NotFound from './pages/NotFound';
 import ArticleDetail from './pages/ArticleDetail';
 import ServiceDetail from './pages/ServiceDetail';
 import BookApp from './pages/BookApp';
-import ConfirmApp from './pages/ConfirmApp';
 import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
+import ConfirmApp1 from './pages/ConfirmApp1';
 
 function App() {
   return (
@@ -31,7 +31,7 @@ function App() {
           <Route path="news/1" element={<ArticleDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="bookApp" element={<BookApp />} />
-          <Route path="confirm" element={<ConfirmApp />} />
+          <Route path="confirmApp1" element={<ConfirmApp1 />} />
           <Route path="login" element={<Login />} />
           {/* User Dashboard */}
           <Route path="profile" element={<UserDashboard />} />

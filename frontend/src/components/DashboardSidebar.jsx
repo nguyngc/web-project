@@ -41,7 +41,7 @@ const DashboardSidebar = ({ onSelect, activeTab }) => {
     navigate("/");
   };
 
-  let userRole: "user" | "doctor" | "admin" = "user";
+  let userRole = "user";
 
   if (currentUser?.role === "doctor") userRole = "doctor";
   if (currentUser?.role === "admin") userRole = "admin";
