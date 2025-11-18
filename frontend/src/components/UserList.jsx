@@ -198,10 +198,10 @@ const UserList = () => {
   };
 
   return (
-     <div>
+    <div>
       {message && (
         <InfoMessage
-          message={message}   
+          message={message}
           onClose={() => setMessage(null)}
         />
       )}
@@ -269,13 +269,13 @@ const UserList = () => {
       {/* User list - hidden when add/edit user form is open */}
       {!showAddUserForm && !showEditUserForm && (
         <div className="flex flex-col pt-5">
-          {/* Header */}
-          <div className="flex items-start gap-2.5 px-1.5 py-2 border-b border-black/10">
-            <div className="flex-1 text-sm font-medium text-[#0A0A0A]">Name</div>
-            <div className="w-[220px] text-sm font-medium text-[#0A0A0A]">Email</div>
-            <div className="w-[75px] text-sm font-medium text-[#0A0A0A]">Role</div>
-            <div className="w-[65px] text-sm font-medium text-[#0A0A0A]">Status</div>
-            <div className="w-[152px] text-sm font-medium text-[#0A0A0A]">Actions</div>
+          {/* Header (desktop only) */}
+          <div className="hidden md:flex items-start gap-2.5 px-1.5 py-2 border-b border-black/10 font-medium text-[#0A0A0A]">
+            <div className="flex-1 text-sm">Name</div>
+            <div className="w-[220px] text-sm">Email</div>
+            <div className="w-[75px] text-sm">Role</div>
+            <div className="w-[65px] text-sm">Status</div>
+            <div className="w-[152px] text-sm">Actions</div>
           </div>
 
           {/* Body */}

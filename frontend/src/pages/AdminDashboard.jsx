@@ -6,6 +6,7 @@ import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
 import UserList from "../components/UserList";
 import Topbar from "../components/Topbar";
+import AppointmentList from "../components/AppointmentList";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -62,9 +63,7 @@ const AdminDashboard = () => {
               )}
 
               {activeTab === "appointments" && (
-                <>
-                  <p>Appointment List</p>
-                </>
+                <AppointmentList />
               )}
 
               {activeTab === "services" && (
