@@ -2,7 +2,7 @@ import {
   ArrowLeft, User, Mail, Phone, Calendar, MapPin, AlertCircle, FileText,
   Heart, Shield, ClipboardList, Eye, Glasses, Download,
 } from "lucide-react";
-import StatusBox from "./StatusBox";
+import StatusBox from "./common/StatusBox";
 
 const PatientDetail = ({ patientId, appointments, users, onBack }) => {
   const patient = users.find(u => u.id === patientId);

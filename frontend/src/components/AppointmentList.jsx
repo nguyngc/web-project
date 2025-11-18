@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Search } from "lucide-react";
 import appointmentData from "../data/appointments";
 import userData from "../data/users";
-import Pagination from "./Pagination";
+import Pagination from "./common/Pagination";
+import InfoMessage from "./common/InfoMessage";
+import ConfirmDialog from "./common/ComfirmDialog";
 import AppointmentRow from "./AppointmentRow";
-import ConfirmDialog from "./ComfirmDialog";
 import RescheduleDialog from "./RescheduleDialog";
-import InfoMessage from "./InfoMessage";
 import DoctorProfile from "./DoctorProfile";
 import PatientDetail from "./PatientDetail";
 

@@ -5,8 +5,8 @@ import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
 import UserList from "../components/UserList";
-import Topbar from "../components/Topbar";
 import AppointmentList from "../components/AppointmentList";
+import ServiceList from "../components/ServiceList";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -40,7 +40,7 @@ const AdminDashboard = () => {
             </Link>
           </div>
         </div>
-        <Topbar />
+        <BottomBar />
       </>
     );
   }
@@ -67,9 +67,7 @@ const AdminDashboard = () => {
               )}
 
               {activeTab === "services" && (
-                <>
-                  <p>Service List</p>
-                </>
+                <ServiceList />
               )}
 
               {activeTab === "contents" && (

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Search, Plus } from "lucide-react";
 import userData from "../data/users";
-import ConfirmDialog from "./ComfirmDialog";
-import InfoMessage from "./InfoMessage";
+import ConfirmDialog from "./common/ComfirmDialog";
+import InfoMessage from "./common/InfoMessage";
+import Pagination from "./common/Pagination";
 import UserForm from "./UserForm";
 import UserRow from "./UserRow";
-import Pagination from "./Pagination";
 
 const UserList = () => {
   const [users, setUsers] = useState([...userData]);
@@ -63,7 +63,7 @@ const UserList = () => {
     userPage * itemsPerPage
   );
 
-  const showMessage = (text, type) => {
+  const showMessage = (text, type = "success") => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 5000);
   };
@@ -93,24 +93,24 @@ const UserList = () => {
     setSelectedUser(null);
   };
 
-  const handleCreateUser = () => {
+  const handleCreateUser = (newData) => {
     const newUser = {
       id: `user-${Date.now()}`,
-      firstName: newUserData.firstName,
-      lastName: newUserData.lastName,
-      email: newUserData.email,
-      phone: newUserData.phone,
-      role: newUserData.role,
-      status: newUserData.status,
+      firstName: newData.firstName,
+      lastName: newData.lastName,
+      email: newData.email,
+      phone: newData.phone,
+      role: newData.role,
+      status: newData.status,
       createdDate: new Date().toISOString().split('T')[0],
       lastLogin: new Date().toISOString().split('T')[0],
-      ...(newUserData.role === "doctor" && {
-        photo: newUserData.photo,
-        specialization: newUserData.specialization,
-        licenseNumber: newUserData.licenseNumber,
-        yearsOfExperience: newUserData.yearsOfExperience,
-        education: newUserData.education,
-        bio: newUserData.bio
+      ...(newData.role === "doctor" && {
+        photo: newData.photo,
+        specialization: newData.specialization,
+        licenseNumber: newData.licenseNumber,
+        yearsOfExperience: newData.yearsOfExperience,
+        education: newData.education,
+        bio: newData.bio
       })
     };
 
