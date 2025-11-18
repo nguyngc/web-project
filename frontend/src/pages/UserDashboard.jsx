@@ -1,5 +1,7 @@
 import { useState } from "react";
+import Header from "../components/Header";
 import Hero from "../components/Hero";
+import Footer from "../components/Footer";
 import DashboardSidebar from "../components/DashboardSidebar";
 import AppointmentCard from "../components/AppointmentCard";
 import UserProfile from "../components/UserProfile";
@@ -9,6 +11,7 @@ const UserDashboard = () => {
 
   return (
     <>
+      <Header />
       <Hero page="profile" />
       <div className="min-h-screen flex flex-col bg-white">
         <main className="flex-1 bg-vision-bg-light px-4 md:px-8 lg:px-[200px] py-8">
@@ -40,6 +43,7 @@ const UserDashboard = () => {
           </div>
         </main>
       </div>
+      <Footer />
     </>
   );
 };
