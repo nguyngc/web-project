@@ -7,13 +7,16 @@ import Topbar from "./Topbar";
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [profileLink, setProfileLink] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     // Check for logged in user
     const user = localStorage.getItem("currentUser");
     if (user) {
-      setCurrentUser(JSON.parse(user));
+      const userData = JSON.parse(user);
+      setCurrentUser(userData);
+      setProfileLink(userData.role === "doctor" || userData.role === "admin" ? "/" + userData.role : "profile");
     }
 
     // Listen for storage changes

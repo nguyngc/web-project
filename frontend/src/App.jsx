@@ -33,10 +33,10 @@ function App() {
           <Route path="bookApp" element={<BookApp />} />
           <Route path="confirm" element={<ConfirmApp />} />
           <Route path="login" element={<Login />} />
-          {/* User Dashboard */}
-          <Route path="profile" element={<UserDashboard />} />
           <Route path="*" element={<NotFound />} /> {/* Catch-all for undefined routes */}
         </Route>
+        {/* User Dashboard */}
+        <Route path="profile" element={<UserDashboard />} />
         {/* Doctor Dashboard */}
         <Route path="/doctor" element={<DoctorDashboard />} />
         {/* Admin Dashboard */}

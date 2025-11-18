@@ -1,183 +1,340 @@
 import { useState } from "react";
-import { Card, Button, Modal, Form, Table, Badge } from "react-bootstrap";
-
-import {
-  Plus,
-  Trash2,
-  Eye,
-  EyeOff
-} from "lucide-react";
+import { Search, Plus } from "lucide-react";
+import userData from "../data/users";
+import ConfirmDialog from "./ComfirmDialog";
+import InfoMessage from "./InfoMessage";
+import UserForm from "./UserForm";
+import UserRow from "./UserRow";
+import Pagination from "./Pagination";
 
 const UserList = () => {
-  const [newUserDialogOpen, setNewUserDialogOpen] = useState(false);
+  const [users, setUsers] = useState([...userData]);
 
-  const [users, setUsers] = useState([
-    {
-      id: 1,
-      firstName: "John",
-      lastName: "Doe",
-      email: "john@email.com",
-      role: "customer",
-      status: "active",
-      lastLogin: new Date().toISOString(),
-    },
-  ]);
+  // Message state
+  const [message, setMessage] = useState(null);
 
-  const handleToggleUserStatus = (id) => {
-    setUsers((prev) =>
-      prev.map((u) =>
-        u.id === id
-          ? { ...u, status: u.status === "active" ? "inactive" : "active" }
-          : u
-      )
-    );
+  // Search and pagination states
+  const [userSearch, setUserSearch] = useState("");
+  const [userPage, setUserPage] = useState(1);
+
+  // Selected items for editing
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userToDelete, setUserToDelete] = useState(null);
+
+  // Dialog states
+  const [showAddUserForm, setShowAddUserForm] = useState(false);
+  const [showEditUserForm, setShowEditUserForm] = useState(false);
+  const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
+  const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
+
+  // Filter and paginate users
+  const itemsPerPage = 10;
+
+  // New user form fields
+  const [newUserData, setNewUserData] = useState({
+    firstName: "",
+    lastName: "",
+    dateOfBirth: "",
+    gender: "male",
+    email: "",
+    phone: "",
+    address: "",
+    password: "",
+    confirmPassword: "",
+    role: "user",
+    status: true,
+    photo: "",
+    specialization: "",
+    licenseNumber: "",
+    yearsOfExperience: 0,
+    education: "",
+    bio: ""
+  });
+
+  const filteredUsers = users.filter(user =>
+    user.firstName.toLowerCase().includes(userSearch.toLowerCase()) ||
+    user.lastName.toLowerCase().includes(userSearch.toLowerCase()) ||
+    user.email.toLowerCase().includes(userSearch.toLowerCase())
+  );
+
+  const totalUserPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const paginatedUsers = filteredUsers.slice(
+    (userPage - 1) * itemsPerPage,
+    userPage * itemsPerPage
+  );
+
+  const showMessage = (text, type) => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 5000);
   };
 
-  const handleDeleteUser = (id) => {
-    setUsers((prev) => prev.filter((u) => u.id !== id));
+  const handleAddUser = () => {
+    setShowAddUserForm(!showAddUserForm);
+    if (showEditUserForm) setShowEditUserForm(false);
+  }
+
+  const handleEditUser = (user) => {
+    setSelectedUser({ ...user });
+    setShowEditUserForm(true);
+  };
+
+  const handleSaveEditedUser = (updatedUser) => {
+    if (updatedUser) {
+      console.log("update user: ", updatedUser)
+      setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+      showMessage("User updated successfully");
+      setShowEditUserForm(false);
+      setSelectedUser(null);
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setShowEditUserForm(false);
+    setSelectedUser(null);
+  };
+
+  const handleCreateUser = () => {
+    const newUser = {
+      id: `user-${Date.now()}`,
+      firstName: newUserData.firstName,
+      lastName: newUserData.lastName,
+      email: newUserData.email,
+      phone: newUserData.phone,
+      role: newUserData.role,
+      status: newUserData.status,
+      createdDate: new Date().toISOString().split('T')[0],
+      lastLogin: new Date().toISOString().split('T')[0],
+      ...(newUserData.role === "doctor" && {
+        photo: newUserData.photo,
+        specialization: newUserData.specialization,
+        licenseNumber: newUserData.licenseNumber,
+        yearsOfExperience: newUserData.yearsOfExperience,
+        education: newUserData.education,
+        bio: newUserData.bio
+      })
+    };
+
+    setUsers([newUser, ...users]);
+    showMessage("User created successfully");
+    setShowAddUserForm(false);
+    // Reset form
+    setNewUserData({
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      gender: "male",
+      email: "",
+      phone: "",
+      address: "",
+      password: "",
+      confirmPassword: "",
+      role: "user",
+      status: true,
+      photo: "",
+      specialization: "",
+      licenseNumber: "",
+      yearsOfExperience: 0,
+      education: "",
+      bio: ""
+    });
+  };
+
+  const handleCancelAddUser = () => {
+    setShowAddUserForm(false);
+    // Reset form
+    setNewUserData({
+      firstName: "",
+      lastName: "",
+      dateOfBirth: "",
+      gender: "male",
+      email: "",
+      phone: "",
+      address: "",
+      password: "",
+      confirmPassword: "",
+      role: "user",
+      status: true,
+      photo: "",
+      specialization: "",
+      licenseNumber: "",
+      yearsOfExperience: 0,
+      education: "",
+      bio: ""
+    });
+  };
+
+  const handleResetPassword = (user) => {
+    setSelectedUser(user);
+    setResetPasswordDialogOpen(true);
+  };
+
+  const handleConfirmResetPassword = () => {
+    showMessage("Password reset email sent to " + selectedUser?.email);
+    setResetPasswordDialogOpen(false)
+    setSelectedUser(null);
+  };
+
+  const handleDeleteUser = (user) => {
+    setUserToDelete(user);
+    setDeleteUserDialogOpen(true);
+  };
+
+  const confirmDeleteUser = () => {
+    if (userToDelete) {
+      setUsers(users.filter(u => u.id !== userToDelete.id));
+      showMessage("User deleted successfully");
+      setDeleteUserDialogOpen(false);
+      setUserToDelete(null);
+    }
+  };
+
+  const handleToggleUserStatus = (userId) => {
+    setUsers(users.map(u =>
+      u.id === userId
+        ? { ...u, status: !u.status }
+        : u
+    ));
+    showMessage("User status updated");
   };
 
   return (
-    <Card className="shadow-sm">
-      <Card.Header className="bg-white border-bottom flex items-center justify-between">
-        <div>
-          <h5 className="font-semibold">User Management</h5>
-          <p className="text-gray-600 text-sm">
-            Manage user accounts and permissions
-          </p>
+     <div>
+      {message && (
+        <InfoMessage
+          message={message}   
+          onClose={() => setMessage(null)}
+        />
+      )}
+
+      {/* Header */}
+      <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div className="flex flex-col gap-2.5">
+            <h1 className="text-base font-medium text-[#0A0A0A]">User Management</h1>
+            <p className="text-base text-[#717182]">Manage user accounts and permissions</p>
+          </div>
+          <button
+            onClick={handleAddUser}
+            className="flex items-center gap-2 px-2.5 py-2 bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] rounded-lg text-white text-sm font-medium hover:opacity-90 transition-opacity"
+          >
+            <Plus className="w-4 h-4" />
+            {showAddUserForm ? "Cancel" : "Add New User"}
+          </button>
         </div>
 
-        <Button
-          variant="primary"
-          className="flex items-center gap-2"
-          onClick={() => setNewUserDialogOpen(true)}
-        >
-          <Plus className="h-4 w-4" />
-          Add User
-        </Button>
-      </Card.Header>
-
-      <Card.Body>
-        <Table striped hover responsive className="align-middle">
-          <thead className="bg-gray-50">
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Last Login</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.firstName} {user.lastName}</td>
-                <td>{user.email}</td>
-
-                <td>
-                  <Badge bg={user.role === "admin" ? "primary" : "secondary"}>
-                    {user.role}
-                  </Badge>
-                </td>
-
-                <td>
-                  <Badge bg={user.status === "active" ? "success" : "secondary"}>
-                    {user.status}
-                  </Badge>
-                </td>
-
-                <td>{new Date(user.lastLogin).toLocaleDateString()}</td>
-
-                <td>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline-secondary"
-                      onClick={() => handleToggleUserStatus(user.id)}
-                    >
-                      {user.status === "active" ? (
-                        <EyeOff className="h-4 w-4" />
-                      ) : (
-                        <Eye className="h-4 w-4" />
-                      )}
-                    </Button>
-
-                    <Button
-                      size="sm"
-                      variant="outline-danger"
-                      onClick={() => handleDeleteUser(user.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
-      </Card.Body>
-
-      {/* Modal for adding user */}
-      <Modal
-        show={newUserDialogOpen}
-        onHide={() => setNewUserDialogOpen(false)}
-        centered
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Add New User</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Form className="space-y-3">
-            <div className="grid grid-cols-2 gap-4">
-              <Form.Group>
-                <Form.Label>First Name</Form.Label>
-                <Form.Control placeholder="John" />
-              </Form.Group>
-
-              <Form.Group>
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control placeholder="Doe" />
-              </Form.Group>
-            </div>
-
-            <Form.Group>
-              <Form.Label>Email</Form.Label>
-              <Form.Control type="email" placeholder="user@email.com" />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Phone</Form.Label>
-              <Form.Control placeholder="(555) 123-4567" />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Role</Form.Label>
-              <Form.Select defaultValue="customer">
-                <option value="customer">Customer</option>
-                <option value="doctor">Doctor</option>
-                <option value="admin">Admin</option>
-              </Form.Select>
-            </Form.Group>
-          </Form>
-        </Modal.Body>
-
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={() => {
-              alert("User created!");
-              setNewUserDialogOpen(false);
+        {/* Add User Form */}
+        {showAddUserForm && (
+          <UserForm
+            mode="add"
+            onCancel={handleCancelAddUser}
+            onSubmit={(data) => {
+              console.log("New User:", data);
+              setNewUserData(data);
+              handleCreateUser(data);
             }}
-          >
-            Create User
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </Card>
+          />
+        )}
+
+        {/* Edit User Form */}
+        {showEditUserForm && selectedUser && (
+          <UserForm
+            mode="edit"
+            initialData={selectedUser}
+            onCancel={handleCancelEdit}
+            onSubmit={(updated) => {
+              console.log("Updated User:", updated);
+              handleSaveEditedUser(updated);
+            }}
+          />
+        )}
+
+        {/* Search bar - hidden when add user form is open */}
+        {!showAddUserForm && !showEditUserForm && (
+          <div className="flex items-center gap-2.5 px-4 py-2 bg-[#F3F3F5] rounded-lg">
+            <Search className="w-4 h-4 text-[#99A1AF]" />
+            <input
+              type="text"
+              placeholder="Search users..."
+              className="flex-1 bg-transparent text-sm text-[#717182] outline-none placeholder:text-[#717182]"
+              value={userSearch}
+              onChange={(e) => {
+                setUserSearch(e.target.value);
+                setUserPage(1);
+              }}
+            />
+          </div>
+        )}
+      </div>
+
+      {/* User list - hidden when add/edit user form is open */}
+      {!showAddUserForm && !showEditUserForm && (
+        <div className="flex flex-col pt-5">
+          {/* Header */}
+          <div className="flex items-start gap-2.5 px-1.5 py-2 border-b border-black/10">
+            <div className="flex-1 text-sm font-medium text-[#0A0A0A]">Name</div>
+            <div className="w-[220px] text-sm font-medium text-[#0A0A0A]">Email</div>
+            <div className="w-[75px] text-sm font-medium text-[#0A0A0A]">Role</div>
+            <div className="w-[65px] text-sm font-medium text-[#0A0A0A]">Status</div>
+            <div className="w-[152px] text-sm font-medium text-[#0A0A0A]">Actions</div>
+          </div>
+
+          {/* Body */}
+          <div className="flex flex-col">
+            {paginatedUsers.map((user) => (
+              <UserRow
+                key={user.id}
+                user={user}
+                onEdit={handleEditUser}
+                onResetPassword={handleResetPassword}
+                onToggleStatus={handleToggleUserStatus}
+                onDelete={handleDeleteUser}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          <Pagination
+            currentPage={userPage}
+            totalPages={totalUserPages}
+            itemsPerPage={itemsPerPage}
+            totalItems={filteredUsers.length}
+            onPageChange={setUserPage}
+            itemLabel="users"
+          />
+        </div>
+      )}
+
+      {/* Reset Password Dialog */}
+      <ConfirmDialog
+        show={resetPasswordDialogOpen}
+        title="Reset Password"
+        message={
+          <>Send a password reset email to <strong>{selectedUser?.email}</strong>?</>
+        }
+        confirmText="Send Reset Email"
+        confirmVariant="primary"
+        onConfirm={handleConfirmResetPassword}
+        onCancel={() => setResetPasswordDialogOpen(false)}
+      />
+
+      {/* Delete User Confirmation Dialog */}
+      <ConfirmDialog
+        show={deleteUserDialogOpen}
+        title="Are you sure?"
+        message={
+          <>
+            This will permanently delete the user account for{" "}
+            <strong>{userToDelete?.firstName} {userToDelete?.lastName}</strong> (
+            {userToDelete?.email}). This action cannot be undone.
+          </>
+        }
+        confirmText="Delete User"
+        confirmVariant="danger"
+        onConfirm={confirmDeleteUser}
+        onCancel={() => setDeleteUserDialogOpen(false)}
+      />
+    </div>
   );
-};
+}
 
 export default UserList;
