@@ -3,39 +3,20 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
-import UserList from "../components/UserList";
+import PatientList from "../components/PatientList";
 import AppointmentList from "../components/AppointmentList";
 import Availability from "../components/Availability";
 import UserProfile from "../components/UserProfile";
 import DoctorDbCard from "../components/DoctorDbCard";
-
+import { ChevronDown } from "lucide-react";
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
-  const doctorId = "64f123abc456def789012345"; 
-
-  // State appointments
   const [appointments, setAppointments] = useState([]);
-  const [loadingAppointments, setLoadingAppointments] = useState(false);
-
-  // Fetch appointments
+  //appointments 
   useEffect(() => {
-    if (activeTab === "appointments") {
-      async function fetchAppointments() {
-        setLoadingAppointments(true);
-        try {
-          const res = await fetch(`http://localhost:4000/appointments?doctorId=${doctorId}`);
-          if (!res.ok) throw new Error("Failed to fetch appointments");
-          const data = await res.json();
-          setAppointments(data);
-        } catch (err) {
-          console.error("Error fetching appointments:", err);
-        } finally {
-          setLoadingAppointments(false);
-        }
-      }
-      fetchAppointments();
-    }
-  }, [activeTab, doctorId]);
+    const stored = JSON.parse(localStorage.getItem("appointments")) || [];
+    setAppointments(stored);
+  }, []);
 
   return (
     <>
@@ -53,21 +34,46 @@ const DoctorDashboard = () => {
               {activeTab === "dashboard" && <DoctorDbCard />}
 
               {activeTab === "appointments" && (
-                <>
-                  <h2 className="text-base font-medium text-[#0A0A0A]">Appointments</h2>
-                  {loadingAppointments ? (
-                    <p>Loading appointments...</p>
-                  ) : appointments.length > 0 ? (
-                    <AppointmentList appointments={appointments} />
-                  ) : (
-                    <p>No appointments found</p>
-                  )}
-                </>
-              )}
+                <div className="flex flex-col gap-6">
+                  <div className="bg-white rounded-2xl border border-black/10 p-6 flex flex-col gap-8">
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                      <div className="flex flex-col gap-2.5">
+                        <h1 className="text-[#0A0A0A] text-base font-medium">Appointment Schedule</h1>
+                        <p className="text-[#717182] text-base">View and manage all your appointments</p>
+                      </div>
 
-              {activeTab === "patients" && <UserList />}
+                      <div className="bg-[#F3F3F5] rounded-lg px-3 py-2 flex items-center justify-between gap-2 min-w-[192px]">
+                        <span className="text-[#0A0A0A] text-sm">All Appointments</span>
+                        <ChevronDown className="w-4 h-4 text-[#717182] opacity-50" />
+                      </div>
+                    </div>
+
+                    {/* Appointment List */}
+                    <div className="flex flex-col gap-4">
+                      {appointments.length > 0 ? (
+                        appointments.map((appt) => (
+                          <AppointmentList
+                            key={appt._id}   // ✅ dùng _id thay vì index
+                            type={appt.type}
+                            patientName={appt.patientName}
+                            date={appt.date}
+                            time={appt.time}
+                            phone={appt.phone}
+                            status={appt.status}
+                            notes={appt.notes}
+                          />
+                        ))
+                      ) : (
+                        <p className="text-[#717182] text-sm">No appointments found</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+              {activeTab === "patients" && <PatientList />}
               {activeTab === "availability" && <Availability />}
-              {activeTab === "profile" && <UserProfile doctorId={doctorId} />}
+              {activeTab === "profile" && <UserProfile />}
             </section>
           </div>
         </main>
