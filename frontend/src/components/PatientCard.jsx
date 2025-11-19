@@ -1,4 +1,4 @@
-const PatientCard= ({ id,name,email,phone,lastVisit,medicalHistory,leftEye,rightEye}) => {
+const PatientCard= ({ id,name,email,phone,lastVisit,medicalHistory,prescription}) => {
   return (
     <div className="flex flex-col items-start p-4 gap-2 w-[736px] h-[196px] border border-[#9810FA] border-l-[4px] rounded-[14px]">
       {/* Heading */}
@@ -44,7 +44,7 @@ const PatientCard= ({ id,name,email,phone,lastVisit,medicalHistory,leftEye,right
               Right Eye:
             </span>
             <span className="text-[#0A0A0A] text-[12px] leading-[16px]">
-              {rightEye}
+              {prescription.rightEye}
             </span>
           </div>
 
@@ -54,7 +54,7 @@ const PatientCard= ({ id,name,email,phone,lastVisit,medicalHistory,leftEye,right
               Left Eye:
             </span>
             <span className="text-[#0A0A0A] text-[12px] leading-[16px]">
-              {leftEye}
+              {prescription.leftEye}
             </span>
           </div>
         </div>
