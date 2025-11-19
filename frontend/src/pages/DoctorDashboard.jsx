@@ -6,7 +6,7 @@ import DashboardSidebar from "../components/DashboardSidebar";
 import PatientList from "../components/doctor/PatientList";
 import AppointmentList from "../components/doctor/AppointmentList";
 import Availability from "../components/doctor/Availability";
-import UserProfile from "../components/user/UserProfile";
+import DoctorProfile from "../components/doctor/DoctorProfile";
 import DoctorDbCard from "../components/doctor/DoctorDbCard";
 import { ChevronDown } from "lucide-react";
 
@@ -74,7 +74,7 @@ const DoctorDashboard = () => {
               )}
               {activeTab === "patients" && <PatientList currentDoctorId={3} />}
               {activeTab === "availability" && <Availability />}
-              {activeTab === "profile" && <UserProfile />}
+              {activeTab === "profile" && <DoctorProfile />}
             </section>
           </div>
         </main>
