@@ -1,49 +1,160 @@
 const Banner = require("../models/bannerModel");
 
-const getAll = (req, res) => {
-  const list = Banner.getAll({ active: req.query.active, q: req.query.q });
-  res.json(list);
-};
+const toBool = (v) => ["true", "1", true, 1, "on"].includes(v);
 
-const getById = (req, res) => {
-  const b = Banner.findById(req.params.bannerId);
-  if (!b) return res.status(404).json({ message: "Banner not found" });
-  res.json(b);
-};
+// GET /banners?active=true&q=kid
+const getAll = async (req, res) => {
+  try {
+    const { active, q } = req.query;
+    const filter = {};
 
-const create = (req, res) => {
-  const created = Banner.addOne(req.body, req.user?.id || "api");
-  if (!created) return res.status(400).json({ message: "image & title are required" });
-  res.status(201).json(created);
-};
+    if (active !== undefined) {
+      filter.isActive = toBool(active);
+    }
 
-const update = (req, res) => {
-  const updated = Banner.updateOneById(req.params.bannerId, req.body, req.user?.id || "api");
-  if (!updated) return res.status(404).json({ message: "Banner not found" });
-  res.json(updated);
-};
+    if (q) {
+      const regex = new RegExp(q, "i");
+      filter.$or = [{ title: regex }, { subtitle: regex }];
+    }
 
-const remove = (req, res) => {
-  const ok = Banner.deleteOneById(req.params.bannerId);
-  if (!ok) return res.status(404).json({ message: "Banner not found" });
-  res.json({ message: "Deleted" });
-};
-
-// toggle isActive
-const toggle = (req, res) => {
-  const b = Banner.toggleActive(req.params.bannerId);
-  if (!b) return res.status(404).json({ message: "Banner not found" });
-  res.json(b);
-};
-
-// Reorder: body = [{ id, order }, ...]
-const reorder = (req, res) => {
-  if (!Array.isArray(req.body)) {
-    return res.status(400).json({ message: "Body must be an array [{id, order}]" });
+    const list = await Banner.find(filter).sort({ createdDateTime: -1 });
+    res.json(list);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to retrieve banners" });
   }
-  const list = Banner.bulkReorder(req.body);
-  if (!list) return res.status(400).json({ message: "Invalid ids/orders" });
-  res.json(list);
+};
+
+// GET /banners/:bannerId
+const getById = async (req, res) => {
+  try {
+    const b = await Banner.findById(req.params.bannerId);
+    if (!b) return res.status(404).json({ message: "Banner not found" });
+    res.json(b);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Invalid banner id" });
+  }
+};
+
+// POST /banners
+const create = async (req, res) => {
+  try {
+    const { image, title, subtitle, buttonText, buttonLink, order, isActive } =
+      req.body || {};
+
+    if (!image || !title) {
+      return res
+        .status(400)
+        .json({ message: "image & title are required" });
+    }
+
+    let resolvedOrder = order;
+    if (resolvedOrder === undefined || resolvedOrder === null) {
+      const last = await Banner.findOne().sort({ order: -1 }).lean();
+      resolvedOrder = last ? last.order + 1 : 1;
+    }
+
+    const created = await Banner.create({
+      image,
+      title,
+      subtitle: subtitle || "",
+      buttonText: buttonText || "",
+      buttonLink: buttonLink || "",
+      order: Number(resolvedOrder),
+      isActive: isActive !== undefined ? !!isActive : true,
+      createdBy: req.user?.id || "api",
+    });
+
+    res.status(201).json(created);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to create banner" });
+  }
+};
+
+// PUT /banners/:bannerId
+const update = async (req, res) => {
+  try {
+    const data = { ...req.body, modifiedBy: req.user?.id || "api" };
+
+    if (data.order !== undefined) data.order = Number(data.order);
+    if (data.isActive !== undefined) data.isActive = !!data.isActive;
+
+    const updated = await Banner.findByIdAndUpdate(
+      req.params.bannerId,
+      data,
+      { new: true }
+    );
+
+    if (!updated) return res.status(404).json({ message: "Banner not found" });
+    res.json(updated);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Invalid banner id" });
+  }
+};
+
+// DELETE /banners/:bannerId
+const remove = async (req, res) => {
+  try {
+    const deleted = await Banner.findByIdAndDelete(req.params.bannerId);
+    if (!deleted)
+      return res.status(404).json({ message: "Banner not found" });
+    res.json({ message: "Deleted" });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Invalid banner id" });
+  }
+};
+
+// PATCH /banners/:bannerId/toggle
+const toggle = async (req, res) => {
+  try {
+    const b = await Banner.findById(req.params.bannerId);
+    if (!b) return res.status(404).json({ message: "Banner not found" });
+
+    b.isActive = !b.isActive;
+    b.modifiedBy = req.user?.id || "api";
+    await b.save();
+
+    res.json(b);
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ message: "Invalid banner id" });
+  }
+};
+
+// PATCH /banners/reorder   body = [{ id, order }, ...]
+const reorder = async (req, res) => {
+  try {
+    if (!Array.isArray(req.body)) {
+      return res
+        .status(400)
+        .json({ message: "Body must be an array [{id, order}]" });
+    }
+
+    const pairs = req.body;
+
+    // option: validate
+    for (const p of pairs) {
+      if (!p || !p.id || p.order === undefined) {
+        return res.status(400).json({ message: "Invalid ids/orders" });
+      }
+    }
+
+    await Promise.all(
+      pairs.map((p) =>
+        Banner.findByIdAndUpdate(p.id, { order: Number(p.order) })
+      )
+    );
+
+    const list = await Banner.find().sort({ order: 1 });
+    res.json(list);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Failed to reorder banners" });
+  }
 };
 
 module.exports = { getAll, getById, create, update, remove, toggle, reorder };
