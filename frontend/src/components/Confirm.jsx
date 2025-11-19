@@ -1,6 +1,6 @@
 import { useLocation, Link } from "react-router-dom";
 import { useState } from "react";
-import AppointmentCard from "../components/AppointmentCard";
+import AppointmentCard from "../components/User/AppointmentCard";
 
 function ConfirmApp1() {
   const location = useLocation();

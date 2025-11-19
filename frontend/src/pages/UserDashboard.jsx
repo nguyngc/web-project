@@ -3,9 +3,9 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
 import DashboardSidebar from "../components/DashboardSidebar";
-import AppointmentCard from "../components/AppointmentCard";
-import UserProfile from "../components/UserProfile";
-import Prescriptions from "../components/Prescriptions";
+import AppointmentCard from "../components/User/AppointmentCard";
+import UserProfile from "../components/User/UserProfile";
+import Prescriptions from "../components/User/Prescriptions";
 
 function UserDashboard({ userId }) {
   const [activeTab, setActiveTab] = useState("profile");

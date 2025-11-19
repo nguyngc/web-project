@@ -3,11 +3,11 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
-import PatientList from "../components/PatientList";
-import AppointmentList from "../components/AppointmentList";
-import Availability from "../components/Availability";
-import UserProfile from "../components/UserProfile";
-import DoctorDbCard from "../components/DoctorDbCard";
+import PatientList from "../components/doctor/PatientList";
+import AppointmentList from "../components/doctor/AppointmentList";
+import Availability from "../components/doctor/Availability";
+import DoctorProfile from "../components/doctor/DoctorProfile";
+import DoctorDbCard from "../components/doctor/DoctorDbCard";
 import { ChevronDown } from "lucide-react";
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
@@ -73,7 +73,7 @@ const DoctorDashboard = () => {
               )}
               {activeTab === "patients" && <PatientList />}
               {activeTab === "availability" && <Availability />}
-              {activeTab === "profile" && <UserProfile />}
+              {activeTab === "profile" && <DoctorProfile />}
             </section>
           </div>
         </main>
