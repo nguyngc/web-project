@@ -7,6 +7,8 @@ const StatusBox = ({ children, variant = "user", className }) => {
     doctor: "bg-[#BFD2F8] text-[#364153]",
     admin: "bg-[#159EEC] text-white",
     user: "bg-[#ECEEF2] text-[#030213]",
+    scheduled: "bg-[#E3F4E1] text-[#3F9C36]",
+    completed: "bg-[#D9F1FC] text-[#159EEC]",
   };
 
   return (
