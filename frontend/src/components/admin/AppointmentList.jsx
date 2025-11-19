@@ -172,6 +172,7 @@ const AppointmentList = () => {
           appointments={appointmentData}
           users={userData}
           onBack={handleBack}
+          backLabel="Back to Appointments"
         />
       )}
 

@@ -9,6 +9,7 @@ import Availability from "../components/doctor/Availability";
 import DoctorProfile from "../components/doctor/DoctorProfile";
 import DoctorDbCard from "../components/doctor/DoctorDbCard";
 import { ChevronDown } from "lucide-react";
+
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [appointments, setAppointments] = useState([]);
@@ -71,7 +72,7 @@ const DoctorDashboard = () => {
                   </div>
                 </div>
               )}
-              {activeTab === "patients" && <PatientList />}
+              {activeTab === "patients" && <PatientList currentDoctorId={3} />}
               {activeTab === "availability" && <Availability />}
               {activeTab === "profile" && <DoctorProfile />}
             </section>
