@@ -26,8 +26,8 @@ function PatientList() {
 
         {/* Patient List */}
         <div className="flex flex-col justify-center items-start gap-2 w-[736px]">
-          {patients.map((p) => (
-            <PatientCard key={p.id} patient={p} />
+          {patients.map((patient) => (
+            <PatientCard key={patient.id} {...patient} />
           ))}
         </div>
       </div>
