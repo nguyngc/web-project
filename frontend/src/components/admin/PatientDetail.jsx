@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 import StatusBox from "../common/StatusBox";
 
-const PatientDetail = ({ patientId, appointments, users, onBack }) => {
+const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Back" }) => {
   const patient = users.find(u => u.id === patientId);
 
   if (!patient) {
@@ -15,7 +15,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack }) => {
           className="inline-flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 shadow-sm hover:bg-gray-50"
         >
           <ArrowLeft className="w-4 h-4" />
-          Back to Appointments
+          {backLabel}
         </button>
         <p className="mt-4 text-red-600 text-sm">Patient not found.</p>
       </div>
@@ -35,7 +35,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack }) => {
         className="inline-flex items-center gap-2 rounded-[10px] border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-700 shadow-sm hover:bg-gray-50"
       >
         <ArrowLeft className="w-4 h-4" />
-        Back to Appointments
+        {backLabel}
       </button>
 
       {/* Header Card */}
