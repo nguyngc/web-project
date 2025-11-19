@@ -1,29 +1,29 @@
 function UserProfile() {
   return (
     <>
-      <div className="flex flex-col items-start p-6 gap-10 w-[784px] h-[414px] bg-white border border-black/10 rounded-[14px]">
+      <div className="flex flex-col items-start p-6 gap-10 w-[784px] h-[414px] bg-white border-l-4 border-t border-r border-b border-vision-secondary rounded-[14px]">
         {/* Title */}
         <div className="flex flex-row justify-start items-start w-[736px] h-[50px]">
           {/* Container */}
           <div className="flex flex-col items-start gap-2 w-[218px] h-[50px]">
             {/* CardTitle */}
-            <div className="flex flex-row justify-start items-center gap-2 w-[141px] h-[16px]">
-              <span className="font-inter font-medium text-[16px] leading-[16px] text-[#0A0A0A]">
+            <div className="flex flex-row justify-start items-center gap-2 w-[141px] h-4">
+              <span className="font-inter font-medium text-[16px] leading-[16px text-[#0A0A0A]">
                 Profile Information
               </span>
             </div>
 
             {/* CardDescription */}
-            <div className="flex flex-row justify-start items-center gap-2 w-[218px] h-[24px]">
-              <span className="font-inter font-normal text-[16px] leading-[24px] text-[#717182]">
+            <div className="flex flex-row justify-start items-center gap-2 w-[218px] h-6">
+              <span className="font-inter font-normal text-[16px] leading-6 text-[#717182]">
                 Update your personal details
               </span>
             </div>
           </div>
 
           {/* Button */}
-          <button className="flex flex-row justify-center items-center gap-2 px-5 py-2 w-[113px] h-[36px] ml-auto bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] rounded-[10px]">
-            <span className="font-inter font-medium text-[14px] leading-[20px] text-white">
+          <button className="flex flex-row justify-center items-center gap-2 px-5 py-2 w-[113px] h-9 ml-auto bg-linear-to-b from-vision-header to-[rgba(110,133,195,0.8)] rounded-[10px]">
+            <span className="font-inter font-medium text-[14px] leading-5 text-white">
               Edit Profile
             </span>
           </button>
@@ -38,7 +38,7 @@ function UserProfile() {
               <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
                 First Name
               </label>
-              <div className="flex items-center px-3 py-1 w-[358px] h-[36px] bg-[#F3F3F5] opacity-50 rounded-[8px]">
+              <div className="flex items-center px-3 py-1 w-[358px] h-9 bg-[#F3F3F5] opacity-50 rounded-[8px]">
                 <span className="font-inter text-[14px] text-[#0A0A0A]">Sarah</span>
               </div>
             </div>
@@ -48,7 +48,7 @@ function UserProfile() {
               <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
                 Last Name
               </label>
-              <div className="flex items-center px-3 py-1 w-[358px] h-[36px] bg-[#F3F3F5] opacity-50 rounded-[8px]">
+              <div className="flex items-center px-3 py-1 w-[358px] h-9 bg-[#F3F3F5] opacity-50 rounded-[8px]">
                 <span className="font-inter text-[14px] text-[#0A0A0A]">Johnson</span>
               </div>
             </div>
@@ -61,7 +61,7 @@ function UserProfile() {
               <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
                 Date of Birth
               </label>
-              <div className="flex items-center px-3 py-1 w-[358px] h-[36px] bg-[#F3F3F5] opacity-50 rounded-[8px]">
+              <div className="flex items-center px-3 py-1 w-[358px] h-9 bg-[#F3F3F5] opacity-50 rounded-[8px]">
                 <span className="font-inter text-[14px] text-[#0A0A0A]">01/01/2000</span>
               </div>
             </div>
@@ -71,7 +71,7 @@ function UserProfile() {
               <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
                 Gender
               </label>
-              <div className="flex flex-row gap-6 items-center w-[358px] h-[36px]">
+              <div className="flex flex-row gap-6 items-center w-[358px] h-9">
                 {/* Male */}
                 <label className="flex flex-row items-center gap-3">
                   <input
@@ -105,7 +105,7 @@ function UserProfile() {
               <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
                 Email
               </label>
-              <div className="flex items-center px-3 py-1 w-[358px] h-[36px] bg-[#F3F3F5] opacity-50 rounded-[8px]">
+              <div className="flex items-center px-3 py-1 w-[358px] h-9 bg-[#F3F3F5] opacity-50 rounded-[8px]">
                 <span className="font-inter text-[14px] text-[#0A0A0A]">
                   sarah.johnson@ivisionclinic.com
                 </span>
@@ -117,7 +117,7 @@ function UserProfile() {
               <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
                 Phone
               </label>
-              <div className="flex items-center px-3 py-1 w-[358px] h-[36px] bg-[#F3F3F5] opacity-50 rounded-[8px]">
+              <div className="flex items-center px-3 py-1 w-[358px] h-9 bg-[#F3F3F5] opacity-50 rounded-[8px]">
                 <span className="font-inter text-[14px] text-[#0A0A0A]">(555) 234-5678</span>
               </div>
             </div>
@@ -128,7 +128,7 @@ function UserProfile() {
             <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
               Address
             </label>
-            <div className="flex items-center px-3 py-1 w-[736px] h-[36px] bg-[#F3F3F5] opacity-50 rounded-[8px]">
+            <div className="flex items-center px-3 py-1 w-[736px] h-9 bg-[#F3F3F5] opacity-50 rounded-[8px]">
               <span className="font-inter text-[14px] text-[#0A0A0A]">
                 456 Medical Plaza, Suite 200, New York, NY 10002
               </span>
@@ -137,19 +137,19 @@ function UserProfile() {
         </div>
       </div>
       {/*Password */}
-      <div className="flex flex-col items-start p-6 gap-10 w-[784px] h-[414px] bg-white border border-black/10 rounded-[14px]">
+      <div className="flex flex-col items-start p-6 gap-10 w-[784px] h-[414px]  bg-white border-l-4 border-t border-r border-b border-vision-secondary rounded-[14px]">
         {/* CardHeader */}
         <div className="flex flex-col items-start gap-2 w-[392px] h-[50px]">
           {/* CardTitle */}
-          <div className="flex flex-row justify-center items-center gap-2 w-[139px] h-[16px]">
-            <span className="font-inter font-medium text-[16px] leading-[16px] text-[#0A0A0A]">
+          <div className="flex flex-row justify-center items-center gap-2 w-[139px] h-4">
+            <span className="font-inter font-medium text-[16px] leading-4 text-[#0A0A0A]">
               Change Password
             </span>
           </div>
 
           {/* CardDescription */}
-          <div className="flex flex-row justify-center items-center gap-2 w-[392px] h-[24px]">
-            <span className="font-inter font-normal text-[16px] leading-[24px] text-[#717182]">
+          <div className="flex flex-row justify-center items-center gap-2 w-[392px] h-6">
+            <span className="font-inter font-normal text-[16px] leading-6 text-[#717182]">
               Update your password to keep your account secure
             </span>
           </div>
@@ -165,21 +165,21 @@ function UserProfile() {
             <input
               type="password"
               placeholder="Enter current password"
-              className="flex items-center px-3 py-1 w-[734px] h-[36px] bg-[#F3F3F5] rounded-[8px] text-[#717182] text-[14px]"
+              className="flex items-center px-3 py-1 w-[734px] h-9 bg-[#F3F3F5] rounded-[8px] text-[#717182] text-[14px]"
             />
           </div>
 
           {/* New Password */}
-          <div className="flex flex-col gap-1 w-[734px] h-[80px]">
+          <div className="flex flex-col gap-1 w-[734px] h-20">
             <label className="font-inter font-medium text-[14px] text-[#0A0A0A]">
               New Password
             </label>
             <input
               type="password"
               placeholder="Enter new password"
-              className="flex items-center px-3 py-1 w-[734px] h-[36px] bg-[#F3F3F5] rounded-[8px] text-[#717182] text-[14px]"
+              className="flex items-center px-3 py-1 w-[734px] h-9 bg-[#F3F3F5] rounded-[8px] text-[#717182] text-[14px]"
             />
-            <p className="text-[#6A7282] text-[14px] leading-[20px]">
+            <p className="text-[#6A7282] text-[14px] leading-5">
               Password must be at least 8 characters long
             </p>
           </div>
@@ -192,13 +192,13 @@ function UserProfile() {
             <input
               type="password"
               placeholder="Confirm new password"
-              className="flex items-center px-3 py-1 w-[734px] h-[36px] bg-[#F3F3F5] rounded-[8px] text-[#717182] text-[14px]"
+              className="flex items-center px-3 py-1 w-[734px] h-9 bg-[#F3F3F5] rounded-[8px] text-[#717182] text-[14px]"
             />
           </div>
         </div>
 
         {/* Submit Button */}
-        <button className="flex flex-row items-center px-5 py-2 gap-2 w-[186px] h-[36px] bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] rounded-[8px] text-white font-inter font-medium text-[14px]">
+        <button className="flex flex-row items-center px-5 py-2 gap-2 w-[186px] h-9 bg-linear-to-b from-vision-header to-[rgba(110,133,195,0.8)] rounded-[8px] text-white font-inter font-medium text-[14px]">
           Change Password
         </button>
       </div>

@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import dataServices from "../data/dataServices";
 import { Link } from "react-router-dom";
-import { Calendar, Clock, Currency, DollarSign, Wallet2 } from "lucide-react";
+import { Calendar, Clock, DollarSign} from "lucide-react";
 
 function ServiceDetail() {
     const { slug } = useParams();
