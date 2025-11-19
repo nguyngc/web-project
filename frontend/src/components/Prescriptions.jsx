@@ -5,8 +5,8 @@ function Prescriptions() {
   return (
     <div className="w-full px-4 lg:px-[100px] py-8 flex flex-col gap-6">
       
-      {prescriptions.map((p) => (
-        <PrescriptionCard key={p.id} prescription={p} />
+      {prescriptions.map((prescription) => (
+        <PrescriptionCard key={prescription.id} {...prescription} />
       ))}
     </div>
   );
