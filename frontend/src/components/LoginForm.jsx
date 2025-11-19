@@ -32,40 +32,32 @@ const LoginForm = ({ onForgot }) => {
     return valid;
   };
 
-  const handleLogin = async (e) => {
-  e.preventDefault();
-  if (!validate()) return;
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (!validate()) return;
 
-  try {
-    const res = await fetch("http://localhost:4000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email:email, password:password }),
-    });
+    let role = "user";
+    let firstName = "John";
+    let lastName = "Doe";
 
-    if (!res.ok) throw new Error("Login failed");
-    const data = await res.json(); 
+    if (email.toLowerCase().includes("doctor")) {
+      role = "doctor";
+      firstName = "Dr. Sarah";
+      lastName = "Johnson";
+    } else if (email.toLowerCase().includes("admin")) {
+      role = "admin";
+      firstName = "Admin";
+      lastName = "Manager";
+    }
 
-    const user = { 
-      _id: data._id, 
-      email: data.email, 
-      firstName: data.firstName, 
-      lastName: data.lastName, 
-      phone: data.phone, 
-      role: data.role 
-    };
-
-    localStorage.setItem("userId", user._id);          
+    const user = { email, firstName, lastName, phone: "(000) 123-4567", role };
+    
     localStorage.setItem("currentUser", JSON.stringify(user));
     window.dispatchEvent(new Event("userLogin"));
 
-    if (user.role === "user") navigate("/profile");
-    else navigate("/" + user.role);
-  } catch (err) {
-    console.error("Error logging in:", err);
-  }
-};
-
+    if (role === "user") navigate("/profile");
+    else navigate("/" + role);
+  };
 
   return (
     <Form
