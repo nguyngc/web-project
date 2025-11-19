@@ -4,8 +4,12 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
-import UserList from "../components/UserList";
-import Topbar from "../components/Topbar";
+import UserList from "../components/admin/UserList";
+import AppointmentList from "../components/admin/AppointmentList";
+import ServiceList from "../components/admin/ServiceList";
+import ArticleList from "../components/admin/ArticleList";
+import BannerList from "../components/admin/BannerList";
+import Profile from "../components/admin/Profile";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -39,7 +43,7 @@ const AdminDashboard = () => {
             </Link>
           </div>
         </div>
-        <Topbar />
+        <BottomBar />
       </>
     );
   }
@@ -62,27 +66,19 @@ const AdminDashboard = () => {
               )}
 
               {activeTab === "appointments" && (
-                <>
-                  <p>Appointment List</p>
-                </>
+                <AppointmentList />
               )}
 
               {activeTab === "services" && (
-                <>
-                  <p>Service List</p>
-                </>
+                <ServiceList />
               )}
 
               {activeTab === "contents" && (
-                <>
-                  <p>Contents List</p>
-                </>
+                <ArticleList />
               )}
 
               {activeTab === "banners" && (
-                <>
-                  <p>Banner List</p>
-                </>
+                <BannerList />
               )}
 
               {activeTab === "activities" && (
@@ -92,9 +88,7 @@ const AdminDashboard = () => {
               )}
 
               {activeTab === "profile" && (
-                <>
-                  <p>My profile</p>
-                </>
+                <Profile />
               )}
             </section>
           </div>

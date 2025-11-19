@@ -8,6 +8,65 @@ const categories = [
   "Style Guide",
 ];
 
+const articles = [
+  {
+    id: "art-001",
+    category: "Technology",
+    status: true, // true = published, false = draft
+    title: "New Advanced Eye Care Technology",
+    subtitle: "Cutting-edge diagnostic equipment for better patient care",
+    author: "Dr. Sarah Johnson",
+    readTime: "5 min read",
+    authorBio:
+      "Board-certified ophthalmologist with over 15 years of experience in advanced eye care and surgical procedures.",
+    date: "2025-10-25",
+    imageUrl: "https://images.unsplash.com/photo-1576091160399-11b1d82baf6e",
+    content: `
+<p>We're excited to announce the addition of state-of-the-art diagnostic equipment to our clinic...</p>
+<p>The equipment includes advanced retinal imaging systems, corneal topography, and OCT...</p>
+<h3>Benefits for Patients</h3>
+<ul>
+<li>Earlier disease detection</li>
+<li>More accurate prescriptions</li>
+<li>Comprehensive eye health monitoring</li>
+</ul>
+<p>We're committed to staying at the forefront of eye care technology.</p>
+`,
+  },
+  {
+    id: "art-002",
+    category: "Clinic News",
+    status: true,
+    title: "Extended Weekend Clinic Hours",
+    subtitle: "More appointment availability for busy patients",
+    author: "Dr. John Lee",
+    readTime: "3 min read",
+    authorBio:
+      "Senior consultant ophthalmologist specializing in cataract and refractive surgery.",
+    date: "2025-09-15",
+    imageUrl: "https://images.unsplash.com/photo-1576765608262-7c0a7a4c18f4",
+    content: `
+<p>To better serve our patients, we are extending our clinic hours on Saturdays...</p>
+`,
+  },
+  {
+    id: "art-003",
+    category: "Patient Education",
+    status: false, // draft
+    title: "How to Care for Your Contact Lenses",
+    subtitle: "Essential tips to keep your eyes healthy",
+    author: "Dr. Sarah Johnson",
+    readTime: "4 min read",
+    authorBio:
+      "Board-certified ophthalmologist with over 15 years of experience in advanced eye care and surgical procedures.",
+    date: "2025-08-01",
+    imageUrl: "https://images.unsplash.com/photo-1580281658629-1a74f3a94154",
+    content: `
+<p>Proper contact lens care is essential to avoid infections and discomfort...</p>
+`,
+  },
+];
+
 const featuredArticle = {
   id: 1,
   category: "Eye Health",
@@ -283,4 +342,4 @@ const relatedArticles = [
 ];
 
 
-export { categories, featuredArticle, recentArticles, article, relatedArticles };
+export { categories, articles, featuredArticle, recentArticles, article, relatedArticles };

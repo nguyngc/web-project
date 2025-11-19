@@ -10,7 +10,7 @@ const InfoMessage = ({ message, onClose }) => {
     <Alert
       variant={isSuccess ? "success" : "info"}
       className={`
-        mb-6 border 
+        mb-3 border 
         ${isSuccess ? "bg-green-50 border-green-300" : "bg-blue-50 border-blue-300"}
         flex items-center justify-between py-3 px-4 rounded-lg
       `}

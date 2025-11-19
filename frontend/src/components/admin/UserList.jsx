@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Search, Plus } from "lucide-react";
-import userData from "../data/users";
-import ConfirmDialog from "./ComfirmDialog";
-import InfoMessage from "./InfoMessage";
+import userData from "../../data/users";
+import ConfirmDialog from "../common/ComfirmDialog";
+import InfoMessage from "../common/InfoMessage";
+import Pagination from "../common/Pagination";
 import UserForm from "./UserForm";
 import UserRow from "./UserRow";
-import Pagination from "./Pagination";
 
 const UserList = () => {
   const [users, setUsers] = useState([...userData]);
@@ -63,7 +63,7 @@ const UserList = () => {
     userPage * itemsPerPage
   );
 
-  const showMessage = (text, type) => {
+  const showMessage = (text, type = "success") => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 5000);
   };
@@ -93,24 +93,24 @@ const UserList = () => {
     setSelectedUser(null);
   };
 
-  const handleCreateUser = () => {
+  const handleCreateUser = (newData) => {
     const newUser = {
       id: `user-${Date.now()}`,
-      firstName: newUserData.firstName,
-      lastName: newUserData.lastName,
-      email: newUserData.email,
-      phone: newUserData.phone,
-      role: newUserData.role,
-      status: newUserData.status,
+      firstName: newData.firstName,
+      lastName: newData.lastName,
+      email: newData.email,
+      phone: newData.phone,
+      role: newData.role,
+      status: newData.status,
       createdDate: new Date().toISOString().split('T')[0],
       lastLogin: new Date().toISOString().split('T')[0],
-      ...(newUserData.role === "doctor" && {
-        photo: newUserData.photo,
-        specialization: newUserData.specialization,
-        licenseNumber: newUserData.licenseNumber,
-        yearsOfExperience: newUserData.yearsOfExperience,
-        education: newUserData.education,
-        bio: newUserData.bio
+      ...(newData.role === "doctor" && {
+        photo: newData.photo,
+        specialization: newData.specialization,
+        licenseNumber: newData.licenseNumber,
+        yearsOfExperience: newData.yearsOfExperience,
+        education: newData.education,
+        bio: newData.bio
       })
     };
 
@@ -198,14 +198,7 @@ const UserList = () => {
   };
 
   return (
-     <div>
-      {message && (
-        <InfoMessage
-          message={message}   
-          onClose={() => setMessage(null)}
-        />
-      )}
-
+    <div>
       {/* Header */}
       <div className="flex flex-col gap-2.5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -222,6 +215,13 @@ const UserList = () => {
           </button>
         </div>
 
+        {message && (
+          <InfoMessage
+            message={message}
+            onClose={() => setMessage(null)}
+          />
+        )}
+        
         {/* Add User Form */}
         {showAddUserForm && (
           <UserForm
@@ -269,13 +269,13 @@ const UserList = () => {
       {/* User list - hidden when add/edit user form is open */}
       {!showAddUserForm && !showEditUserForm && (
         <div className="flex flex-col pt-5">
-          {/* Header */}
-          <div className="flex items-start gap-2.5 px-1.5 py-2 border-b border-black/10">
-            <div className="flex-1 text-sm font-medium text-[#0A0A0A]">Name</div>
-            <div className="w-[220px] text-sm font-medium text-[#0A0A0A]">Email</div>
-            <div className="w-[75px] text-sm font-medium text-[#0A0A0A]">Role</div>
-            <div className="w-[65px] text-sm font-medium text-[#0A0A0A]">Status</div>
-            <div className="w-[152px] text-sm font-medium text-[#0A0A0A]">Actions</div>
+          {/* Header (desktop only) */}
+          <div className="hidden md:flex items-start gap-2.5 px-1.5 py-2 border-b border-black/10 font-medium text-[#0A0A0A]">
+            <div className="flex-1 text-sm">Name</div>
+            <div className="w-[220px] text-sm">Email</div>
+            <div className="w-[75px] text-sm">Role</div>
+            <div className="w-[65px] text-sm">Status</div>
+            <div className="w-[152px] text-sm">Actions</div>
           </div>
 
           {/* Body */}
