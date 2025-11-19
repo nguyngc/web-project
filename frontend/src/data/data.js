@@ -106,7 +106,7 @@ const heroSlides = {
       subtitle: "Access your saved information and appointment history easily",
     },
   ],
-  profile: [
+  user: [
     {
       image: eyeExamImage,
       title: "My Account",
