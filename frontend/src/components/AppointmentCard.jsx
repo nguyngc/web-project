@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Calendar, Clock, CheckCircle } from "lucide-react";
 import PropTypes from "prop-types";
 
 function AppointmentCard({ title, doctor, date, time, status }) {
+  const [currentStatus, setCurrentStatus] = useState(status);
   const statusColors = {
     confirmed: "bg-vision-green",
     pending: "bg-yellow-500",
@@ -13,6 +15,9 @@ function AppointmentCard({ title, doctor, date, time, status }) {
     pending: "Pending",
     cancelled: "Cancelled",
   };
+  const handleCancel = () => {
+    setCurrentStatus("cancelled");
+  };
 
   return (
     <div className="bg-white border-l-4 border-t border-r border-b border-vision-secondary rounded-[14px] p-4 flex flex-col gap-4">
@@ -21,9 +26,9 @@ function AppointmentCard({ title, doctor, date, time, status }) {
           <h4 className="text-base font-normal text-[#101828]">{title}</h4>
           <p className="text-sm text-vision-text-light">{doctor}</p>
         </div>
-        <div className={`flex items-center gap-2 px-2.5 py-1 rounded-lg ${statusColors[status]}`}>
+        <div className={`px-2 py-1 rounded text-white text-xs ${statusColors[currentStatus]}`}>
           <CheckCircle className="w-3 h-3 text-white" />
-          <span className="text-white text-xs font-medium">{statusText[status]}</span>
+          <span className="text-white text-xs font-medium">{statusText[currentStatus]}</span>
         </div>
       </div>
 
@@ -42,9 +47,13 @@ function AppointmentCard({ title, doctor, date, time, status }) {
         <button className="px-4 py-2 rounded-lg border border-vision-secondary text-vision-secondary text-sm font-medium hover:bg-vision-secondary/5 transition">
           Reschedule
         </button>
-        <button className="px-4 py-2 rounded-lg border border-vision-red text-vision-red text-sm font-medium hover:bg-vision-red/5 transition">
-          Cancel
-        </button>
+        {/* Cancel */}
+        <button
+        onClick={handleCancel}
+        className="px-4 py-2 rounded-lg border border-vision-red text-vision-red text-sm font-medium hover:bg-vision-red/5 transition"
+      >
+        Cancel
+      </button>
       </div>
     </div>
   );

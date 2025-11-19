@@ -110,7 +110,7 @@ function BookAppointment() {
                                 date: selectedDate 
                                 ? format(new Date(selectedDate), "EEEE, MMMM d, yyyy")
                                 : "No date selected",
-                                time:String(slot.time), } });//status: "confirmed", 
+                                time:String(slot.time),status: "pending", } });// 
                             }
                           }}
                           className={cn(
