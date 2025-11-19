@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import appointmentData from "../data/appointments";
-import userData from "../data/users";
-import Pagination from "./common/Pagination";
-import InfoMessage from "./common/InfoMessage";
-import ConfirmDialog from "./common/ComfirmDialog";
+import appointmentData from "../../data/appointments";
+import userData from "../../data/users";
+import Pagination from "../common/Pagination";
+import InfoMessage from "../common/InfoMessage";
+import ConfirmDialog from "../common/ComfirmDialog";
 import AppointmentRow from "./AppointmentRow";
-import RescheduleDialog from "./RescheduleDialog";
+import RescheduleDialog from "../RescheduleDialog";
 import DoctorProfile from "./DoctorProfile";
 import PatientDetail from "./PatientDetail";
 
@@ -96,9 +96,6 @@ const AppointmentList = () => {
 
   return (
     <div className="flex flex-col gap-4">
-
-      {message && <InfoMessage message={message} onClose={() => setMessage(null)} />}
-
       {/* Header */}
       <div className="flex flex-col gap-1">
         <h1 className="text-base font-medium text-[#0A0A0A]">Appointments Management</h1>
@@ -106,6 +103,8 @@ const AppointmentList = () => {
           View and manage all appointments
         </p>
       </div>
+
+      {message && <InfoMessage message={message} onClose={() => setMessage(null)} />}
 
       {/* Search */}
       {showList && (

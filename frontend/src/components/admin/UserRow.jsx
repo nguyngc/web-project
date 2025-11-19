@@ -1,5 +1,5 @@
 import { Edit2, RotateCcw, EyeOff, Trash2 } from "lucide-react";
-import StatusBox from "./common/StatusBox";
+import StatusBox from "../common/StatusBox";
 
 const UserRow = ({ user, onEdit, onResetPassword, onToggleStatus, onDelete }) => {
   return (

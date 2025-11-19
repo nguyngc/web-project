@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
-import GradientButton from "./GradientButton";
+import GradientButton from "../GradientButton";
 
 const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) => {
   const [form, setForm] = useState({

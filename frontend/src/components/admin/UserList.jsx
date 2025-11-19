@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Search, Plus } from "lucide-react";
-import userData from "../data/users";
-import ConfirmDialog from "./common/ComfirmDialog";
-import InfoMessage from "./common/InfoMessage";
-import Pagination from "./common/Pagination";
+import userData from "../../data/users";
+import ConfirmDialog from "../common/ComfirmDialog";
+import InfoMessage from "../common/InfoMessage";
+import Pagination from "../common/Pagination";
 import UserForm from "./UserForm";
 import UserRow from "./UserRow";
 
@@ -199,13 +199,6 @@ const UserList = () => {
 
   return (
     <div>
-      {message && (
-        <InfoMessage
-          message={message}
-          onClose={() => setMessage(null)}
-        />
-      )}
-
       {/* Header */}
       <div className="flex flex-col gap-2.5">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -222,6 +215,13 @@ const UserList = () => {
           </button>
         </div>
 
+        {message && (
+          <InfoMessage
+            message={message}
+            onClose={() => setMessage(null)}
+          />
+        )}
+        
         {/* Add User Form */}
         {showAddUserForm && (
           <UserForm

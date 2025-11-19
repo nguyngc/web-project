@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
-import UserList from "../components/UserList";
+import UserList from "../components/admin/UserList";
 
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");

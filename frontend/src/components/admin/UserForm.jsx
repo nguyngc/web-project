@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { Eye, EyeOff } from "lucide-react";
-import GradientButton from "./GradientButton";
+import GradientButton from "../GradientButton";
 
 const UserForm = ({
   mode = "add",                   // "add" or "edit"

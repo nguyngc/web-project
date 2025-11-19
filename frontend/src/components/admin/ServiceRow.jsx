@@ -1,5 +1,5 @@
 import { ArrowUp, ArrowDown, Edit2 } from "lucide-react";
-import ToggleSwitch from "./common/ToggleSwitch";
+import ToggleSwitch from "../common/ToggleSwitch";
 
 const ServiceRow = ({
   service,

@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { Plus, Search } from "lucide-react";
-import servicesData from "../data/services";
+import servicesData from "../../data/services";
 import ServiceRow from "./ServiceRow";
 import ServiceForm from "./ServiceForm";
-import Pagination from "./common/Pagination";
-import InfoMessage from "./common/InfoMessage";
+import Pagination from "../common/Pagination";
+import InfoMessage from "../common/InfoMessage";
 
 const ServiceList = () => {
   const [services, setServices] = useState([...servicesData]);
@@ -104,14 +104,6 @@ const ServiceList = () => {
 
   return (
     <div className="flex flex-col gap-4">
-      {/* Success Message */}
-      {message && (
-        <InfoMessage
-          message={message}
-          onClose={() => setMessage(null)}
-        />
-      )}
-
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
@@ -133,6 +125,14 @@ const ServiceList = () => {
           </button>
         )}
       </div>
+      
+      {/* Success Message */}
+      {message && (
+        <InfoMessage
+          message={message}
+          onClose={() => setMessage(null)}
+        />
+      )}
 
       {/* Form */}
       {showForm && (

@@ -4,9 +4,10 @@ import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
-import UserList from "../components/UserList";
-import AppointmentList from "../components/AppointmentList";
-import ServiceList from "../components/ServiceList";
+import UserList from "../components/admin/UserList";
+import AppointmentList from "../components/admin/AppointmentList";
+import ServiceList from "../components/admin/ServiceList";
+import ArticleList from "../components/admin/ArticleList";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -71,9 +72,7 @@ const AdminDashboard = () => {
               )}
 
               {activeTab === "contents" && (
-                <>
-                  <p>Contents List</p>
-                </>
+                <ArticleList />
               )}
 
               {activeTab === "banners" && (

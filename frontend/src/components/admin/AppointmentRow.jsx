@@ -1,5 +1,5 @@
 import { CalendarClock, XCircle } from "lucide-react";
-import StatusBox from "./common/StatusBox";
+import StatusBox from "../common/StatusBox";
 
 const AppointmentRow = ({
   appt,
