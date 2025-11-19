@@ -106,11 +106,11 @@ function BookAppointment() {
                           key={slot.id}
                           onClick={() => {
                             if (isAvailable) {
-                              navigate("/confirmApp1", { state: { title: "Eye Checkup", doctor: "Dr. Smith",
+                              navigate("/confirmApp1", { state: { service: "Eye Checkup", doctor: "Dr. Smith",
                                 date: selectedDate 
                                 ? format(new Date(selectedDate), "EEEE, MMMM d, yyyy")
                                 : "No date selected",
-                                time:String(slot.time),status: "pending", } });// 
+                                time:String(slot.time),status: "scheduled", } });// 
                             }
                           }}
                           className={cn(

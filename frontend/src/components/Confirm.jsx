@@ -4,39 +4,40 @@ import AppointmentCard from "../components/user/AppointmentCard";
 
 function ConfirmApp1() {
   const location = useLocation();
-  const { title, doctor, date, time, status } = location.state || {};
+  const { service, doctor, date, time, status } = location.state || {};
   const [confirmed, setConfirmed] = useState(false);
 
   const handleConfirm = () => {
     const appointmentData = {
-      patientName: "Jonh Smith",
+      patient: "John Smith",
       phone: "0123456789",
-      type: title,   
-      doctor: doctor,
-      date: date,
-      time: time,
-      status: status,
+      service,
+      doctor,
+      date,
+      time,
+      status,
       notes: ""
     };
+
     let appointments = JSON.parse(localStorage.getItem("appointments"));
     if (!Array.isArray(appointments)) {
       appointments = [];
     }
     appointments.push(appointmentData);
-    //save
     localStorage.setItem("appointments", JSON.stringify(appointments));
     setConfirmed(true);
   };
+
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 mx-auto">
       {/* Header */}
-      <div className="flex-col items-start gap-[30px] max-w-[1040px] mx-auto p-6 " >
-        <Link
+      <div className="flex-col items-start gap-[30px]  mx-auto p-6">
+        {/* <Link
           to="/bookApp"
           className="flex flex-row justify-center items-center px-[13px] py-[8px] gap-[10px] w-[250px] h-[36px] bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] rounded-lg text-white text-sm font-medium leading-5 font-inter"
         >
           ← Back to Appointment Selection
-        </Link>
+        </Link> */}
 
         <h1 className="flex flex-row justify-center items-center gap-[10px] text-[#1F2B6C] text-2xl font-medium font-inter leading-6 mt-10">
           Confirm Your Appointment
@@ -44,20 +45,20 @@ function ConfirmApp1() {
       </div>
 
       {/* Appointment + Details */}
-      <div className="max-w-[1040px] mx-auto p-6 flex flex-col md:flex-row gap-6">
-        <div className="flex-1 bg-white border-l-4 border-t border-r border-b border-vision-secondary rounded-[14px] p-6 flex flex-col gap-6">
+      <div className="mx-auto flex flex-col md:flex-row ">
+        <div className=" flex-1 bg-white border-l-4 border-t border-r border-b border-vision-secondary rounded-[14px] p-6 flex flex-col">
+          {/* AppointmentCard hiển thị thông tin */}
           <AppointmentCard
-            title={title}
-            doctor={doctor}
-            date={date}
-            time={time}
-            status={status}
+            appt={{ service, doctor, date, time, status }}
+            onReschedule={() => { }}
+            onCancel={() => { }}
           />
+
           {/* Appointment details card */}
-          <div className="w-full">
+          <div className="w-[400px] mx-auto ">
             <div className="rounded-xl border border-black/10 bg-white">
               <div className="p-6 border-b border-black/10">
-                <p className="mt-2 text-[#4A5565] text-sm leading-6">
+                <p className=" text-[#4A5565] text-sm leading-6">
                   60-minute appointment including vision testing, eye health evaluation, and consultation.
                 </p>
               </div>
@@ -90,7 +91,7 @@ function ConfirmApp1() {
           {!confirmed ? (
             <button
               onClick={handleConfirm}
-              className="mt-4 px-4 py-2 bg-[#159EEC] text-white rounded-lg"
+              className=" mx-auto w-[400px] mt-4 px-4 py-2 bg-[#159EEC] text-white rounded-lg"
             >
               Confirm
             </button>
@@ -103,8 +104,7 @@ function ConfirmApp1() {
       </div>
 
       {/* Actions */}
-      <div className="flex flex-row flex-wrap justify-center gap-4 w-full max-w-[1040px]  mx-auto mb-10">
-        {/* View My Appointments */}
+      <div className="flex flex-row flex-wrap justify-center gap-4 w-full max-w-[1040px] mx-auto mb-10">
         <Link
           to="/profile"
           className="px-4 py-2 bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] text-white font-inter font-medium text-[14px] rounded-lg"
@@ -112,20 +112,19 @@ function ConfirmApp1() {
           View My Appointments
         </Link>
 
-        {/* Back to Home */}
         <Link
           to="/"
-          className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg">
+          className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg"
+        >
           Back to Home
         </Link>
 
-        {/* Print Confirmation */}
         <button className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg">
           Print Confirmation
         </button>
       </div>
     </div>
   );
-
 }
+
 export default ConfirmApp1;
