@@ -19,7 +19,7 @@ function AppointmentCard({ title, doctor, date, time, status }) {
       <div className="flex flex-col md:flex-row justify-between items-start gap-4">
         <div className="flex flex-col gap-2.5">
           <h4 className="text-base font-normal text-[#101828]">{title}</h4>
-          <p className="text-sm text-[#4A5565]">{doctor}</p>
+          <p className="text-sm text-vision-text-light">{doctor}</p>
         </div>
         <div className={`flex items-center gap-2 px-2.5 py-1 rounded-lg ${statusColors[status]}`}>
           <CheckCircle className="w-3 h-3 text-white" />
@@ -29,12 +29,12 @@ function AppointmentCard({ title, doctor, date, time, status }) {
 
       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-[#4A5565]" />
-          <span className="text-sm text-[#4A5565]">{date}</span>
+          <Calendar className="w-4 h-4 text-vision-text-light" />
+          <span className="text-sm text-vision-text-light">{date}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Clock className="w-4 h-4 text-[#4A5565]" />
-          <span className="text-sm text-[#4A5565]">{time}</span>
+          <Clock className="w-4 h-4 text-vision-text-light" />
+          <span className="text-sm text-vision-text-light">{time}</span>
         </div>
       </div>
 

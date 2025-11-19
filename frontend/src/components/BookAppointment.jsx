@@ -21,7 +21,7 @@ function BookAppointment() {
   return (
     <div className="min-h-screen bg-white">
       <section
-        className="relative h-[224px] flex items-center justify-center bg-cover bg-center"
+        className="relative h-56 flex items-center justify-center bg-cover bg-center"
         style={{
           backgroundImage: `linear-gradient(0deg, rgba(31, 43, 108, 0.5) 0%, rgba(31, 43, 108, 0.5) 100%), url('https://images.unsplash.com/photo-1631815589968-fdb09a223b1e?w=1200&q=80')`,
         }}
@@ -40,7 +40,7 @@ function BookAppointment() {
         <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[200px]">
           <div className="flex flex-col gap-6">
             <div className="flex items-start gap-3 p-4 rounded-xl border border-[rgba(0,0,0,0.1)] bg-white">
-              <AlertCircle className="w-4 h-4 text-[#0A0A0A] flex-shrink-0 mt-0.5" strokeWidth={1.33} />
+              <AlertCircle className="w-4 h-4 text-[#0A0A0A] shrink-0 mt-0.5" strokeWidth={1.33} />
               <p className="text-[#717182] text-sm leading-5">
                 Appointments are 60 minutes long. Please arrive 10 minutes early to complete any necessary paperwork. If you need to cancel or reschedule, please contact us at least 24 hours in advance.
               </p>
@@ -49,7 +49,7 @@ function BookAppointment() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="flex flex-col gap-6 p-6 rounded-[14px] border border-[rgba(0,0,0,0.1)] bg-white">
                 <div className="flex items-center gap-2">
-                  <CalendarDays className="w-5 h-5 text-[#159EEC]" strokeWidth={1.67} />
+                  <CalendarDays className="w-5 h-5 text-vision-secondary" strokeWidth={1.67} />
                   <h2 className="text-vision-primary text-xl font-medium font-inter leading-4">
                     Select a Date
                   </h2>
@@ -64,11 +64,11 @@ function BookAppointment() {
 
                   <div className="flex flex-col gap-1.5 p-4 rounded-xl bg-[#EFF6FF]">
                     <div className="flex items-center gap-2">
-                      <span className="text-[#4A5565] text-sm leading-5">Selected Date:</span>
+                      <span className="text-text-vision-text-light text-sm leading-5">Selected Date:</span>
                     </div>
                     <div className="flex items-center gap-2">
                       {selectedDate ? (
-                        <span className="text-[#1C398E] text-base leading-6">
+                        <span className="text-text-vision-header text-base leading-6">
                           {format(selectedDate, "EEEE, MMMM d, yyyy")}
                         </span>
                       ) : (
@@ -100,15 +100,17 @@ function BookAppointment() {
                   <div className="flex flex-col gap-3">
                     {timeSlots.map((slot) => {
                       const isAvailable = !selectedDate || slot.available;
-                      // nếu chưa chọn ngày => luôn available
-                      // nếu đã chọn ngày => chỉ slot.available mới available
-
+                      
                       return (
                         <div
                           key={slot.id}
                           onClick={() => {
                             if (isAvailable) {
-                              navigate("/confirm", { state: { date: selectedDate, slot } });
+                              navigate("/confirmApp1", { state: { title: "Eye Checkup", doctor: "Dr. Smith",
+                                date: selectedDate 
+                                ? format(new Date(selectedDate), "EEEE, MMMM d, yyyy")
+                                : "No date selected",
+                                time:String(slot.time), } });//status: "confirmed", 
                             }
                           }}
                           className={cn(

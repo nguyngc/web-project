@@ -1,12 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
 import DashboardSidebar from "../components/DashboardSidebar";
-import UserList from "../components/admin/UserList";
+import UserList from "../components/UserList";
+import AppointmentList from "../components/AppointmentList";
+import Availability from "../components/Availability";
+import UserProfile from "../components/UserProfile";
+import DoctorDbCard from "../components/DoctorDbCard";
 
 const DoctorDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
+  const doctorId = "64f123abc456def789012345"; 
+
+  // State appointments
+  const [appointments, setAppointments] = useState([]);
+  const [loadingAppointments, setLoadingAppointments] = useState(false);
+
+  // Fetch appointments
+  useEffect(() => {
+    if (activeTab === "appointments") {
+      async function fetchAppointments() {
+        setLoadingAppointments(true);
+        try {
+          const res = await fetch(`http://localhost:4000/appointments?doctorId=${doctorId}`);
+          if (!res.ok) throw new Error("Failed to fetch appointments");
+          const data = await res.json();
+          setAppointments(data);
+        } catch (err) {
+          console.error("Error fetching appointments:", err);
+        } finally {
+          setLoadingAppointments(false);
+        }
+      }
+      fetchAppointments();
+    }
+  }, [activeTab, doctorId]);
 
   return (
     <>
@@ -21,35 +50,24 @@ const DoctorDashboard = () => {
             </aside>
 
             <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-10">
-              {activeTab === "dashboard" && (
-                <>
-                  <p>Doctor Dashboard</p>
-                </>
-              )}
+              {activeTab === "dashboard" && <DoctorDbCard />}
 
               {activeTab === "appointments" && (
                 <>
-                  <p>Appointment List</p>
+                  <h2 className="text-base font-medium text-[#0A0A0A]">Appointments</h2>
+                  {loadingAppointments ? (
+                    <p>Loading appointments...</p>
+                  ) : appointments.length > 0 ? (
+                    <AppointmentList appointments={appointments} />
+                  ) : (
+                    <p>No appointments found</p>
+                  )}
                 </>
               )}
 
-              {activeTab === "patients" && (
-                <>
-                  <p>Patient List</p>
-                </>
-              )}
-
-              {activeTab === "availability" && (
-                <>
-                  <p>Availability</p>
-                </>
-              )}
-
-              {activeTab === "profile" && (
-                <>
-                  <p>My profile</p>
-                </>
-              )}
+              {activeTab === "patients" && <UserList />}
+              {activeTab === "availability" && <Availability />}
+              {activeTab === "profile" && <UserProfile doctorId={doctorId} />}
             </section>
           </div>
         </main>
