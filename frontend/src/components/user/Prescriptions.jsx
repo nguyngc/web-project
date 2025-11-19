@@ -1,4 +1,4 @@
-import {prescriptions} from "../data/patients";
+import {prescriptions} from "../../data/patients";
 import PrescriptionCard from "./PrescriptionCard";
 
 function Prescriptions() {
