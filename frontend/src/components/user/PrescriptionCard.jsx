@@ -25,46 +25,24 @@ const PrescriptionCard = ({ service, doctor, code, issuedDate, nextVisit }) => {
           <FileText className="w-3 h-3 text-white" />
           <span className="text-white text-[12px] font-medium">{code}</span>
         </div>
-      </div>
 
-      {/* Dates */}
-      <div className="
-        flex flex-col sm:flex-row justify-between w-full 
-        text-[#4A5565] text-[14px] gap-2
-      ">
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-[#4A5565]" />
-          <span>Issued: {issuedDate}</span>
+        {/* Actions */}
+        <div className="flex flex-row gap-3">
+          <button
+            onClick={() => onView(appt)}
+            className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] text-white text-sm font-medium"
+          >
+            <FileText className="w-4 h-4 text-white" />
+            View Details
+          </button>
+          <button
+            onClick={() => onDownload(appt)}
+            className="flex items-center justify-center gap-2 px-3 py-1.5 rounded-lg border border-[#159EEC] text-[#159EEC] text-sm font-medium bg-white"
+          >
+            <Download className="w-4 h-4 text-[#159EEC]" />
+            Download PDF
+          </button>
         </div>
-
-        <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-[#4A5565]" />
-          <span>Next Visit: {nextVisit}</span>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 pt-2">
-        <button className="
-          flex items-center justify-center gap-2 
-          px-3 py-1.5 
-          rounded-lg 
-          bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] 
-          text-white text-sm font-medium
-        ">
-          <FileText className="w-4 h-4 text-white" />
-          View Details
-        </button>
-
-        <button className="
-          flex items-center justify-center gap-2 
-          px-3 py-1.5 
-          rounded-lg border border-[#159EEC] 
-          text-[#159EEC] text-sm font-medium bg-white
-        ">
-          <Download className="w-4 h-4 text-[#159EEC]" />
-          Download PDF
-        </button>
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ const weekdays = [
 function Availability() {
   return (
     
-      <div className="w-full px-4 lg:px-[200px] py-8">
+      <div className="w-full px-4 lg:px-[50px] py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           
 
