@@ -1,89 +1,119 @@
-import { Calendar, Clock, Eye, User, FileText, CheckCircle, XCircle, ChevronDown } from "lucide-react";
-import PropTypes from "prop-types";
+import { useState } from "react";
+import appointmentData from "../../data/appointments";
+import Pagination from "../common/Pagination";
+import InfoMessage from "../common/InfoMessage";
+import ConfirmDialog from "../common/ComfirmDialog";
+import RescheduleDialog from "../RescheduleDialog";
+import AppointmentCard from "./AppoitmentCard";
 
-function AppointmentList({ patientName, status, date, time, type, phone, notes }) {
+const AppointmentList = ({ initialAppointments }) => {
+  const [appointments, setAppointments] = useState(initialAppointments || [...appointmentData]);
+  const [page, setPage] = useState(1);
+  const [message, setMessage] = useState(null);
+
+  const [selectedAppt, setSelectedAppt] = useState(null);
+  const [showNotes, setShowNotes] = useState(false);
+  const [showCancel, setShowCancel] = useState(false);
+
+  const itemsPerPage = 3;
+  const totalPages = Math.ceil(appointments.length / itemsPerPage);
+  const paginated = appointments.slice((page - 1) * itemsPerPage, page * itemsPerPage);
+
+  const showMessage = (text, type = "success") => {
+    setMessage({ text, type });
+    setTimeout(() => setMessage(null), 3000);
+  };
+
+  const handleAddNotes = (apt) => {
+    setSelectedAppt(apt);
+    setShowNotes(true);
+  };
+
+  const handleComplete = (apt) => {
+    setAppointments(
+      appointments.map((a) =>
+        a.id === apt.id ? { ...a, status: "completed" } : a
+      )
+    );
+    showMessage("Appointment marked as complete");
+  };
+
+  const handleCancel = (apt) => {
+    setSelectedAppt(apt);
+    setShowCancel(true);
+  };
+
+  const confirmCancel = () => {
+    setAppointments(
+      appointments.map((a) =>
+        a.id === selectedAppt.id ? { ...a, status: "cancelled" } : a
+      )
+    );
+    showMessage("Appointment cancelled");
+    setShowCancel(false);
+    setSelectedAppt(null);
+  };
+
   return (
-    <div className="w-full px-4 lg:px-[100px] py-8">
-            {/* Appointment Card */}
-            <div
-              className="border-l-4 border rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start gap-4"
-              style={{ borderColor: status === "cancelled" ? "#B43F3F" : status === "confirmed" ? "#3F9C36" : "#159EEC" }}
-            >
-              {/* Left Side: Appointment Details */}
-              <div className="flex-1 flex flex-col gap-4">
-                <div className="flex flex-wrap items-center gap-5">
-                  <h3 className="text-[#101828] text-base">{patientName}</h3>
-                  <div
-                    className="px-2.5 py-0.5 rounded-lg"
-                    style={{ backgroundColor: status === "cancelled" ? "#B43F3F" : status === "confirmed" ? "#3F9C36" : "#159EEC" }}
-                  >
-                    <span className="text-white text-xs font-medium">{status}</span>
-                  </div>
-                </div>
+    <div className="flex flex-col gap-4">
+      <h1 className="text-base font-medium text-[#0A0A0A]">Appointments</h1>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-[#4A5565]" />
-                    <span className="text-[#4A5565] text-sm">{date}</span>
-                  </div>
+      {message && <InfoMessage message={message} onClose={() => setMessage(null)} />}
 
-                  <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-[#4A5565]" />
-                    <span className="text-[#4A5565] text-sm">{phone}</span>
-                  </div>
+      <div className="flex flex-col gap-6">
+        {paginated.map((apt) => (
+          <AppointmentCard
+            key={apt.id}
+            appt={apt}
+            onAddNotes={handleAddNotes}
+            onComplete={handleComplete}
+            onCancel={handleCancel}
+          />
+        ))}
+      </div>
 
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-[#4A5565]" />
-                    <span className="text-[#4A5565] text-sm">{type}</span>
-                  </div>
+      <Pagination
+        currentPage={page}
+        totalPages={totalPages}
+        itemsPerPage={itemsPerPage}
+        totalItems={appointments.length}
+        onPageChange={setPage}
+        itemLabel="appointments"
+      />
 
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-4 h-4 text-[#4A5565]" />
-                    <span className="text-[#4A5565] text-sm">{time}</span>
-                  </div>
-                </div>
+      {/* Notes dialog */}
+      {selectedAppt && (
+        <RescheduleDialog
+          show={showNotes}
+          appointment={selectedAppt}
+          onSave={(updated) => {
+            setAppointments(
+              appointments.map((a) => (a.id === updated.id ? updated : a))
+            );
+            showMessage("Notes added successfully");
+            setShowNotes(false);
+            setSelectedAppt(null);
+          }}
+          onCancel={() => setShowNotes(false)}
+        />
+      )}
 
-                {notes && (
-                  <div className="bg-[#F9FAFB] rounded-lg p-3 flex items-start gap-2">
-                    <span className="text-[#364153] text-sm font-bold">Notes:</span>
-                    <span className="text-[#364153] text-sm">{notes}</span>
-                  </div>
-                )}
-              </div>
-
-              {/* Right Side: Action Buttons */}
-              {status === "pending" && (
-                <div className="flex flex-col gap-2 w-full lg:w-[120px]">
-                  <button className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-black/10 bg-white hover:bg-gray-50 transition-colors">
-                    <FileText className="w-4 h-4 text-[#0A0A0A]" />
-                    <span className="text-[#0A0A0A] text-sm font-medium">Add Notes</span>
-                  </button>
-
-                  <button className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#3F9C36] hover:bg-[#368230] transition-colors">
-                    <CheckCircle className="w-4 h-4 text-white" />
-                    <span className="text-white text-sm font-medium">Complete</span>
-                  </button>
-
-                  <button className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#B43F3F] hover:bg-[#9C3636] transition-colors">
-                    <XCircle className="w-4 h-4 text-white" />
-                    <span className="text-white text-sm font-medium">Cancel</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-        
+      {/* Cancel dialog */}
+      <ConfirmDialog
+        show={showCancel}
+        title="Cancel Appointment?"
+        message={
+          <>
+            Are you sure you want to cancel the appointment?
+          </>
+        }
+        confirmText="Cancel Appointment"
+        confirmVariant="danger"
+        onConfirm={confirmCancel}
+        onCancel={() => setShowCancel(false)}
+      />
+    </div>
   );
-}
-
-AppointmentList.propTypes = {
-  type: PropTypes.string.isRequired,
-  patientName: PropTypes.string.isRequired,
-  date: PropTypes.string.isRequired,
-  time: PropTypes.string.isRequired,
-  phone: PropTypes.string.isRequired,
-  notes: PropTypes.string,
-  status: PropTypes.oneOf(["confirmed", "pending", "cancelled"]).isRequired,
 };
 
 export default AppointmentList;
