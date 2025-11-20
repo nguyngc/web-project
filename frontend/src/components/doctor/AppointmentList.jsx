@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 function AppointmentList({ patientName, status, date, time, type, phone, notes }) {
   return (
-    <div className="w-full px-4 lg:px-[100px] py-8">
+    <div className="w-full">
             {/* Appointment Card */}
             <div
               className="border-l-4 border rounded-2xl p-4 flex flex-col lg:flex-row justify-between items-start gap-4"

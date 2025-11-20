@@ -36,39 +36,37 @@ const DoctorDashboard = () => {
 
               {activeTab === "appointments" && (
                 <div className="flex flex-col gap-6">
-                  <div className="bg-white rounded-2xl border border-black/10 p-6 flex flex-col gap-8">
-                    {/* Header */}
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                      <div className="flex flex-col gap-2.5">
-                        <h1 className="text-[#0A0A0A] text-base font-medium">Appointment Schedule</h1>
-                        <p className="text-[#717182] text-base">View and manage all your appointments</p>
-                      </div>
-
-                      <div className="bg-[#F3F3F5] rounded-lg px-3 py-2 flex items-center justify-between gap-2 min-w-[192px]">
-                        <span className="text-[#0A0A0A] text-sm">All Appointments</span>
-                        <ChevronDown className="w-4 h-4 text-[#717182] opacity-50" />
-                      </div>
+                  {/* Header */}
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div className="flex flex-col gap-2.5">
+                      <h1 className="text-[#0A0A0A] text-base font-medium">Appointment Schedule</h1>
+                      <p className="text-[#717182] text-base">View and manage all your appointments</p>
                     </div>
 
-                    {/* Appointment List */}
-                    <div className="flex flex-col gap-4">
-                      {appointments.length > 0 ? (
-                        appointments.map((appt) => (
-                          <AppointmentList
-                            key={appt._id}   // ✅ dùng _id thay vì index
-                            type={appt.type}
-                            patientName={appt.patientName}
-                            date={appt.date}
-                            time={appt.time}
-                            phone={appt.phone}
-                            status={appt.status}
-                            notes={appt.notes}
-                          />
-                        ))
-                      ) : (
-                        <p className="text-[#717182] text-sm">No appointments found</p>
-                      )}
+                    <div className="bg-[#F3F3F5] rounded-lg px-3 py-2 flex items-center justify-between gap-2 min-w-[192px]">
+                      <span className="text-[#0A0A0A] text-sm">All Appointments</span>
+                      <ChevronDown className="w-4 h-4 text-[#717182] opacity-50" />
                     </div>
+                  </div>
+
+                  {/* Appointment List */}
+                  <div className="flex flex-col gap-6">
+                    {appointments.length > 0 ? (
+                      appointments.map((appt) => (
+                        <AppointmentList
+                          key={appt._id}   // ✅ dùng _id thay vì index
+                          type={appt.type}
+                          patientName={appt.patientName}
+                          date={appt.date}
+                          time={appt.time}
+                          phone={appt.phone}
+                          status={appt.status}
+                          notes={appt.notes}
+                        />
+                      ))
+                    ) : (
+                      <p className="text-[#717182] text-sm">No appointments found</p>
+                    )}
                   </div>
                 </div>
               )}
