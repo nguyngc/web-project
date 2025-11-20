@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import Footer from "../components/Footer";
@@ -8,7 +9,10 @@ import UserProfile from "../components/user/UserProfile";
 import Prescriptions from "../components/user/Prescriptions";
 
 function UserDashboard({ userId }) {
-  const [activeTab, setActiveTab] = useState("profile");
+  const location = useLocation();
+  const initialTab = location.state?.tab || "profile";
+
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [appointments, setAppointments] = useState([]);
 
   //appointments 
@@ -30,7 +34,7 @@ function UserDashboard({ userId }) {
             </aside>
 
             {/* Nội dung chính */}
-            <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-10">
+            <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-6">
               {activeTab === "profile" && <UserProfile userId={userId} />}
 
               {activeTab === "appointments" && (

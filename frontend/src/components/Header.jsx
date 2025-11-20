@@ -16,7 +16,7 @@ export default function Header() {
     if (user) {
       const userData = JSON.parse(user);
       setCurrentUser(userData);
-      setProfileLink(userData.role === "doctor" || userData.role === "admin" ? "/" + userData.role : "profile");
+      setProfileLink(userData.role === "doctor" || userData.role === "admin" ? "/" + userData.role : "/profile");
     }
 
     // Listen for storage changes
@@ -43,7 +43,7 @@ export default function Header() {
 
   return (
     <header>
-      <Topbar currentUser={currentUser} handleLogout={handleLogout} />
+      <Topbar currentUser={currentUser} profileLink={profileLink} handleLogout={handleLogout} />
       <div className="relative px-4 lg:px-[200px] py-6 flex justify-between items-center bg-white">
         <Link to="/" className="flex items-center gap-2">
           <div className="bg-[#505B96] rounded-full p-2.5">
