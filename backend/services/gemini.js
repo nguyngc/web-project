@@ -5,7 +5,6 @@ const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY,
 });
 
-// You can also use: "gemini-2.5-flash" if you want stronger answers
 const MODEL_NAME = "gemini-2.5-flash-lite";
 
 async function callGemini(userPrompt) {
@@ -16,7 +15,7 @@ Reply style rules:
 - Answer in English.
 - Be concise and easy to understand.
 - Prefer short paragraphs or bullet points.
-- Maximum about 4–6 sentences in total.
+- Maximum about 4 to 6 sentences in total.
 - Avoid long introductions and repetition.
 - If the user asks for code, show only the essential code and a very short explanation.
 - Recommend contacting a doctor directly for medical advice if related to medical issues.
