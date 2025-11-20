@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
@@ -10,14 +11,43 @@ import DoctorProfile from "../components/doctor/DoctorProfile";
 import DoctorDbCard from "../components/doctor/DoctorDbCard";
 import { ChevronDown } from "lucide-react";
 
-const DoctorDashboard = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [appointments, setAppointments] = useState([]);
-  //appointments 
+function DoctorDashboard() {
+  const location = useLocation();
+  const initialTab = location.state?.tab || "dashboard";
+
+  const [activeTab, setActiveTab] = useState(initialTab);
+  const [currentUser, setCurrentUser] = useState(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem("appointments")) || [];
-    setAppointments(stored);
+    const user = localStorage.getItem("currentUser");
+    if (user) {
+      const parsedUser = JSON.parse(user);
+      setCurrentUser(parsedUser);
+      if (parsedUser.role !== "doctor") {
+        navigate("/login");
+      }
+    }
   }, []);
+
+  if (!currentUser) {
+    return (
+      <>
+        <Header />
+        <Hero page="user" />
+        <div className="min-h-[calc(100vh-400px)] flex items-center justify-center py-20">
+          <div className="text-center">
+            <h2 className="text-gray-900 mb-4">Please Log In</h2>
+            <p className="text-gray-600 mb-6">You need to be logged in to view this page.</p>
+            <Link to="/login" className="bg-blue-600 hover:bg-blue-700">
+              Go to Login
+            </Link>
+          </div>
+        </div>
+        <BottomBar />
+      </>
+    );
+  }
 
   return (
     <>
@@ -35,42 +65,13 @@ const DoctorDashboard = () => {
               {activeTab === "dashboard" && <DoctorDbCard />}
 
               {activeTab === "appointments" && (
-                <div className="flex flex-col gap-6">
-                  {/* Header */}
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                    <div className="flex flex-col gap-2.5">
-                      <h1 className="text-[#0A0A0A] text-base font-medium">Appointment Schedule</h1>
-                      <p className="text-[#717182] text-base">View and manage all your appointments</p>
-                    </div>
-
-                    <div className="bg-[#F3F3F5] rounded-lg px-3 py-2 flex items-center justify-between gap-2 min-w-[192px]">
-                      <span className="text-[#0A0A0A] text-sm">All Appointments</span>
-                      <ChevronDown className="w-4 h-4 text-[#717182] opacity-50" />
-                    </div>
-                  </div>
-
-                  {/* Appointment List */}
-                  <div className="flex flex-col gap-6">
-                    {appointments.length > 0 ? (
-                      appointments.map((appt) => (
-                        <AppointmentList
-                          key={appt._id}   // ✅ dùng _id thay vì index
-                          type={appt.type}
-                          patientName={appt.patientName}
-                          date={appt.date}
-                          time={appt.time}
-                          phone={appt.phone}
-                          status={appt.status}
-                          notes={appt.notes}
-                        />
-                      ))
-                    ) : (
-                      <p className="text-[#717182] text-sm">No appointments found</p>
-                    )}
-                  </div>
-                </div>
+                <AppointmentList />
               )}
-              {activeTab === "patients" && <PatientList currentDoctorId={3} />}
+
+              {activeTab === "patients" && (
+                <PatientList currentDoctorId={3}/>
+              )}
+
               {activeTab === "availability" && <Availability />}
               {activeTab === "profile" && <DoctorProfile />}
             </section>
