@@ -1,29 +1,39 @@
 import { Calendar, FileText, Download } from "lucide-react";
 
-const PrescriptionCard = ({ service, doctor, code, issuedDate, nextVisit }) => {
+const PrescriptionCard = ({ appt, onView, onDownload }) => {
   return (
-    <div className="
-      w-full 
-      bg-white 
-      border border-[#159EEC] border-l-[4px] 
-      rounded-[14px] 
-      p-4 
-      flex flex-col gap-4
-      shadow-sm
-    ">
-      {/* Top Row */}
-      <div className="flex flex-col sm:flex-row justify-between items-start w-full gap-3">
-
+    <div className="w-full px-4 lg:px-[100px] py-4 flex flex-col gap-4">
+      <div className="flex flex-col items-start p-4 gap-4 w-[734px] h-[182px] bg-white border border-[#159EEC] border-l-[4px] rounded-[14px]">
         {/* Service + Doctor */}
-        <div className="flex flex-col gap-1">
-          <h4 className="text-[#101828] text-[16px] leading-[24px]">{service}</h4>
-          <p className="text-[#4A5565] text-[14px] leading-[20px]">{doctor}</p>
+        <div className="flex flex-row justify-between items-start w-full">
+          <div className="flex flex-col gap-2">
+            <h4 className="text-[#101828] text-[16px] leading-[24px]">
+              {appt.service}
+            </h4>
+            <p className="text-[#4A5565] text-[14px] leading-[20px]">
+              {appt.doctor}
+            </p>
+          </div>
+
+          {/* Badge (Code) */}
+          <div className="bg-[#3F9C36] rounded-lg px-3 py-1 flex items-center gap-2">
+            <FileText className="w-3 h-3 text-white" />
+            <span className="text-white text-[12px] font-medium">
+              {appt.id}
+            </span>
+          </div>
         </div>
 
-        {/* Badge */}
-        <div className="bg-[#3F9C36] rounded-lg px-3 py-1 flex items-center gap-2 w-fit">
-          <FileText className="w-3 h-3 text-white" />
-          <span className="text-white text-[12px] font-medium">{code}</span>
+        {/* Dates */}
+        <div className="flex flex-row justify-between w-full text-[#4A5565] text-[14px]">
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[#4A5565]" />
+            <span>Issued: {appt.date}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-[#4A5565]" />
+            <span>Next Visit: {appt.nextAppointment}</span>
+          </div>
         </div>
 
         {/* Actions */}
