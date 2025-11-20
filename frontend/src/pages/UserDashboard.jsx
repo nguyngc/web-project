@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import Header from "../components/Header";
 import Hero from "../components/Hero";
 import BottomBar from "../components/BottomBar";
@@ -8,9 +8,11 @@ import Appointments from "../components/user/Appointments";
 import UserProfile from "../components/user/UserProfile";
 import Prescriptions from "../components/user/Prescriptions";
 
+function UserDashboard({ userId }) {
+  const location = useLocation();
+  const initialTab = location.state?.tab || "profile";
 
-const UserDashboard = () => {
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState(initialTab);
   const [currentUser, setCurrentUser] = useState(null);
   const navigate = useNavigate();
 
@@ -22,7 +24,7 @@ const UserDashboard = () => {
       if (parsedUser.role !== "user") {
         navigate("/login");
       }
-    } 
+    }
   }, []);
 
   if (!currentUser) {
@@ -56,7 +58,7 @@ const UserDashboard = () => {
               <DashboardSidebar onSelect={setActiveTab} activeTab={activeTab} />
             </aside>
 
-            <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-10">
+            <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-6">
               {activeTab === "profile" && (
                 <UserProfile />
               )}

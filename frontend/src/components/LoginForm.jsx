@@ -4,7 +4,7 @@ import { Mail, Eye, EyeOff } from "lucide-react";
 import Form from "react-bootstrap/Form";
 import GradientButton from "./GradientButton";
 
-const LoginForm = ({ onForgot }) => {
+const LoginForm = ({ onForgot, onSuccess }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -51,12 +51,19 @@ const LoginForm = ({ onForgot }) => {
     }
 
     const user = { email, firstName, lastName, phone: "(000) 123-4567", role };
-    
+
     localStorage.setItem("currentUser", JSON.stringify(user));
     window.dispatchEvent(new Event("userLogin"));
 
-    if (role === "user") navigate("/profile");
-    else navigate("/" + role);
+    if (onSuccess) {
+      // Used when called from BookAppointment
+      onSuccess(user);
+    } else {
+      // Default behavior when used from Login page
+      if (role === "user") navigate("/profile");
+      else navigate("/" + role);
+    }
+
   };
 
   return (

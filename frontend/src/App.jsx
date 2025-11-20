@@ -14,7 +14,6 @@ import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
-import ConfirmApp1 from './pages/ConfirmApp1';
 
 function App() {
   return (
@@ -31,7 +30,6 @@ function App() {
           <Route path="news/1" element={<ArticleDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="bookApp" element={<BookApp />} />
-          <Route path="confirmApp1" element={<ConfirmApp1 />} />
           <Route path="login" element={<Login />} />
           <Route path="*" element={<NotFound />} /> {/* Catch-all for undefined routes */}
         </Route>
