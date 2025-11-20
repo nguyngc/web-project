@@ -25,19 +25,18 @@ const AppointmentCard = ({ appt, onAddNotes, onComplete, onCancel }) => {
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[#4A5565]" />
             <span className="text-sm text-[#4A5565]">{appt.date}</span>
-          </div>
-          <div className="flex items-center gap-2">
             <Clock className="w-4 h-4 text-[#4A5565]" />
             <span className="text-sm text-[#4A5565]">{appt.time}</span>
           </div>
+          <div className="flex items-center gap-2"></div>
           <div className="flex items-center gap-2">
             <Eye className="w-4 h-4 text-[#4A5565]" />
             <span className="text-sm text-[#4A5565]">{appt.service}</span>
           </div>
-          <div className="flex items-center gap-2">
+          {/* <div className="flex items-center gap-2">
             <User className="w-4 h-4 text-[#4A5565]" />
             <span className="text-sm text-[#4A5565]">{appt.phone}</span>
-          </div>
+          </div> */}
         </div>
 
         {appt.notes && (

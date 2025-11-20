@@ -23,6 +23,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Nested Routes within the Layout */}
           <Route index element={<Home />} /> {/* Default Route */}
+          <Route path="web-project" element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
           <Route path="services/:slug" element={<ServiceDetail />} />

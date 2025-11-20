@@ -56,10 +56,9 @@ const AppointmentList = ({ initialAppointments }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <h1 className="text-base font-medium text-[#0A0A0A]">Appointments</h1>
-
+      <h1 className="text-[#0A0A0A] text-base font-medium">Appointment Schedule</h1>
+      <p className="text-[#717182] text-base">View and manage all your appointments</p>
       {message && <InfoMessage message={message} onClose={() => setMessage(null)} />}
-
       <div className="flex flex-col gap-6">
         {paginated.map((apt) => (
           <AppointmentCard
