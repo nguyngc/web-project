@@ -8,7 +8,7 @@ const AppointmentCard = ({ appt, onReschedule, onCancel }) => {
   const isCancelDisabled = appt.status !== "scheduled";
  
   return (
-    <div className="w-full px-4 lg:px-[100px] py-4 flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-4">
       <div className="flex flex-col items-start p-4 gap-4 bg-white border border-[#159EEC] border-l-4 rounded-[14px]">
         {/* Header: Title + Doctor + Status */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-4 w-full">

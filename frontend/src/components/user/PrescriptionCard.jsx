@@ -2,8 +2,8 @@ import { Calendar, FileText, Download } from "lucide-react";
 
 const PrescriptionCard = ({ appt, onView, onDownload }) => {
   return (
-    <div className="w-full px-4 lg:px-[100px] py-4 flex flex-col gap-4">
-      <div className="flex flex-col items-start p-4 gap-4 w-[734px] h-[182px] bg-white border border-[#159EEC] border-l-[4px] rounded-[14px]">
+    <div className="w-full flex flex-col gap-4">
+      <div className="flex flex-col items-start p-4 gap-4 bg-white border border-[#159EEC] border-l-[4px] rounded-[14px]">
         {/* Service + Doctor */}
         <div className="flex flex-row justify-between items-start w-full">
           <div className="flex flex-col gap-2">

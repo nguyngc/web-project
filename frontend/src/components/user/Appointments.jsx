@@ -79,7 +79,7 @@ const Appointments = () => {
         <InfoMessage message={message} onClose={() => setMessage(null)} />
       )}
       {/* Cards */}
-      <div className="flex flex-col gap-3 pt-3">
+      <div className="flex flex-col gap-6">
         {paginated.map((apt) => (
           <AppointmentCard
             key={apt.id}
