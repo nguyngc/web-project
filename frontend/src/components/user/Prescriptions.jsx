@@ -104,7 +104,7 @@ const Prescriptions = () => {
           onBack={handleBack}
         />
       ) : (
-        <div className="flex flex-col gap-6 pt-3">
+        <div className="flex flex-col gap-6">
           {paginated.map((p) => (
             <PrescriptionCard
               key={p.id}
