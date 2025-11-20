@@ -23,7 +23,7 @@ function App() {
         <Route path="/" element={<Layout />}>
           {/* Nested Routes within the Layout */}
           <Route index element={<Home />} /> {/* Default Route */}
-          <Route path="web-project" element={<Home />} />
+          <Route path="web-project/" element={<Home />} /> {/* Route For Deployment */}
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
           <Route path="services/:slug" element={<ServiceDetail />} />
@@ -35,7 +35,7 @@ function App() {
           <Route path="*" element={<NotFound />} /> {/* Catch-all for undefined routes */}
         </Route>
         {/* User Dashboard */}
-        <Route path="profile" element={<UserDashboard />} />
+        <Route path="/profile" element={<UserDashboard />} />
         {/* Doctor Dashboard */}
         <Route path="/doctor" element={<DoctorDashboard />} />
         {/* Admin Dashboard */}
