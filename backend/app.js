@@ -1,10 +1,11 @@
 const express = require("express");
-const connectDB = require("./config/db"); 
-const dotenv = require('dotenv');
+const connectDB = require("./config/db");
+const dotenv = require("dotenv");
+const cors = require("cors"); 
 
 dotenv.config();
 
-//import routes
+// import routes
 const faqRoutes = require("./routes/faqRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
 const articleRoutes = require("./routes/articleRoutes");
@@ -14,12 +15,18 @@ const userRoutes = require("./routes/userRoutes");
 const doctorInfoRoutes = require("./routes/doctorInfoRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const doctorTimeRoutes = require("./routes/doctorTimeRoutes");
+
+// controller chat AI
 const chatAi = require("./controllers/chatAi");
+
 const app = express();
 
-connectDB(); 
+connectDB();
+
+app.use(cors());
 
 app.use(express.json());
+
 app.use("/api/faq", faqRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/banner", bannerRoutes);
@@ -29,6 +36,8 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/doctor-info", doctorInfoRoutes);
 app.use("/api/doctor-time", doctorTimeRoutes);
+
+// route chat AI
 app.post("/api/chat-ai", chatAi);
 
 app.get("/", (req, res) => {
