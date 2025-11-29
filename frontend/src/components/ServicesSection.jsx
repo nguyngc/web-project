@@ -1,13 +1,14 @@
 import { useState } from "react";
+import Spinner from "./common/Spinner";
+import useFetch from "../hooks/useFetch";
 import { Link } from "react-router-dom";
 import Service from "./Service";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import dataServices from "../data/dataServices";
 
 function ServicesSection() {
   const [startIndex, setStartIndex] = useState(0);
   const visibleCount = 3; // Number of services to show at once
-
+  const { data: dataServices, loading, error } = useFetch('/api/services?isActive=true', {}, true);
   const handleNext = () => {
     if (startIndex + visibleCount < dataServices.length) {
       setStartIndex(startIndex + 1);
@@ -20,7 +21,9 @@ function ServicesSection() {
     }
   };
 
-  const visibleServices = dataServices.slice(startIndex, startIndex + visibleCount);
+  const visibleServices = Array.isArray(dataServices)
+  ? dataServices.slice(startIndex, startIndex + visibleCount)
+  : [];
 
   return (
     <section className="px-4 lg:px-[200px] py-12 md:py-[50px] flex flex-col items-center gap-10">
@@ -34,8 +37,9 @@ function ServicesSection() {
           care solutions for your entire family.
         </p>
       </div>
-
+      {loading && <Spinner loading={loading} />}
       {/* Services grid */}
+      {!loading && !error && Array.isArray(dataServices) && (
       <div className="flex items-center gap-4 w-full max-w-[1040px]">
         {/* Prev button */}
         <button
@@ -49,7 +53,7 @@ function ServicesSection() {
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 flex-1">
           {visibleServices.map((service) => (
-            <Service {...service} key={service.serviceID} />
+            <Service service={service} key={service._id} />
           ))}
         </div>
 
@@ -62,7 +66,7 @@ function ServicesSection() {
           <ArrowRight className="w-5 h-5" />
         </button>
       </div>
-
+      )}
       {/* View all */}
 
       <Link 
