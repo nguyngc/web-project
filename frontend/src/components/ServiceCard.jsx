@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 
-const ServiceCard = ({ id, image, name, shortDescription, features, CTA, url, reverse }) => {
+const ServiceCard = ({ service, reverse }) => {
+    const { _id, serviceName: name, shortDescription, image, features } = service;
+    const featureList = features.split(';');
+
     return (
         <div
             className={`flex flex-col lg:flex-row items-stretch gap-[25px] w-full max-w-[1040px] rounded-[20px]  ${reverse ? "lg:flex-row-reverse" : ""
@@ -19,7 +22,6 @@ const ServiceCard = ({ id, image, name, shortDescription, features, CTA, url, re
                     {name}
                 </h2>
 
-
                 {/* Description */}
                 <p className="text-[#102C56] text-[14px] leading-[22px]">
                     {shortDescription}
@@ -30,9 +32,9 @@ const ServiceCard = ({ id, image, name, shortDescription, features, CTA, url, re
                 </p>
 
                 {/* Features list */}
-                {features && (
+                {featureList && (
                     <ul className="flex flex-col gap-2 pl-6 list-disc">
-                        {features.map((feature, index) => (
+                        {featureList.map((feature, index) => (
                             <li
                                 key={index}
                                 className="text-[#102C56] text-[14px] leading-[20px] font-inter font-normal"
@@ -45,10 +47,10 @@ const ServiceCard = ({ id, image, name, shortDescription, features, CTA, url, re
 
                 {/* CTA - Learn more*/}
                 <Link
-                    to={url}
+                    to={`/services/${_id}`}
                     className="mt-auto text-[14px] leading-[20px] text-[#0088FF] font-poppins font-semibold hover:opacity-90 transition-opacity"
                 >
-                    {CTA}
+                    Learn More...
                 </Link>
             </div>
         </div>

@@ -26,9 +26,9 @@ function App() {
           <Route path="web-project/" element={<Home />} /> {/* Route For Deployment */}
           <Route path="about" element={<About />} />
           <Route path="services" element={<Services />} />
-          <Route path="services/:slug" element={<ServiceDetail />} />
+          <Route path="services/:id" element={<ServiceDetail />} />
           <Route path="news" element={<Articles />} />
-          <Route path="news/1" element={<ArticleDetail />} />
+          <Route path="news/:id" element={<ArticleDetail />} />
           <Route path="contact" element={<Contact />} />
           <Route path="bookApp" element={<BookApp />} />
           <Route path="login" element={<Login />} />
