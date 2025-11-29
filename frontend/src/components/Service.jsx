@@ -1,13 +1,20 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 
-const Service = ({ serviceID,image, name, shortDescription, CTA, url }) => {
+const Service = ({ service, reverse }) => {
+  const { _id, image, serviceName: name, shortDescription} = service;
+
   return (
-    <article className="flex flex-col rounded-[14px] border border-black/10 bg-white overflow-hidden hover:shadow-lg transition-shadow">
+    <article
+      className={`flex flex-col rounded-[14px] border border-black/10 bg-white overflow-hidden hover:shadow-lg transition-shadow ${
+        reverse ? "lg:flex-row-reverse" : ""
+      }`}
+    >
       {/* Image */}
-      <div className="relative h-[239px] overflow-hidden">
-        <img src={image} className="w-full h-full object-cover" />
-      </div>
+      <div
+        className="relative h-[239px] overflow-hidden bg-cover bg-center"
+        style={{ backgroundImage: `url(${image})` }}
+      />
 
       {/* Info */}
       <div className="p-6 flex flex-col gap-6">
@@ -19,13 +26,13 @@ const Service = ({ serviceID,image, name, shortDescription, CTA, url }) => {
         </p>
 
         {/* CTA */}
-        <Link
-          to={url}
-          className="flex items-center gap-2 text-[#155DFC] text-base font-medium hover:gap-3 transition-all"
-        >
-          {CTA}
-          <ArrowRight className="w-4 h-4" strokeWidth={1.33} />
-        </Link>
+          <Link
+            to={`/services/`}
+            className="flex items-center gap-2 text-[#155DFC] text-base font-medium hover:gap-3 transition-all"
+          >
+            Learn more
+            <ArrowRight className="w-4 h-4" strokeWidth={1.33} />
+          </Link>
       </div>
     </article>
   );

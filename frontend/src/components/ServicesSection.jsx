@@ -53,7 +53,7 @@ function ServicesSection() {
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 flex-1">
           {visibleServices.map((service) => (
-            <Service {...service} key={service._id} />
+            <Service service={service} key={service._id} />
           ))}
         </div>
 
