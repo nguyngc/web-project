@@ -29,7 +29,7 @@ app.use(express.json());
 
 app.use("/api/faq", faqRoutes);
 app.use("/api/articles", articleRoutes);
-app.use("/api/banner", bannerRoutes);
+app.use("/api/banners", bannerRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/appointments", appointmentRoutes);
