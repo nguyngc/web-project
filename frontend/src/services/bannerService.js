@@ -1,21 +1,5 @@
 const BASE = "/api/banners";
 
-// Utility → map frontend fields → backend fields
-const mapToBackend = (form) => ({
-  badge: form.badge,
-  image: form.imageUrl,
-  title: form.title,
-  subtitle: form.subtitle,
-  buttonText: form.buttonText,
-  buttonLink: form.buttonLink,
-  order: form.order,
-  isActive: form.status,
-});
-
-// ----------------------
-// SERVICE METHODS
-// ----------------------
-
 export const getAllBanners = async () => {
   const res = await fetch(BASE);
   if (!res.ok) throw new Error("Failed to load banners");
@@ -26,7 +10,7 @@ export const createBanner = async (form) => {
   const res = await fetch(BASE, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(mapToBackend(form)),
+    body: JSON.stringify(form),
   });
 
   if (!res.ok) throw new Error("Failed to create banner");
@@ -37,7 +21,7 @@ export const updateBanner = async (id, form) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(mapToBackend(form)),
+    body: JSON.stringify(form),
   });
 
   if (!res.ok) throw new Error("Failed to update banner");
