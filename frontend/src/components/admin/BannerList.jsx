@@ -87,6 +87,7 @@ const BannerList = () => {
         );
         showMessage("Banner updated successfully");
       } else {
+        console.log(formData);
         const created = await createBanner(formData);
         setBanners((prev) => [created, ...prev]);
         showMessage("Banner created successfully");
@@ -118,7 +119,7 @@ const BannerList = () => {
 
   const confirmDeleteBanner = async () => {
     try {
-      await deleteBanner(bannerToDelete.id);
+      await deleteBanner(bannerToDelete._id);
       setBanners((prev) =>
         prev.filter((b) => b._id !== bannerToDelete._id)
       );
