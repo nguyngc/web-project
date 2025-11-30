@@ -10,15 +10,16 @@ const BannerForm = ({
 }) => {
   const [form, setForm] = useState({
     badge: "",
-    imageUrl: "",
+    image: "",
     title: "",
     subtitle: "",
     buttonText: "",
     buttonLink: "",
     order: 1,
-    status: true,
+    isActive: true,
   });
 
+  // Load initial data in EDIT mode
   useEffect(() => {
     if (initialData) {
       setForm(initialData);
@@ -66,8 +67,8 @@ const BannerForm = ({
           <label className={labelClass}>Image URL *</label>
           <Form.Control
             className={inputClass}
-            value={form.imageUrl}
-            onChange={(e) => handleChange("imageUrl", e.target.value)}
+            value={form.image}
+            onChange={(e) => handleChange("image", e.target.value)}
           />
         </Form.Group>
 
@@ -131,10 +132,10 @@ const BannerForm = ({
                 >
                   <input
                     type="radio"
-                    name="status"
+                    name="isActive"
                     value={value.toString()}
-                    checked={form.status === value}
-                    onChange={() => handleChange("status", value)}
+                    checked={form.isActive === value}
+                    onChange={() => handleChange("isActive", value)}
                   />
                   <span className="capitalize">
                     {value ? "Active" : "Inactive"}

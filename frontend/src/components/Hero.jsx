@@ -1,12 +1,19 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { heroSlides } from "../data/data.js";
+import useFetch from "../hooks/useFetch";
 
 function Hero({ page }) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  const slides = heroSlides[page] || [];
+  let slides = [];
+  if (page === "home") {
+    const { data, loading, error } = useFetch('/api/banners?active=true', {}, true);
+    if (!loading && !error) slides = data;
+  } else {
+    slides = heroSlides[page] || [];
+  }
 
   // Auto-play functionality
   useEffect(() => {
@@ -59,8 +66,6 @@ function Hero({ page }) {
 
             <div className="relative h-full px-4 lg:px-[200px] py-12 md:py-[176px] flex items-center">
               <div className="max-w-[672px]">
-                {/* <div className="container mx-auto relative h-full px-4 z-10 flex items-center">
-            <div className="max-w-2xl text-white"> */}
                 {slide.badge && (
                   <div className="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm mb-6">
                     <span className="text-white text-sm">{slide.badge}</span>
