@@ -5,6 +5,10 @@ const connectDB = require("./config/db");
 const services = require("./data/services.js");
 const Service = require("./models/serviceModel.js");
 
+const banners = require("./data/banners.js");
+const Banner = require("./models/bannerModel.js");
+
+
 connectDB();
 
 const importData = async () => {
@@ -13,6 +17,11 @@ const importData = async () => {
     // Services
     await Service.deleteMany();
     await Service.insertMany(services);
+
+    // Banners
+    await Banner.deleteMany();
+    await Banner.insertMany(banners);
+
 
     // FAQ
 
@@ -29,6 +38,7 @@ const importData = async () => {
 const destroyData = async () => {
   try {
     await Service.deleteMany();
+    await Banner.deleteMany();
 
     console.log('Data Destroyed!'.red.inverse);
     process.exit();
