@@ -40,7 +40,7 @@ const getById = async (req, res) => {
 // POST /banners
 const create = async (req, res) => {
   try {
-    const { image, title, subtitle, buttonText, buttonLink, order, isActive } =
+    const { badge, image, title, subtitle, buttonText, buttonLink, order, isActive } =
       req.body || {};
 
     if (!image || !title) {
@@ -56,6 +56,7 @@ const create = async (req, res) => {
     }
 
     const created = await Banner.create({
+      badge,
       image,
       title,
       subtitle: subtitle || "",

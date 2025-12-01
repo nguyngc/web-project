@@ -23,7 +23,7 @@ const BannerRow = ({
       {/* Image */}
       <div className="w-full md:w-32 h-28 md:h-20 rounded-lg overflow-hidden">
         <img
-          src={banner.imageUrl}
+          src={banner.image}
           alt={banner.title}
           className="w-full h-full object-cover"
         />
@@ -39,19 +39,19 @@ const BannerRow = ({
 
       {/* Status + Actions */}
       <div className="flex items-center gap-3">
-        <StatusBox variant={banner.status ? "active" : "inactive"}>
-          {banner.status ? "Active" : "Inactive"}
+        <StatusBox variant={banner.isActive ? "active" : "inactive"}>
+          {banner.isActive ? "Active" : "Inactive"}
         </StatusBox>
 
         <ToggleSwitch
-          checked={banner.status}
-          onChange={() => onToggleStatus(banner.id)}
+          checked={banner.isActive}
+          onChange={() => onToggleStatus(banner._id)}
         />
 
         {/* Move Up */}
         <button
           disabled={isFirst}
-          onClick={() => !isFirst && onMoveUp(banner.id)}
+          onClick={() => !isFirst && onMoveUp(banner._id)}
           className={`w-9 h-9 border rounded-lg flex items-center justify-center ${
             isFirst
               ? "opacity-40 cursor-not-allowed"
@@ -64,7 +64,7 @@ const BannerRow = ({
         {/* Move Down */}
         <button
           disabled={isLast}
-          onClick={() => !isLast && onMoveDown(banner.id)}
+          onClick={() => !isLast && onMoveDown(banner._id)}
           className={`w-9 h-9 border rounded-lg flex items-center justify-center ${
             isLast
               ? "opacity-40 cursor-not-allowed"

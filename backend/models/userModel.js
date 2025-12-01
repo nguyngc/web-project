@@ -10,7 +10,11 @@ const userSchema = new mongoose.Schema(
     phone: { type: String, default: "" },
     address: { type: String, default: "" },
     password: { type: String, required: true }, 
-    role: { type: String, default: "user" }, // "user" or "doctor"
+    role: {
+      type: String,
+      enum: ["user", "doctor", "admin"],
+      default: "user",
+    },
     status: { type: String, default: "active" },
     createdBy: { type: String, default: "api" },
     modifiedBy: { type: String, default: null }
