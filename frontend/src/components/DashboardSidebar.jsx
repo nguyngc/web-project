@@ -5,8 +5,6 @@ import { menuItems } from "../data/data";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 const DashboardSidebar = ({ onSelect, activeTab }) => {
-  console.log("onSelect received:", onSelect);
-
   const navigate = useNavigate();
   const { getItem, removeItem } = useLocalStorage("currentUser");
 
@@ -41,7 +39,7 @@ const DashboardSidebar = ({ onSelect, activeTab }) => {
     navigate("/");
   };
 
-  let userRole: "user" | "doctor" | "admin" = "user";
+  let userRole = "user";
 
   if (currentUser?.role === "doctor") userRole = "doctor";
   if (currentUser?.role === "admin") userRole = "admin";

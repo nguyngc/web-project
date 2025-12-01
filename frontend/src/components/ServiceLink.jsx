@@ -1,10 +1,10 @@
 import { Link } from 'react-router-dom';
 
 const ServiceLink = ({ item }) => {
-  const { name, link } = item;
+  const { _id, serviceName: name } = item;
 
   return (
-    <Link to={link} className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
+    <Link to={`/services/${_id}`} className="text-[#DBEAFE] text-sm hover:text-white transition-colors">
       {name}
     </Link>
   );

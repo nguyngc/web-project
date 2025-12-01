@@ -1,8 +1,25 @@
 import { Send } from "lucide-react";
-import WebMap from "./WebMap";
-function ContactFormMap() {
-  return (
 
+function ContactFormMap() {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      alert("Message sent!");
+    } else {
+      alert("Failed to send message.");
+    }
+  };
+
+  return (
     <section className="py-12 lg:py-[50px]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-[200px]">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-[50px]">
@@ -14,7 +31,7 @@ function ContactFormMap() {
               Have a question or ready to schedule an appointment? Fill out the form below and we'll get back to you as soon as possible.
             </p>
 
-            <form className="flex flex-col gap-6 mt-4">
+            <form className="flex flex-col gap-6 mt-4" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
                   <label className="text-[#364153] text-sm font-inter">First Name *</label>
@@ -101,15 +118,15 @@ function ContactFormMap() {
             <div className="overflow-hidden rounded-xl shadow-lg">
               <div className="w-full h-[500px] ">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1981.3880217427356!2d25.079106099999994!3d60.223956400000006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x469208cc4a19d073%3A0xc8f8650d3fdd9f20!2sMyllypurontie%201%2C%2000920%20Helsinki!5e0!3m2!1sen!2sfi!4v1763303444512!5m2!1sen!2sfi" 
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1981.3880217427356!2d25.079106099999994!3d60.223956400000006!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x469208cc4a19d073%3A0xc8f8650d3fdd9f20!2sMyllypurontie%201%2C%2000920%20Helsinki!5e0!3m2!1sen!2sfi!4v1763303444512!5m2!1sen!2sfi"
                   width="100%"
                   height="100%"
-                  style={{border:0}}
+                  style={{ border: 0 }}
                   allowFullScreen=""
                   loading="lazy"
                   title="Vision Clinic Location"
-              ></iframe>
-            </div>
+                ></iframe>
+              </div>
             </div>
           </div>
         </div>

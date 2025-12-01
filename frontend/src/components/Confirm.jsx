@@ -1,91 +1,130 @@
-import { useLocation } from "react-router-dom";
-import { Calendar, Clock, MapPin, CheckCircle } from "lucide-react";
-import { format } from "date-fns";
-import { Link } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
+import { useState } from "react";
+import AppointmentCard from "../components/user/AppointmentCard";
 
+function ConfirmApp1() {
+  const location = useLocation();
+  const { service, doctor, date, time, status } = location.state || {};
+  const [confirmed, setConfirmed] = useState(false);
 
-function Confirm() {
-    const location = useLocation();
+  const handleConfirm = () => {
+    const appointmentData = {
+      patient: "John Smith",
+      phone: "0123456789",
+      service,
+      doctor,
+      date,
+      time,
+      status,
+      notes: ""
+    };
 
-    const { date, slot } = location.state || {};
-    return (
-        <section className="flex flex-col items-center px-4 sm:px-[200px] py-[50px] gap-8 w-full max-w-[1440px] mx-auto bg-[#F9FAFB]">
-            {/* Icon + Heading */}
-            <div className="flex flex-col items-center gap-4 w-full max-w-[1040px]">
-                {/* Success Icon */}
-                <div className="flex justify-center items-center w-20 h-20 bg-[#DCFCE7] rounded-full">
-                    <CheckCircle className="w-10 h-10 text-[#00A63E]" />
-                </div>
+    let appointments = JSON.parse(localStorage.getItem("appointments"));
+    if (!Array.isArray(appointments)) {
+      appointments = [];
+    }
+    appointments.push(appointmentData);
+    localStorage.setItem("appointments", JSON.stringify(appointments));
+    setConfirmed(true);
+  };
 
-                {/* Heading */}
-                <h2 className="text-center font-inter font-medium text-[24px] leading-[24px] text-[#0D542B]">
-                    Appointment Confirmed!
-                </h2>
+  return (
+    <div className="flex flex-col gap-8 mx-auto">
+      {/* Header */}
+      <div className="flex-col items-start gap-[30px]  mx-auto p-6">
+        {/* <Link
+          to="/bookApp"
+          className="flex flex-row justify-center items-center px-[13px] py-[8px] gap-[10px] w-[250px] h-[36px] bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] rounded-lg text-white text-sm font-medium leading-5 font-inter"
+        >
+          ← Back to Appointment Selection
+        </Link> */}
 
-                {/* Paragraph */}
-                <p className="text-center font-inter text-[16px] leading-[24px] text-[#4A5565]">
-                    Your appointment has been successfully scheduled.
+        <h1 className="flex flex-row justify-center items-center gap-[10px] text-[#1F2B6C] text-2xl font-medium font-inter leading-6 mt-10">
+          Confirm Your Appointment
+        </h1>
+      </div>
+
+      {/* Appointment + Details */}
+      <div className="mx-auto flex flex-col md:flex-row ">
+        <div className=" flex-1 bg-white border-l-4 border-t border-r border-b border-vision-secondary rounded-[14px] p-6 flex flex-col">
+          {/* AppointmentCard hiển thị thông tin */}
+          <AppointmentCard
+            appt={{ service, doctor, date, time, status }}
+            onReschedule={() => { }}
+            onCancel={() => { }}
+          />
+
+          {/* Appointment details card */}
+          <div className="w-[400px] mx-auto ">
+            <div className="rounded-xl border border-black/10 bg-white">
+              <div className="p-6 border-b border-black/10">
+                <p className=" text-[#4A5565] text-sm leading-6">
+                  60-minute appointment including vision testing, eye health evaluation, and consultation.
                 </p>
+              </div>
+              <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <ul className="space-y-2">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 inline-block w-2 h-2 rounded-full bg-[#159EEC]" />
+                    <span className="text-[#101828] text-sm">Visual acuity test</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 inline-block w-2 h-2 rounded-full bg-[#159EEC]" />
+                    <span className="text-[#101828] text-sm">Eye pressure measurement</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1 inline-block w-2 h-2 rounded-full bg-[#159EEC]" />
+                    <span className="text-[#101828] text-sm">Prescription update (if needed)</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="rounded-lg border border-[#E5E7EB] p-4 bg-[#F9FAFB]">
+                <h3 className="text-[#1F2B6C] text-sm font-medium">Preparation</h3>
+                <p className="mt-2 text-[#4A5565] text-sm">
+                  Please arrive 10 minutes early. Bring your insurance card and current eyewear if applicable.
+                </p>
+              </div>
             </div>
+          </div>
 
-            {/* Card */}
-            <div className="flex flex-col justify-center items-center p-6 gap-6 w-full max-w-[341px] bg-white border border-black/10 rounded-xl shadow">
-                {/* Card Title */}
-                <h3 className="font-inter font-medium text-[20px] text-[#0A0A0A]">
-                    Appointment Details
-                </h3>
+          {/* Confirm area */}
+          {!confirmed ? (
+            <button
+              onClick={handleConfirm}
+              className=" mx-auto w-[400px] mt-4 px-4 py-2 bg-[#159EEC] text-white rounded-lg"
+            >
+              Confirm
+            </button>
+          ) : (
+            <p className="mt-4 text-green-600 text-sm">
+              Your appointment confirmed
+            </p>
+          )}
+        </div>
+      </div>
 
-                {/* Card Content */}
-                <div className="flex flex-col items-start gap-4 w-full px-2">
-                    {/* Date */}
-                    <div className="flex flex-row items-center gap-3">
-                        <Calendar className="w-5 h-5 text-[#155DFC]" />
-                        <p className="font-inter text-[16px] text-[#101828]">
-                            {date
-                                ? format(new Date(date), "EEEE, MMMM d, yyyy")
-                                : format(new Date(), "EEEE, MMMM d, yyyy")}
-                        </p>
-                    </div>
+      {/* Actions */}
+      <div className="flex flex-row flex-wrap justify-center gap-4 w-full max-w-[1040px] mx-auto mb-10">
+        <Link
+          to="/profile"
+          className="px-4 py-2 bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] text-white font-inter font-medium text-[14px] rounded-lg"
+        >
+          View My Appointments
+        </Link>
 
-                    {/* Time */}
-                    <div className="flex flex-row items-center gap-3">
-                        <Clock className="w-5 h-5 text-[#155DFC]" />
-                        <p className="font-inter text-[16px] text-[#101828]">
-                            {typeof slot === "string" ? slot : slot?.time || "No time selected"}
-                        </p>
-                    </div>
+        <Link
+          to="/"
+          className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg"
+        >
+          Back to Home
+        </Link>
 
-                    {/* Location */}
-                    <div className="flex flex-row items-center gap-3">
-                        <MapPin className="w-5 h-5 text-[#155DFC]" />
-                        <p className="font-inter text-[16px] text-[#101828]">
-                            Myllypurontie 1, Helsinki
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {/* Actions */}
-            <div className="flex flex-row flex-wrap justify-center gap-4 w-full max-w-[1040px] mt-4">
-                {/* View My Appointments */}
-                <button className="px-4 py-2 bg-gradient-to-b from-[#159EEC]/50 to-[#159EEC] text-white font-inter font-medium text-[14px] rounded-lg">
-                    View My Appointments
-                </button>
-
-                {/* Back to Home */}
-                <Link
-                    to="/"
-                    className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg">
-                    Back to Home
-                </Link>
-
-
-                {/* Print Confirmation */}
-                <button className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg">
-                    Print Confirmation
-                </button>
-            </div>
-        </section>
-    );
+        <button className="px-4 py-2 border border-black/10 bg-white text-[#0A0A0A] font-inter font-medium text-[14px] rounded-lg">
+          Print Confirmation
+        </button>
+      </div>
+    </div>
+  );
 }
-export default Confirm
+
+export default ConfirmApp1;

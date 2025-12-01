@@ -1,9 +1,11 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { User, Phone, Mail, Eye, EyeOff } from "lucide-react";
 import Form from "react-bootstrap/Form";
 import GradientButton from "./GradientButton";
 
-const RegistrationForm = () => {
+const RegistrationForm = ({ onSuccess }) => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -96,8 +98,24 @@ const RegistrationForm = () => {
     if (!validate()) return;
 
     console.log("Registration data:", formData);
-    alert("Registration successful!");
-    // Reset form or redirect user here
+
+    const newUser = {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      phone: formData.phone,
+      role: "user"
+    };
+
+    localStorage.setItem("currentUser", JSON.stringify(newUser));
+    window.dispatchEvent(new Event("userLogin"));
+
+    if (onSuccess) {
+      onSuccess(newUser);
+    } else {
+      navigate("/profile");
+    }
+
   };
 
   return (
