@@ -1,7 +1,13 @@
 const express = require("express");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv");
-const cors = require("cors"); 
+const cors = require("cors");
+
+const {
+  requestLogger,
+  unknownEndpoint,
+  errorHandler,
+} = require("./middleware/middleware"); // logger + 404 + error handler
 
 dotenv.config();
 
@@ -21,12 +27,19 @@ const chatAi = require("./controllers/chatAi");
 
 const app = express();
 
+// Connect to MongoDB
 connectDB();
 
+// Enable CORS for all origins (frontend can run on any URL)
 app.use(cors());
 
+// Parse incoming JSON requests
 app.use(express.json());
 
+// Log all incoming requests (method, path, body)
+app.use(requestLogger);
+
+// API routes
 app.use("/api/faq", faqRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/banners", bannerRoutes);
@@ -37,15 +50,19 @@ app.use("/api/users", userRoutes);
 app.use("/api/doctor-info", doctorInfoRoutes);
 app.use("/api/doctor-time", doctorTimeRoutes);
 
-// route chat AI
+// AI chat route
 app.post("/api/chat-ai", chatAi);
 
+// Health check / root route
 app.get("/", (req, res) => {
   res.send("Eye Clinic API is running");
 });
 
-// 404
-app.use((req, res) => res.status(404).json({ message: "Not found" }));
+// 404 handler for unknown endpoints
+app.use(unknownEndpoint);
+
+// Centralized error handler
+app.use(errorHandler);
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => {
