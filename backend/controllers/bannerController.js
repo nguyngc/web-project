@@ -17,7 +17,7 @@ const getAll = async (req, res) => {
       filter.$or = [{ title: regex }, { subtitle: regex }];
     }
 
-    const list = await Banner.find(filter).sort({ createdDateTime: -1 });
+    const list = await Banner.find(filter).sort({ order: 1 });
     res.json(list);
   } catch (error) {
     console.error(error);
