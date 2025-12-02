@@ -28,7 +28,6 @@ const bannerSchema = new mongoose.Schema(
     modifiedBy: { type: String, default: null },
   },
   {
-    // giống style của User
     timestamps: {
       createdAt: "createdDateTime",
       updatedAt: "modifiedDateTime",

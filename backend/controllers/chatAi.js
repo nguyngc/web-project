@@ -16,7 +16,7 @@ const chatAi = async (req, res) => {
     const aiText = await callGemini(prompt);
 
     const saved = await ChatMessage.create({
-      user: req.user ? req.user._id : null, // có login thì lưu userId, không thì null
+      user: req.user ? req.user.id : null, // logged-in user id or null
       userMessage: prompt,
       aiResponse: aiText,
     });

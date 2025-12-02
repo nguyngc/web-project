@@ -1,11 +1,4 @@
-/* 
-{
-  FAQid
-  Question
-  Answer
-  CreatedBy
-}
-*/
+
 const mongoose = require("mongoose");
 
 const faqSchema = new mongoose.Schema(

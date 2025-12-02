@@ -8,6 +8,7 @@ const Appointment = require("../models/appointmentModel");
 const getAll = async (req, res) => {
   const { q, userId, doctorId, status, date } = req.query;
   const requester = req.user;
+  const requesterId = requester.id || requester._id.toString();
 
   try {
     const filter = {};
@@ -16,11 +17,11 @@ const getAll = async (req, res) => {
       if (userId !== undefined) filter.userId = userId;
       if (doctorId !== undefined) filter.doctorId = doctorId;
     } else if (requester.role === "doctor") {
-      filter.doctorId = requester.id;
+      filter.doctorId = requesterId;
       if (userId !== undefined) filter.userId = userId; // filter by patient
     } else {
       // normal user
-      filter.userId = requester.id;
+      filter.userId = requesterId;
     }
 
     if (status !== undefined) filter.status = status;
@@ -69,23 +70,26 @@ const getById = async (req, res) => {
     }
 
     const requester = req.user;
+    const requesterId = requester.id || requester._id.toString();
 
-    if (
-      requester.role === "user" &&
-      appointment.userId.toString() !== requester.id
-    ) {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: you can only view your own appointments" });
+    const userIdStr = appointment.userId._id
+      ? appointment.userId._id.toString()
+      : appointment.userId.toString();
+
+    const doctorIdStr = appointment.doctorId._id
+      ? appointment.doctorId._id.toString()
+      : appointment.doctorId.toString();
+
+    if (requester.role === "user" && userIdStr !== requesterId) {
+      return res.status(403).json({
+        message: "Forbidden: you can only view your own appointments",
+      });
     }
 
-    if (
-      requester.role === "doctor" &&
-      appointment.doctorId.toString() !== requester.id
-    ) {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: you can only view your own appointments" });
+    if (requester.role === "doctor" && doctorIdStr !== requesterId) {
+      return res.status(403).json({
+        message: "Forbidden: you can only view your own appointments",
+      });
     }
 
     res.json(appointment);
@@ -102,6 +106,7 @@ const getById = async (req, res) => {
 const create = async (req, res) => {
   try {
     const requester = req.user;
+    const requesterId = requester.id || requester._id.toString();
 
     let {
       userId,
@@ -119,12 +124,14 @@ const create = async (req, res) => {
       nextAppointment,
     } = req.body;
 
+    // patient: must be themselves
     if (requester.role === "user") {
-      userId = requester.id;
+      userId = requesterId;
     }
 
+    // doctor: must be themselves
     if (requester.role === "doctor") {
-      doctorId = requester.id;
+      doctorId = requesterId;
     }
 
     if (!userId || !doctorId || !date || !time) {
@@ -141,7 +148,35 @@ const create = async (req, res) => {
       return res.status(400).json({ message: "Invalid doctorId" });
     }
 
-    const createdBy = requester.id || "api";
+    // Status logic:
+    // - default: "pending"
+    // - only admin can override on creation
+    let initialStatus = "pending";
+    if (requester.role === "admin" && status) {
+      initialStatus = status;
+    }
+
+    // Medical fields: only doctor/admin should really set them
+    const medicalPayload =
+      requester.role === "user"
+        ? {
+            diagnosis: "",
+            rightEye: "",
+            leftEye: "",
+            prescriptionNotes: "",
+            doctorNotes: "",
+            nextAppointment: null,
+          }
+        : {
+            diagnosis: diagnosis || "",
+            rightEye: rightEye || "",
+            leftEye: leftEye || "",
+            prescriptionNotes: prescriptionNotes || "",
+            doctorNotes: doctorNotes || "",
+            nextAppointment: nextAppointment || null,
+          };
+
+    const createdBy = requesterId || "api";
 
     const appointment = await Appointment.create({
       userId,
@@ -149,14 +184,9 @@ const create = async (req, res) => {
       serviceId: serviceId || null,
       date,
       time,
-      status: status || "pending",
-      diagnosis: diagnosis || "",
-      rightEye: rightEye || "",
-      leftEye: leftEye || "",
-      prescriptionNotes: prescriptionNotes || "",
+      status: initialStatus,
       userNotes: userNotes || "",
-      doctorNotes: doctorNotes || "",
-      nextAppointment: nextAppointment || null,
+      ...medicalPayload,
       createdBy,
     });
 
@@ -180,28 +210,26 @@ const update = async (req, res) => {
 
   try {
     const requester = req.user;
+    const requesterId = requester.id || requester._id.toString();
 
     const current = await Appointment.findById(appointmentId);
     if (!current) {
       return res.status(404).json({ message: "Appointment not found" });
     }
 
-    if (
-      requester.role === "user" &&
-      current.userId.toString() !== requester.id
-    ) {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: you can only update your own appointments" });
+    if (requester.role === "user" && current.userId.toString() !== requesterId) {
+      return res.status(403).json({
+        message: "Forbidden: you can only update your own appointments",
+      });
     }
 
     if (
       requester.role === "doctor" &&
-      current.doctorId.toString() !== requester.id
+      current.doctorId.toString() !== requesterId
     ) {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: you can only update your own appointments" });
+      return res.status(403).json({
+        message: "Forbidden: you can only update your own appointments",
+      });
     }
 
     let updateData = { ...req.body };
@@ -241,7 +269,7 @@ const update = async (req, res) => {
       updateData = safe;
     }
 
-    updateData.modifiedBy = requester.id || "api";
+    updateData.modifiedBy = requesterId || "api";
 
     const updated = await Appointment.findByIdAndUpdate(
       appointmentId,

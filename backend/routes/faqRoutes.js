@@ -1,11 +1,23 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../controllers/faqController");
+const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 
-router.get("/", ctrl.getAll);          // ?q=keyword
+// Public
+// GET /api/faq?q=keyword
+router.get("/", ctrl.getAll);
+
+// GET /api/faq/:faqId
 router.get("/:faqId", ctrl.getById);
-router.post("/", ctrl.create);
-router.put("/:faqId", ctrl.update);
-router.delete("/:faqId", ctrl.remove);
+
+// Admin only
+// POST /api/faq
+router.post("/", requireAuth, requireRole("admin"), ctrl.create);
+
+// PUT /api/faq/:faqId
+router.put("/:faqId", requireAuth, requireRole("admin"), ctrl.update);
+
+// DELETE /api/faq/:faqId
+router.delete("/:faqId", requireAuth, requireRole("admin"), ctrl.remove);
 
 module.exports = router;

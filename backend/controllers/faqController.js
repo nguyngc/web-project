@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const FAQ = require("../models/faqModel");
 
-// GET /faqs?q=keyword
+// GET /api/faq?q=keyword
 const getAll = async (req, res) => {
   const { q } = req.query;
 
@@ -20,7 +20,7 @@ const getAll = async (req, res) => {
   }
 };
 
-// GET /faqs/:faqId
+// GET /api/faq/:faqId
 const getById = async (req, res) => {
   const { faqId } = req.params;
 
@@ -41,7 +41,8 @@ const getById = async (req, res) => {
   }
 };
 
-// POST /faqs
+// POST /api/faq
+// Admin only (enforced in routes)
 const create = async (req, res) => {
   try {
     const { question, answer } = req.body;
@@ -52,12 +53,12 @@ const create = async (req, res) => {
         .json({ message: "question & answer are required" });
     }
 
-    const createdBy = req.body.createdBy || req.user?.id || "api";
+    const createdBy = req.user?.id || "api";
 
     const faq = await FAQ.create({
       question,
       answer,
-      createdBy
+      createdBy,
     });
 
     res.status(201).json(faq);
@@ -66,7 +67,8 @@ const create = async (req, res) => {
   }
 };
 
-// PUT /faqs/:faqId
+// PUT /api/faq/:faqId
+// Admin only
 const update = async (req, res) => {
   const { faqId } = req.params;
 
@@ -75,11 +77,14 @@ const update = async (req, res) => {
   }
 
   try {
-    const updatedFAQ = await FAQ.findByIdAndUpdate(
-      faqId,
-      req.body,
-      { new: true }
-    );
+    const updateData = {
+      ...req.body,
+      modifiedBy: req.user?.id || "api",
+    };
+
+    const updatedFAQ = await FAQ.findByIdAndUpdate(faqId, updateData, {
+      new: true,
+    });
 
     if (updatedFAQ) {
       res.status(200).json(updatedFAQ);
@@ -91,7 +96,8 @@ const update = async (req, res) => {
   }
 };
 
-// DELETE /faqs/:faqId
+// DELETE /api/faq/:faqId
+// Admin only
 const remove = async (req, res) => {
   const { faqId } = req.params;
 
