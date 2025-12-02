@@ -186,15 +186,17 @@ const BannerList = () => {
           </p>
         </div>
 
-        <button
-          onClick={handleAdd}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg
+        {!showForm && (
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg
           bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)]
           text-white text-sm"
-        >
-          <Plus className="w-4 h-4" />
-          Add New Banner
-        </button>
+          >
+            <Plus className="w-4 h-4" />
+            Add New Banner
+          </button>
+        )}
       </div>
 
       {/* Message */}
