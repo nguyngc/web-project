@@ -77,7 +77,7 @@ const RegistrationForm = ({ onSuccess }) => {
 
     if (result) {
       if (result.token) {
-        sessionStorage.setItem("token", result.token);
+        localStorage.setItem("token", result.token);
       }
       const newUser = {
         firstName: firstName.value,
@@ -87,7 +87,7 @@ const RegistrationForm = ({ onSuccess }) => {
         role: "user",
       };
 
-      sessionStorage.setItem("currentUser", JSON.stringify(newUser));
+      localStorage.setItem("currentUser", JSON.stringify(newUser));
       window.dispatchEvent(new Event("userLogin"));
 
       if (onSuccess) {

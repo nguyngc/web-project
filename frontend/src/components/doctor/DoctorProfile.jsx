@@ -8,8 +8,8 @@ const DoctorProfile = () => {
     const [editing, setEditing] = useState(false);
     const [message, setMessage] = useState(null);
   
-    const token = sessionStorage.getItem("token");
-    const currentUser = JSON.parse(sessionStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+    const currentUser = JSON.parse(localStorage.getItem("user"));
     const id = currentUser?.id;
   
     // Fetch user info from backend

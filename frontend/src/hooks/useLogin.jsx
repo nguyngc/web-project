@@ -23,11 +23,11 @@ export default function useLogin(url) {
         return null;
       }
 
-      // save JWT token and user into sessionStorage
+      // save JWT token and user into localStorage
       if (data.token) {
-        sessionStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token);
       }
-      sessionStorage.setItem("user", JSON.stringify(data.user || data));
+      localStorage.setItem("user", JSON.stringify(data.user || data));
 
       setIsLoading(false);
       return data; //

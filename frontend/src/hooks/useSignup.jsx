@@ -26,9 +26,9 @@ export default function useSignup(url) {
 
       // save user and token
       if (data.token) {
-        sessionStorage.setItem("token", data.token);
+        localStorage.setItem("token", data.token);
       }
-      sessionStorage.setItem("user", JSON.stringify(data.user || data));
+      localStorage.setItem("user", JSON.stringify(data.user || data));
 
       setIsLoading(false);
       return data; //component use

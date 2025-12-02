@@ -2,11 +2,11 @@ import { User, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "../data/data";
-import  useSessionStorage  from "../hooks/useSessionStorage";
+import  useLocalStorage  from "../hooks/useLocalStorage";
 
 const DashboardSidebar = ({ onSelect, activeTab }) => {
   const navigate = useNavigate();
-  const { getItem, removeItem } = useSessionStorage("currentUser");
+  const { getItem, removeItem } = useLocalStorage("currentUser");
 
   const [currentUser, setCurrentUser] = useState(null);
 

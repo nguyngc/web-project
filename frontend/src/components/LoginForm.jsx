@@ -68,7 +68,7 @@ const LoginForm = ({ onForgot, onSuccess }) => {
           role: role,
         };
 
-        sessionStorage.setItem("currentUser", JSON.stringify(user));
+        localStorage.setItem("currentUser", JSON.stringify(user));
         window.dispatchEvent(new Event("userLogin"));
 
         if (onSuccess) {

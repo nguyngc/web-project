@@ -19,13 +19,13 @@ const Appointments = () => {
   const itemsPerPage = 3;
 
   // fetch user
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   // Fetch appointments from backend
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const token = sessionStorage.getItem("token");
+        const token = localStorage.getItem("token");
         const res = await fetch(`/api/appointments?userId=${user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,

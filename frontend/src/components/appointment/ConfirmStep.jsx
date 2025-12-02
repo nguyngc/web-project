@@ -3,7 +3,7 @@ import { CalendarDays, Clock, MapPin, CheckCircle2 } from "lucide-react";
 export default function ConfirmStep({ user, appointment, setStep }) {
   const handleConfirm = async () => {
   try {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("token");
     
     const res = await fetch("/api/appointments", {
       method: "POST",
