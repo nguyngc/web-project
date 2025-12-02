@@ -1,15 +1,20 @@
 import { useState } from "react";
+import useField from "../hooks/useField";
+import useLogin from "../hooks/useLogin";
 import { useNavigate } from "react-router-dom";
 import { Mail, Eye, EyeOff } from "lucide-react";
 import Form from "react-bootstrap/Form";
 import GradientButton from "./GradientButton";
 
 const LoginForm = ({ onForgot, onSuccess }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState({ email: "", password: "" });
   const navigate = useNavigate();
+  const [errors, setErrors] = useState({});
+  const [showPassword, setShowPassword] = useState(false);
+
+  const email = useField("email");
+  const password = useField("password");
+
+  const { login, error, isLoading } = useLogin("/api/users/login");
 
   const validate = () => {
     let valid = true;
@@ -17,13 +22,13 @@ const LoginForm = ({ onForgot, onSuccess }) => {
 
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(email.value)) {
       newErrors.email = "Please enter a valid email address.";
       valid = false;
     }
 
     // Password validation (min 6 characters)
-    if (password.length < 6) {
+    if (password.value.length < 6) {
       newErrors.password = "Password must be at least 6 characters.";
       valid = false;
     }
@@ -32,38 +37,50 @@ const LoginForm = ({ onForgot, onSuccess }) => {
     return valid;
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+    const result = await login({
+      email: email.value,
+      password: password.value,
+    });
+    if (result) {
+      console.log("User:", result.user);
+      console.log("Token:", result.token);
 
-    let role = "user";
-    let firstName = "John";
-    let lastName = "Doe";
+      let role = "user";
+      // let firstName = "";
+      // let lastName = "";
 
-    if (email.toLowerCase().includes("doctor")) {
-      role = "doctor";
-      firstName = "Dr. Sarah";
-      lastName = "Johnson";
-    } else if (email.toLowerCase().includes("admin")) {
-      role = "admin";
-      firstName = "Admin";
-      lastName = "Manager";
+      if (email.value.toLowerCase().includes("doctor")) {
+        role = "doctor";
+        // firstName = "Dr. Sarah";
+        // lastName = "Johnson";
+      } else if (email.value.toLowerCase().includes("admin")) {
+        role = "admin";
+        //  firstName = currentUser.firstName 
+        //   lastName = currentUser.lastName 
+      }
+      if (!error) {
+        const user = {
+          email: email.value,
+          password: password.value,
+          role: role,
+        };
+
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        window.dispatchEvent(new Event("userLogin"));
+
+        if (onSuccess) {
+          // Used when called from BookAppointment
+          onSuccess(user);
+        } else {
+          // Default behavior when used from Login page
+          if (role === "user") navigate("/profile");
+          else navigate("/" + role);
+        }
+      }
     }
-
-    const user = { email, firstName, lastName, phone: "(000) 123-4567", role };
-
-    localStorage.setItem("currentUser", JSON.stringify(user));
-    window.dispatchEvent(new Event("userLogin"));
-
-    if (onSuccess) {
-      // Used when called from BookAppointment
-      onSuccess(user);
-    } else {
-      // Default behavior when used from Login page
-      if (role === "user") navigate("/profile");
-      else navigate("/" + role);
-    }
-
   };
 
   return (
@@ -79,12 +96,10 @@ const LoginForm = ({ onForgot, onSuccess }) => {
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           <Form.Control
-            type="email"
+            {...email}
             placeholder="email@example.com"
             className={`w-full pl-10 h-12 bg-gray-50 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 ${errors.email ? "border-red-500" : "border-gray-200"
               }`}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
           />
         </div>
         {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -95,12 +110,10 @@ const LoginForm = ({ onForgot, onSuccess }) => {
         <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
         <div className="relative">
           <Form.Control
-            type={showPassword ? "text" : "password"}
+            {...password}
             placeholder="Enter your password"
             className={`h-12 w-full bg-gray-50 pl-3 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-10 ${errors.password ? "border-red-500" : "border-gray-200"
               }`}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
           />
           <button
             type="button"

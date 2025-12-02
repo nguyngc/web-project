@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import GradientButton from "../GradientButton";
 import ReadonlyField from "../common/ReadonlyField";
+import { format } from "date-fns";
 
 const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
   const [form, setForm] = useState(user);
@@ -47,7 +48,7 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
         <div className="grid md:grid-cols-2 gap-4">
           <ReadonlyField label="First Name" value={user.firstName} />
           <ReadonlyField label="First Name" value={user.lastName} />
-          <ReadonlyField label="Day of Birth" value={user.dob} />
+          <ReadonlyField label="Day of Birth" value={user.dob ? format(new Date(user.dob), "dd/MM/yyyy"):""} />
           <ReadonlyField label="Gender" value={user.gender} />
           <ReadonlyField label="Email" value={user.email} />
           <ReadonlyField label="Phone" value={user.phone} />

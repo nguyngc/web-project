@@ -1,41 +1,92 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import UserProfileForm from "./UserProfileForm";
 import ChangePasswordSection from "../admin/ChangePasswordSection";
 import InfoMessage from "../common/InfoMessage";
 
 const UserProfile = () => {
-  const [user, setUser] = useState({
-    firstName: "Jonh",
-    lastName: "Doe",
-    dob: "DD/MM/YYYY",
-    gender: "Male",
-    email: "doe@gmail.com",
-    phone: "012 3456789",
-    address: "Vuoritie, 1D 02345 Esspoo",
-  });
-
+  const [user, setUser] = useState(null);
   const [editing, setEditing] = useState(false);
   const [message, setMessage] = useState(null);
+
+  const token = localStorage.getItem("token");
+  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const id = currentUser?.id;
+
+  // Fetch user info from backend
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await fetch(`/api/users/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setUser(data);
+        } else {
+          showMessage(data.error || "Failed to load profile", "error");
+        }
+      } catch (err) {
+        showMessage("Network error", "error");
+      }
+    };
+    if (id && token) fetchUser();
+  }, [id, token]);
 
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
     setTimeout(() => setMessage(null), 4000);
   };
 
-  const updateProfile = (updated) => {
-    setUser(updated);
-    setEditing(false);
-    showMessage("Profile updated successfully");
+  // Update profile via backend
+  const updateProfile = async (updated) => {
+    try {
+      const res = await fetch(`/api/users/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updated),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setUser(data);
+        setEditing(false);
+        showMessage("Profile updated successfully");
+      } else {
+        showMessage(data.error || "Failed to update profile", "error");
+      }
+    } catch (err) {
+      showMessage("Network error", "error");
+    }
   };
 
-  const updatePassword = (current, newPass) => {
-    // Mock: always accept "admin123" as the current password
-    if (current !== "admin123") {
-      showMessage("Incorrect current password", "error");
-      return;
+  // Update password via backend
+  const updatePassword = async (currentPassword, newPassword) => {
+    try {
+      const res = await fetch(`/api/users/${id}/password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        showMessage("Password updated successfully");
+      } else {
+        showMessage(data.error || "Failed to update password", "error");
+      }
+    } catch (err) {
+      showMessage("Network error", "error");
     }
-    showMessage("Password updated successfully");
   };
+
+  if (!user) return <p>Loading profile...</p>;
 
   return (
     <div className="flex flex-col gap-6">

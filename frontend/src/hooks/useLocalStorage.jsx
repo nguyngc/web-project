@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 
-export const useLocalStorage = (key, initialValue = null) => {
+const useLocalStorage = (key, initialValue = null) => {
   const readValue = useCallback(() => {
     try {
       const item = localStorage.getItem(key);
@@ -60,3 +60,4 @@ export const useLocalStorage = (key, initialValue = null) => {
 
   return { value, setItem, getItem, removeItem };
 };
+export default useLocalStorage;
