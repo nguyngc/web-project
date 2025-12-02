@@ -3,6 +3,8 @@ const Service = require("../models/serviceModel");
 
 const toBool = (v) => ["true", "1", true, 1, "on"].includes(v);
 
+// GET /api/services?q=kw&isActive=true
+// Public: list services
 const getAll = async (req, res) => {
   const { q, isActive } = req.query;
 
@@ -12,7 +14,11 @@ const getAll = async (req, res) => {
     if (isActive !== undefined) filter.isActive = toBool(isActive);
     if (q) {
       const regex = new RegExp(q, "i");
-      filter.$or = [{ serviceName: regex }, { shortDescription: regex }, { fullDescription: regex }];
+      filter.$or = [
+        { serviceName: regex },
+        { shortDescription: regex },
+        { fullDescription: regex },
+      ];
     }
 
     const services = await Service.find(filter).sort({ createdDateTime: -1 });
@@ -22,6 +28,8 @@ const getAll = async (req, res) => {
   }
 };
 
+// GET /api/services/:serviceId
+// Public
 const getById = async (req, res) => {
   const { serviceId } = req.params;
 
@@ -38,6 +46,8 @@ const getById = async (req, res) => {
   }
 };
 
+// POST /api/services
+// Admin only
 const create = async (req, res) => {
   try {
     const { serviceName } = req.body;
@@ -46,7 +56,12 @@ const create = async (req, res) => {
       return res.status(400).json({ message: "serviceName is required" });
     }
 
-    const service = await Service.create(req.body);
+    const createdBy = req.user?.id || "api";
+
+    const service = await Service.create({
+      ...req.body,
+      createdBy,
+    });
 
     res.status(201).json(service);
   } catch (error) {
@@ -54,6 +69,8 @@ const create = async (req, res) => {
   }
 };
 
+// PUT /api/services/:serviceId
+// Admin only
 const update = async (req, res) => {
   const { serviceId } = req.params;
 
@@ -62,7 +79,12 @@ const update = async (req, res) => {
   }
 
   try {
-    const updated = await Service.findByIdAndUpdate(serviceId, req.body, { new: true });
+    const modifiedBy = req.user?.id || "api";
+    const updateData = { ...req.body, modifiedBy };
+
+    const updated = await Service.findByIdAndUpdate(serviceId, updateData, {
+      new: true,
+    });
     if (!updated) return res.status(404).json({ message: "Service not found" });
     res.json(updated);
   } catch (error) {
@@ -70,6 +92,8 @@ const update = async (req, res) => {
   }
 };
 
+// DELETE /api/services/:serviceId
+// Admin only
 const remove = async (req, res) => {
   const { serviceId } = req.params;
 
@@ -86,7 +110,8 @@ const remove = async (req, res) => {
   }
 };
 
-// toggle isActive
+// PATCH /api/services/:serviceId/toggle
+// Admin only: toggle isActive
 const toggle = async (req, res) => {
   const { serviceId } = req.params;
 
@@ -99,6 +124,8 @@ const toggle = async (req, res) => {
     if (!service) return res.status(404).json({ message: "Service not found" });
 
     service.isActive = !service.isActive;
+    service.modifiedBy = req.user?.id || "api";
+
     await service.save();
 
     res.json(service);

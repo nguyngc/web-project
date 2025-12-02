@@ -3,6 +3,7 @@ const connectDB = require("./config/db");
 const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
+const optionalAuth = require("./middleware/optionalAuth");
 
 const {
   requestLogger,
@@ -16,10 +17,8 @@ dotenv.config();
 const faqRoutes = require("./routes/faqRoutes");
 const bannerRoutes = require("./routes/bannerRoutes");
 const articleRoutes = require("./routes/articleRoutes");
-const categoryRoutes = require("./routes/articleCategoryRoutes");
 const serviceRoutes = require("./routes/serviceRoutes");
 const userRoutes = require("./routes/userRoutes");
-const doctorInfoRoutes = require("./routes/doctorInfoRoutes");
 const appointmentRoutes = require("./routes/appointmentRoutes");
 const doctorTimeRoutes = require("./routes/doctorTimeRoutes");
 
@@ -44,15 +43,13 @@ app.use(requestLogger);
 app.use("/api/faq", faqRoutes);
 app.use("/api/articles", articleRoutes);
 app.use("/api/banners", bannerRoutes);
-app.use("/api/categories", categoryRoutes);
 app.use("/api/services", serviceRoutes);
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
-app.use("/api/doctor-info", doctorInfoRoutes);
 app.use("/api/doctor-time", doctorTimeRoutes);
 
 // AI chat route
-app.post("/api/chat-ai", chatAi);
+app.post("/api/chat-ai", optionalAuth, chatAi);
 
 // Health check / root route
 app.get("/", (req, res) => {

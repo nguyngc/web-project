@@ -30,6 +30,8 @@ const requireAuth = async (req, res, next) => {
       return res.status(403).json({ error: "User is not active" });
     }
 
+    user.id = user._id.toString();
+
     // Attach current user to the request object
     req.user = user;
     next();

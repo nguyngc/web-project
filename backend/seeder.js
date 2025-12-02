@@ -1,54 +1,56 @@
 require("dotenv").config();
-const colors = require("colors");
-const mongoose = require("mongoose");
 const connectDB = require("./config/db");
+
 const services = require("./data/services.js");
 const Service = require("./models/serviceModel.js");
 
 const banners = require("./data/banners.js");
 const Banner = require("./models/bannerModel.js");
 
+const articles = require("./data/articles.js");
+const Article = require("./models/articleModel.js");
 
-connectDB();
-
-const importData = async () => {
+const run = async () => {
   try {
+    // 1. Connect DB
+    await connectDB();
 
-    // Services
+    if (process.argv[2] === "-d") {
+      console.log("Destroying data...");
+      await Service.deleteMany();
+      await Banner.deleteMany();
+      await Article.deleteMany();
+      console.log("Data Destroyed!");
+      process.exit(0);
+    }
+
+    console.log("Seeding data...");
+
+    console.log("Number of services in data:", services.length);
+    console.log("Number of articles in data:", articles.length);
+    // 2. Delete old data
     await Service.deleteMany();
+    await Banner.deleteMany();
+    await Article.deleteMany();
+
+    // 3. Insert new data
     await Service.insertMany(services);
-
-    // Banners
-    await Banner.deleteMany();
     await Banner.insertMany(banners);
+    await Article.insertMany(articles);
 
+    const serviceCount = await Service.countDocuments();
+    const bannerCount = await Banner.countDocuments();
+    const articleCount = await Article.countDocuments();
 
-    // FAQ
-
-
-
-    console.log('Data Imported!'.green.inverse);
-    process.exit();
+    console.log("Services in DB after insert:", serviceCount);
+    console.log("Banners in DB after insert:", bannerCount);
+    console.log("Articles in DB after insert:", articleCount);
+    console.log("Data Imported!");
+    process.exit(0);
   } catch (error) {
-    console.error(`${error}`.red.inverse);
+    console.error("Seeder error:", error);
     process.exit(1);
   }
 };
 
-const destroyData = async () => {
-  try {
-    await Service.deleteMany();
-    await Banner.deleteMany();
-
-    console.log('Data Destroyed!'.red.inverse);
-    process.exit();
-  } catch (error) {
-    console.error(`${error}`.red.inverse);
-    process.exit(1);
-  }
-};
-if (process.argv[2] === '-d') {
-  destroyData();
-} else {
-  importData();
-}
+run();

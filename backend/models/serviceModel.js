@@ -11,10 +11,12 @@ const serviceSchema = new mongoose.Schema(
     frequency: { type: String, default: "" },
     features: { type: String, default: "" },
     benefits: { type: String, default: "" },
-    isActive: { type: Boolean, default: true }
+    isActive: { type: Boolean, default: true },
+    createdBy: { type: String, default: "api" },
+    modifiedBy: { type: String, default: null },
   },
   {
-    timestamps: { createdAt: "createdDateTime", updatedAt: "modifiedDateTime" }
+    timestamps: { createdAt: "createdDateTime", updatedAt: "modifiedDateTime" },
   }
 );
 

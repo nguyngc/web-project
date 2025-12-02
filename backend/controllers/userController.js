@@ -1,20 +1,19 @@
 const mongoose = require("mongoose");
 const User = require("../models/userModel");
-const DoctorInfo = require("../models/doctorInfoModel");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-// Helper: create JWT token for a user
+// Helper: create JWT token for user
 const createToken = (user) => {
   return jwt.sign(
-    { id: user._id, role: user.role }, // payload: user id + role
-    process.env.JWT_SECRET,           // secret stored in .env
-    { expiresIn: "3d" }               // token valid for 3 days
+    { id: user._id, role: user.role },     // payload
+    process.env.JWT_SECRET,                // secret in .env
+    { expiresIn: "3d" }                    // token valid for 3 days
   );
 };
 
-// GET /api/users
-// Admin & doctor can retrieve the user list (authorized by route middleware).
+// GET /api/users?q=kw&role=doctor&status=active
+// Only admin & doctor (checked in routes with requireRole)
 const getAll = async (req, res) => {
   const { q, role, status } = req.query;
 
@@ -23,38 +22,29 @@ const getAll = async (req, res) => {
 
     if (role !== undefined) filter.role = role;
     if (status !== undefined) filter.status = status;
+
     if (q) {
       const regex = new RegExp(q, "i");
-      filter.$or = [{ firstName: regex }, { lastName: regex }, { email: regex }];
+      filter.$or = [
+        { firstName: regex },
+        { lastName: regex },
+        { email: regex },
+      ];
     }
 
-    const users = await User.find(filter).sort({ createdDateTime: -1 }).lean();
+    const users = await User.find(filter)
+      .select("-password") // don't send password
+      .sort({ createdDateTime: -1 });
 
-    const usersWithDoctorInfo = await Promise.all(
-      users.map(async (user) => {
-        if (user.role === "doctor") {
-          const doctorInfo = await DoctorInfo.findOne({ userId: user._id }).lean();
-          return { ...user, doctorInfo: doctorInfo || null };
-        }
-        return user;
-      })
-    );
-
-    // Remove password field in the response
-    const safeUsers = usersWithDoctorInfo.map((u) => {
-      const { password, ...safeUser } = u;
-      return safeUser;
-    });
-
-    res.json(safeUsers);
+    res.json(users);
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve users" });
   }
 };
 
 // GET /api/users/:userId
-// - Admin & doctor: can view any user
-// - Normal user: can only view their own profile
+// - admin & doctor: can view any user
+// - normal user: can only view their own profile
 const getById = async (req, res) => {
   const { userId } = req.params;
 
@@ -63,59 +53,55 @@ const getById = async (req, res) => {
   }
 
   try {
-    const requester = req.user; // set by requireAuth middleware
+    const requester = req.user; // from authMiddleware
 
-    // Normal user can only access their own profile
-    if (requester.role === "user" && requester.id !== userId) {
+    // Normal user: only own profile
+    if (requester?.role === "user" && requester.id !== userId) {
       return res
         .status(403)
-        .json({ message: "Forbidden: you can only view your own profile" });
+        .json({ message: "You can only view your own profile" });
     }
 
-    const user = await User.findById(userId).lean();
+    const user = await User.findById(userId).select("-password");
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (user.role === "doctor") {
-      const doctorInfo = await DoctorInfo.findOne({ userId: user._id }).lean();
-      user.doctorInfo = doctorInfo || null;
-    }
-
-    const { password, ...safeUser } = user;
-    res.json(safeUser);
+    res.json(user);
   } catch (error) {
     res.status(500).json({ message: "Failed to retrieve user" });
   }
 };
 
 // POST /api/users
-// Admin creates a new user/doctor/admin from backend.
+// Admin creates user/doctor/admin
 const create = async (req, res) => {
   try {
     const { firstName, lastName, email, password, role } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "firstName, lastName, email & password are required" });
+      return res.status(400).json({
+        message: "firstName, lastName, email & password are required",
+      });
     }
 
-    // Check email uniqueness
+    // check email uniqueness
     const existing = await User.findOne({ email });
     if (existing) {
       return res.status(400).json({ message: "Email already exists" });
     }
 
-    // Salting + hashing password with bcrypt
+    // hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const createdBy = req.user?.id || "api";
 
-    const user = await User.create({
+    const userData = {
       ...req.body,
-      password: hashedPassword, // store hashed password
+      password: hashedPassword, // save hashed password
       role: role || "user",
       createdBy,
-    });
+    };
+
+    const user = await User.create(userData);
 
     const userObj = user.toObject();
     delete userObj.password;
@@ -130,7 +116,7 @@ const create = async (req, res) => {
 };
 
 // POST /api/users/signup
-// Public endpoint: patient signs up, gets token immediately.
+// Public signup for patient (role = user)
 const signup = async (req, res) => {
   try {
     const {
@@ -145,9 +131,9 @@ const signup = async (req, res) => {
     } = req.body;
 
     if (!firstName || !lastName || !email || !password) {
-      return res
-        .status(400)
-        .json({ error: "firstName, lastName, email and password are required" });
+      return res.status(400).json({
+        error: "firstName, lastName, email and password are required",
+      });
     }
 
     const existing = await User.findOne({ email });
@@ -161,7 +147,6 @@ const signup = async (req, res) => {
         .json({ error: "Password must be at least 6 characters" });
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
@@ -169,7 +154,7 @@ const signup = async (req, res) => {
       lastName,
       email,
       password: hashedPassword,
-      role: "user",          // signup only creates normal user (patient)
+      role: "user", // signup only user (patient)
       dob: dob || null,
       gender: gender || null,
       phone: phone || "",
@@ -196,7 +181,6 @@ const signup = async (req, res) => {
 };
 
 // POST /api/users/login
-// Public endpoint: log in and receive a JWT token.
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -212,7 +196,6 @@ const login = async (req, res) => {
       return res.status(400).json({ error: "Incorrect email or password" });
     }
 
-    // Compare plaintext password with hashed password in DB
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(400).json({ error: "Incorrect email or password" });
@@ -237,8 +220,10 @@ const login = async (req, res) => {
 };
 
 // PUT /api/users/:userId
-// - Admin & doctor: can update any user
-// - Normal user: can only update their own basic profile fields (including email, phone)
+// - admin & doctor: can update any user
+// - normal user: only update themselves
+// - only admin can change role/status
+// - supports toggleStatus for admin
 const update = async (req, res) => {
   const { userId } = req.params;
 
@@ -247,171 +232,68 @@ const update = async (req, res) => {
   }
 
   try {
-    const requester = req.user; // current logged-in user (from requireAuth)
+    const requester = req.user; // { id, role }
 
-    // Normal user can only update their own profile
+    if (!requester) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // Normal user can only update themselves
     if (requester.role === "user" && requester.id !== userId) {
       return res
         .status(403)
-        .json({ message: "Forbidden: you can only update your own profile" });
+        .json({ message: "You can only update your own profile" });
     }
 
-    let updateData = { ...req.body };
-
-    // Never allow updating sensitive fields through this endpoint
-    delete updateData.role;
-    delete updateData.status;
-    delete updateData.createdBy;
-    delete updateData.modifiedBy;
-    delete updateData.password; // password is handled via separate endpoint
-
-    // If normal user, restrict which fields they can update
-    if (requester.role === "user") {
-      const allowedFields = [
-        "firstName",
-        "lastName",
-        "dob",
-        "gender",
-        "phone",
-        "address",
-        "email", // allow user to update their own email
-      ];
-
-      const safeData = {};
-      for (const field of allowedFields) {
-        if (updateData[field] !== undefined) {
-          safeData[field] = updateData[field];
-        }
+    // Admin toggle status shortcut: { toggleStatus: true }
+    if (req.body.toggleStatus && requester.role === "admin") {
+      const existing = await User.findById(userId);
+      if (!existing) {
+        return res.status(404).json({ message: "User not found" });
       }
-      updateData = safeData;
+
+      existing.status = existing.status === "active" ? "inactive" : "active";
+      existing.modifiedBy = requester.id;
+
+      const saved = await existing.save();
+      const obj = saved.toObject();
+      delete obj.password;
+
+      return res.json(obj);
     }
 
-    // If email is being updated, ensure uniqueness
-    if (updateData.email) {
-      const existingWithEmail = await User.findOne({
-        email: updateData.email,
-        _id: { $ne: userId }, // exclude current user
-      });
+    const updateData = { ...req.body };
 
-      if (existingWithEmail) {
-        return res.status(400).json({ message: "Email already in use" });
-      }
+    // Only admin is allowed to change role or status directly
+    if (requester.role !== "admin") {
+      delete updateData.role;
+      delete updateData.status;
+      delete updateData.createdBy;
     }
 
-    updateData.modifiedBy = requester.id;
+    updateData.modifiedBy = requester.id || "api";
+
+    // If updating password, hash it
+    if (updateData.password) {
+      updateData.password = await bcrypt.hash(updateData.password, 10);
+    }
 
     const updated = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
-    });
+    }).select("-password");
 
-    if (!updated) return res.status(404).json({ message: "User not found" });
+    if (!updated) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-    const updatedObj = updated.toObject();
-    delete updatedObj.password;
-
-    res.json(updatedObj);
+    res.json(updated);
   } catch (error) {
     res.status(500).json({ message: "Failed to update user" });
   }
 };
 
-// PUT /api/users/:userId/password
-// - Normal user: can change their own password (must provide current password)
-const changePassword = async (req, res) => {
-  const { userId } = req.params;
-  const { currentPassword, newPassword } = req.body;
-
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ message: "Invalid User ID" });
-  }
-
-  if (!newPassword || newPassword.length < 6) {
-    return res
-      .status(400)
-      .json({ message: "New password must be at least 6 characters" });
-  }
-
-  try {
-    const requester = req.user;
-
-    // Only allow user to change their own password
-    if (requester.id !== userId) {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: you can only change your own password" });
-    }
-
-    if (!currentPassword) {
-      return res
-        .status(400)
-        .json({ message: "Current password is required" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    const match = await bcrypt.compare(currentPassword, user.password);
-    if (!match) {
-      return res.status(400).json({ message: "Current password is incorrect" });
-    }
-
-    const hashed = await bcrypt.hash(newPassword, 10);
-    user.password = hashed;
-    user.modifiedBy = requester.id;
-
-    await user.save();
-
-    res.json({ message: "Password updated successfully" });
-  } catch (error) {
-    console.error("changePassword error:", error);
-    res.status(500).json({ message: "Failed to change password" });
-  }
-};
-
-// PATCH /api/users/:userId/status
-// Toggle user status between "active" and "inactive".
-// Accessible by: admin (enforced in route via requireRole("admin")).
-const toggleStatus = async (req, res) => {
-  const { userId } = req.params;
-
-  if (!mongoose.Types.ObjectId.isValid(userId)) {
-    return res.status(400).json({ message: "Invalid User ID" });
-  }
-
-  try {
-    const requester = req.user;
-
-    // Optional: prevent admin from changing their own status
-    if (requester.id === userId) {
-      return res
-        .status(400)
-        .json({ message: "You cannot change your own status" });
-    }
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ message: "User not found" });
-
-    // Toggle between "active" and "inactive"
-    user.status = user.status === "active" ? "inactive" : "active";
-    user.modifiedBy = requester.id;
-
-    await user.save();
-
-    const userObj = user.toObject();
-    delete userObj.password;
-
-    res.json({
-      message: "User status updated",
-      user: userObj,
-    });
-  } catch (error) {
-    console.error("toggleStatus error:", error);
-    res.status(500).json({ message: "Failed to update user status" });
-  }
-};
-
 // DELETE /api/users/:userId
-// Admin can delete a user account.
+// Only admin (checked in routes with requireRole("admin"))
 const remove = async (req, res) => {
   const { userId } = req.params;
 
@@ -421,7 +303,9 @@ const remove = async (req, res) => {
 
   try {
     const deleted = await User.findByIdAndDelete(userId);
-    if (!deleted) return res.status(404).json({ message: "User not found" });
+    if (!deleted) {
+      return res.status(404).json({ message: "User not found" });
+    }
     res.json({ message: "Deleted" });
   } catch (error) {
     res.status(500).json({ message: "Failed to delete user" });
@@ -436,6 +320,4 @@ module.exports = {
   remove,
   signup,
   login,
-  changePassword,
-  toggleStatus,
 };

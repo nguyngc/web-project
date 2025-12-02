@@ -1,11 +1,26 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../controllers/articleController");
+const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 
-router.get("/", ctrl.getAll); // ?isPublished=true&q=keyword
+// GET /api/articles?q=kw&category=Eye%20Health&isPublished=true
+// Public: list articles
+router.get("/", ctrl.getAll);
+
+// GET /api/articles/:articleId
+// Public: get single article by id
 router.get("/:articleId", ctrl.getById);
-router.post("/", ctrl.create);
-router.put("/:articleId", ctrl.update);
-router.delete("/:articleId", ctrl.remove);
+
+// POST /api/articles
+// Protected: only admin can create article
+router.post("/", requireAuth, requireRole("admin"), ctrl.create);
+
+// PUT /api/articles/:articleId
+// Protected: only admin can update article
+router.put("/:articleId", requireAuth, requireRole("admin"), ctrl.update);
+
+// DELETE /api/articles/:articleId
+// Protected: only admin can delete article
+router.delete("/:articleId", requireAuth, requireRole("admin"), ctrl.remove);
 
 module.exports = router;

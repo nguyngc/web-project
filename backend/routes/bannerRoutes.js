@@ -1,16 +1,51 @@
 const express = require("express");
 const router = express.Router();
 const ctrl = require("../controllers/bannerController");
+const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 
-router.get("/", ctrl.getAll);              // ?active=true&q=kw
+// Public
+// GET /api/banners?active=true&q=kw
+router.get("/", ctrl.getAll);
+
+// GET /api/banners/:bannerId
 router.get("/:bannerId", ctrl.getById);
 
-router.post("/", ctrl.create);             // { image, title, ... }
+// Admin only
 
-router.put("/reorder", ctrl.reorder);      // body: [{id, order}, ...]
+// POST /api/banners
+router.post("/", requireAuth, requireRole("admin"), ctrl.create);
 
-router.put("/:bannerId", ctrl.update);
-router.delete("/:bannerId", ctrl.remove);
-router.patch("/:bannerId/toggle", ctrl.toggle);
+// PUT /api/banners/reorder
+// body: [{ id, order }, ...]
+router.put(
+  "/reorder",
+  requireAuth,
+  requireRole("admin"),
+  ctrl.reorder
+);
+
+// PUT /api/banners/:bannerId
+router.put(
+  "/:bannerId",
+  requireAuth,
+  requireRole("admin"),
+  ctrl.update
+);
+
+// DELETE /api/banners/:bannerId
+router.delete(
+  "/:bannerId",
+  requireAuth,
+  requireRole("admin"),
+  ctrl.remove
+);
+
+// PATCH /api/banners/:bannerId/toggle
+router.patch(
+  "/:bannerId/toggle",
+  requireAuth,
+  requireRole("admin"),
+  ctrl.toggle
+);
 
 module.exports = router;
