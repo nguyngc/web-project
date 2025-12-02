@@ -108,6 +108,7 @@ const create = async (req, res) => {
 
     res.status(201).json(userObj);
   } catch (error) {
+    console.log(error);
     if (error.code === 11000) {
       return res.status(400).json({ message: "Email already exists" });
     }
@@ -252,10 +253,10 @@ const update = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
 
-      existing.status = existing.status === "active" ? "inactive" : "active";
+      existing.status = !existing.status;
       existing.modifiedBy = requester.id;
 
-      const saved = await existing.save();
+      const saved = await existing.save({ validateBeforeSave: false });
       const obj = saved.toObject();
       delete obj.password;
 
@@ -274,7 +275,7 @@ const update = async (req, res) => {
     updateData.modifiedBy = requester.id || "api";
 
     // If updating password, hash it
-    if (updateData.password) {
+    if (updateData.password && updateData.password.trim() !== "") {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
 
