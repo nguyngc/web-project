@@ -154,7 +154,6 @@ const BannerList = () => {
 
     const ordered = arr.map((b, i) => ({ ...b, order: i + 1 }));
 
-    setBanners(ordered);
     await saveOrder(ordered);
     showMessage("Banner order updated");
   };
@@ -168,7 +167,6 @@ const BannerList = () => {
 
     const ordered = arr.map((b, i) => ({ ...b, order: i + 1 }));
 
-    setBanners(ordered);
     await saveOrder(ordered);
     showMessage("Banner order updated");
   };

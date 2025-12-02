@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Form, Button } from "react-bootstrap";
 import GradientButton from "../GradientButton";
-import { Eye, EyeOff } from "lucide-react";
+import JoditEditor from "jodit-react";
 
 const ArticleForm = ({
   mode = "add",
@@ -9,32 +9,54 @@ const ArticleForm = ({
   onSubmit,
   onCancel,
 }) => {
+  const editor = useRef(null);
+
   const [form, setForm] = useState({
     category: "",
-    status: true, // true = published, false = draft
+    isPublished: true,
     title: "",
     subtitle: "",
     author: "",
     readTime: "",
     authorBio: "",
-    date: "",
-    imageUrl: "",
+    image: "",
     content: "",
   });
 
-  const [showPreview, setShowPreview] = useState(false);
+  const [imagePreview, setImagePreview] = useState("");
 
+  // ---------- Load initial data ----------
   useEffect(() => {
     if (initialData) {
-      setForm({
-        ...initialData,
-        status: initialData.status ?? true,
-      });
+      const mapped = {
+        category: initialData.category || "",
+        isPublished: initialData.isPublished || true,
+        title: initialData.title || "",
+        subtitle: initialData.subtitle || "",
+        author: initialData.author || "",
+        readTime: initialData.readTime || "",
+        authorBio: initialData.authorBio || "",
+        image: initialData.image || initialData.imageUrl || "",
+        content: initialData.content || "",
+      };
+
+      setForm(mapped);
+      setImagePreview(mapped.image);
     }
   }, [initialData]);
 
-  const handleChange = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+  // ---------- Image upload ----------
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result;
+      setForm((prev) => ({ ...prev, image: base64 }));
+      setImagePreview(base64);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleSubmit = (e) => {
@@ -42,11 +64,11 @@ const ArticleForm = ({
     onSubmit(form);
   };
 
-  const labelClass = "block text-[#364153] text-sm mb-2 mt-4";
+  const labelClass = "block text-[#364153] text-sm mb-1 mt-4";
   const inputClass =
-    "w-full h-10 px-3 rounded-lg border border-transparent bg-[#F3F3F5] text-sm text-[#717182] placeholder:text-[#717182] focus:outline-none focus:ring-2 focus:ring-vision-blue-accent";
+    "w-full h-10 px-3 rounded-lg bg-[#F3F3F5] text-sm placeholder:text-[#717182] outline-none focus:ring-2 ring-vision-blue-accent";
   const textareaClass =
-    "w-full px-3 py-2 rounded-lg border border-transparent bg-[#F3F3F5] text-sm text-[#717182] placeholder:text-[#717182] focus:outline-none focus:ring-2 focus:ring-vision-blue-accent";
+    "w-full px-3 py-2 rounded-lg bg-[#F3F3F5] text-sm placeholder:text-[#717182] outline-none focus:ring-2 ring-vision-blue-accent";
 
   return (
     <div className="bg-white p-8 rounded-xl shadow-md">
@@ -66,64 +88,70 @@ const ArticleForm = ({
             Basic Information
           </h3>
 
+          {/* Category */}
           <Form.Group>
             <label className={labelClass}>Category *</label>
             <Form.Control
               className={inputClass}
               value={form.category}
-              onChange={(e) => handleChange("category", e.target.value)}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, category: e.target.value }))
+              }
             />
           </Form.Group>
 
-          {/* Status – boolean radio */}
+          {/* Status */}
           <Form.Group>
             <label className={labelClass}>Status *</label>
             <div className="flex gap-6 pt-2">
-              {[true, false].map((value) => (
-                <label
-                  key={value ? "published" : "draft"}
-                  className="flex items-center gap-2 text-gray-700 text-sm"
-                >
+              {[true, false].map((v) => (
+                <label key={v.toString()} className="flex items-center gap-2">
                   <input
                     type="radio"
-                    name="status"
-                    value={value.toString()}
-                    checked={form.status === value}
-                    onChange={() => handleChange("status", value)}
+                    name="isPublished"
+                    checked={form.isPublished === v}
+                    onChange={() => setForm((p) => ({ ...p, isPublished: v }))}
                   />
-                  <span className="capitalize">
-                    {value ? "published" : "draft"}
-                  </span>
+                  <span>{v ? "Published" : "Draft"}</span>
                 </label>
               ))}
             </div>
           </Form.Group>
 
+          {/* Title */}
           <Form.Group>
             <label className={labelClass}>Title *</label>
             <Form.Control
               className={inputClass}
               value={form.title}
-              onChange={(e) => handleChange("title", e.target.value)}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, title: e.target.value }))
+              }
             />
           </Form.Group>
 
+          {/* Subtitle */}
           <Form.Group>
             <label className={labelClass}>Subtitle *</label>
             <Form.Control
               className={inputClass}
               value={form.subtitle}
-              onChange={(e) => handleChange("subtitle", e.target.value)}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, subtitle: e.target.value }))
+              }
             />
           </Form.Group>
 
+          {/* Author + read time */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Form.Group>
               <label className={labelClass}>Author *</label>
               <Form.Control
                 className={inputClass}
                 value={form.author}
-                onChange={(e) => handleChange("author", e.target.value)}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, author: e.target.value }))
+                }
               />
             </Form.Group>
 
@@ -132,11 +160,14 @@ const ArticleForm = ({
               <Form.Control
                 className={inputClass}
                 value={form.readTime}
-                onChange={(e) => handleChange("readTime", e.target.value)}
+                onChange={(e) =>
+                  setForm((p) => ({ ...p, readTime: e.target.value }))
+                }
               />
             </Form.Group>
           </div>
 
+          {/* Author Bio */}
           <Form.Group>
             <label className={labelClass}>Author Bio *</label>
             <Form.Control
@@ -144,72 +175,50 @@ const ArticleForm = ({
               rows={2}
               className={textareaClass}
               value={form.authorBio}
-              onChange={(e) => handleChange("authorBio", e.target.value)}
+              onChange={(e) =>
+                setForm((p) => ({ ...p, authorBio: e.target.value }))
+              }
             />
           </Form.Group>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Form.Group>
-              <label className={labelClass}>Date *</label>
-              <Form.Control
-                type="date"
-                className={inputClass}
-                value={form.date}
-                onChange={(e) => handleChange("date", e.target.value)}
+          {/* Feature Image */}
+          <Form.Group>
+            <label className={labelClass}>Image *</label>
+            <Form.Control
+              type="file"
+              accept="image/*"
+              className={inputClass}
+              onChange={handleImageUpload}
+            />
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="h-32 mt-3 rounded-lg border object-cover"
               />
-            </Form.Group>
-
-            <Form.Group>
-              <label className={labelClass}>Image URL *</label>
-              <Form.Control
-                className={inputClass}
-                value={form.imageUrl}
-                onChange={(e) => handleChange("imageUrl", e.target.value)}
-              />
-            </Form.Group>
-          </div>
+            )}
+          </Form.Group>
         </div>
 
-        {/* CONTENT */}
-        <div className="border-b border-gray-200 pb-6">
-          <h3 className="font-semibold text-gray-700 mb-4">Article Content</h3>
+        {/* ARTICLE CONTENT */}
+        <div>
+          <h3 className="font-semibold text-gray-700 mb-4">
+            Article Content
+          </h3>
 
-          <div className="flex justify-between items-center mb-2">
-            <span className="text-xs md:text-sm text-gray-500">
-              Use the toolbar buttons to insert HTML, or write HTML directly.
-            </span>
-
-            <button
-              type="button"
-              className="flex items-center gap-1 text-sm text-gray-600 hover:text-gray-800"
-              onClick={() => setShowPreview((prev) => !prev)}
-            >
-              {showPreview ? (
-                <>
-                  <EyeOff className="w-4 h-4" /> Editor
-                </>
-              ) : (
-                <>
-                  <Eye className="w-4 h-4" /> Preview
-                </>
-              )}
-            </button>
-          </div>
-
-          {!showPreview ? (
-            <Form.Control
-              as="textarea"
-              rows={10}
-              className={textareaClass}
-              value={form.content}
-              onChange={(e) => handleChange("content", e.target.value)}
-            />
-          ) : (
-            <div
-              className="p-4 bg-gray-50 rounded-lg border border-gray-200 prose max-w-none"
-              dangerouslySetInnerHTML={{ __html: form.content }}
-            />
-          )}
+          <JoditEditor
+            ref={editor}
+            value={form.content}
+            config={{
+              readonly: false,
+              height: 400,
+              uploader: { insertImageAsBase64URI: true },
+              toolbarButtonSize: "medium",
+            }}
+            onBlur={(newContent) =>
+              setForm((prev) => ({ ...prev, content: newContent }))
+            }
+          />
         </div>
 
         {/* BUTTONS */}

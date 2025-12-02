@@ -33,7 +33,9 @@ connectDB();
 app.use(cors());
 
 // Parse incoming JSON requests
-app.use(express.json());
+// app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // Log all incoming requests (method, path, body)
 app.use(requestLogger);
