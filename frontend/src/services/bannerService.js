@@ -41,7 +41,6 @@ export const toggleBanner = async (id) => {
   const res = await fetch(`${BASE}/${id}/toggle`, {
     method: "PATCH",
     headers: {
-      "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
   });
@@ -54,7 +53,6 @@ export const deleteBanner = async (id) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "DELETE",
     headers: {
-      "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     },
   });

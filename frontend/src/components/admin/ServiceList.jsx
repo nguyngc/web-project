@@ -1,23 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Search } from "lucide-react";
-import servicesData from "../../data/services";
 import ServiceRow from "./ServiceRow";
 import ServiceForm from "./ServiceForm";
 import Pagination from "../common/Pagination";
 import InfoMessage from "../common/InfoMessage";
 
+import {
+  getServices,
+  createService,
+  updateService,
+  toggleService
+} from "../../services/serviceService";
+
+
 const ServiceList = () => {
-  const [services, setServices] = useState([...servicesData]);
+  const [services, setServices] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedService, setSelectedService] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    loadServices();
+  }, []);
+
+  const loadServices = async () => {
+    const data = await getServices();
+    setServices(data);
+  };
+
   const itemsPerPage = 5;
 
   const filtered = services.filter((svc) =>
-    svc.name.toLowerCase().includes(search.toLowerCase())
+    svc.serviceName.toLowerCase().includes(search.toLowerCase())
   );
 
   const paginated = filtered.slice(
@@ -30,39 +46,15 @@ const ServiceList = () => {
     setTimeout(() => setMessage(null), 3000);
   };
 
-  const handleToggleStatus = (id) => {
-    setServices((prev) =>
-      prev.map((svc) =>
-        svc.id === id ? { ...svc, status: !svc.status } : svc
-      )
-    );
+  const handleToggleStatus = async (id) => {
+    await toggleService(id);
+    loadServices();
+    // setServices((prev) =>
+    //   prev.map((svc) =>
+    //     svc.id === id ? { ...svc, status: !svc.status } : svc
+    //   )
+    // );
     showMessage("Service status updated.");
-  };
-
-  const handleMoveUp = (id) => {
-    setServices((prev) => {
-      const idx = prev.findIndex((s) => s.id === id);
-      if (idx <= 0) return prev;
-
-      const newArr = [...prev];
-      [newArr[idx - 1], newArr[idx]] = [newArr[idx], newArr[idx - 1]];
-
-      return newArr;
-    });
-    showMessage("Service order updated.");
-  };
-
-  const handleMoveDown = (id) => {
-    setServices((prev) => {
-      const idx = prev.findIndex((s) => s.id === id);
-      if (idx === prev.length - 1) return prev;
-
-      const newArr = [...prev];
-      [newArr[idx], newArr[idx + 1]] = [newArr[idx + 1], newArr[idx]];
-
-      return newArr;
-    });
-    showMessage("Service order updated.");
   };
 
   const handleEdit = (svc) => {
@@ -75,31 +67,18 @@ const ServiceList = () => {
     setShowForm(true);
   };
 
-  const handleSave = (data) => {
+  const handleSave = async (data) => {
     if (selectedService) {
-      // update
-      setServices((prev) =>
-        prev.map((svc) =>
-          svc.id === selectedService.id
-            ? { ...data, id: selectedService.id }
-            : svc
-        )
-      );
+      await updateService(selectedService._id, data);
       showMessage("Service updated successfully.");
     } else {
-      // create
-      setServices([
-        {
-          ...data,
-          id: `svc-${Date.now()}`,
-          order: services.length + 1
-        },
-        ...services
-      ]);
+      await createService(data);
       showMessage("Service created successfully.");
     }
 
     setShowForm(false);
+    setSelectedService(null);
+    loadServices();
   };
 
   return (
@@ -125,7 +104,7 @@ const ServiceList = () => {
           </button>
         )}
       </div>
-      
+
       {/* Success Message */}
       {message && (
         <InfoMessage
@@ -164,21 +143,13 @@ const ServiceList = () => {
           </div>
 
           {/* Rows */}
-          {paginated.map((svc, index) => {
-            const globalIndex = services.findIndex(s => s.id === svc.id);
-            const isFirst = globalIndex === 0;
-            const isLast = globalIndex === services.length - 1;
-
+          {paginated.map((svc) => {
             return (
               <ServiceRow
                 key={svc.id}
                 service={svc}
                 onToggleStatus={handleToggleStatus}
-                onMoveUp={handleMoveUp}
-                onMoveDown={handleMoveDown}
                 onEdit={handleEdit}
-                isFirst={isFirst}
-                isLast={isLast}
               />
             );
           })}
