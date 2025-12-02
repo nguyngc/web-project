@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const articleSchema = new mongoose.Schema(
   {
-    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "ArticleCategory", required: true },
+    category: { type: String, default: "" },
     title: { type: String, required: true },
     subtitle: { type: String, default: "" },
     authorBio: { type: String, default: "" },
