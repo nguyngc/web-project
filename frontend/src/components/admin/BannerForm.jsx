@@ -19,15 +19,32 @@ const BannerForm = ({
     isActive: true,
   });
 
+  const [imagePreview, setImagePreview] = useState("");
+
   // Load initial data in EDIT mode
   useEffect(() => {
     if (initialData) {
       setForm(initialData);
+      setImagePreview(initialData.image || "");
     }
   }, [initialData]);
 
   const handleChange = (field, value) => {
     setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Convert uploaded file → Base64
+  const handleImageUpload = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result;
+      setForm((prev) => ({ ...prev, image: base64 }));
+      setImagePreview(base64);
+    };
+    reader.readAsDataURL(file);
   };
 
   const labelClass = "block text-[#364153] text-sm mb-2";
@@ -54,6 +71,7 @@ const BannerForm = ({
       >
         <h3 className="font-semibold text-gray-700">Banner Information</h3>
 
+        {/* Badge */}
         <Form.Group>
           <label className={labelClass}>Badge *</label>
           <Form.Control
@@ -63,15 +81,29 @@ const BannerForm = ({
           />
         </Form.Group>
 
+        {/* Image Upload Field */}
         <Form.Group>
-          <label className={labelClass}>Image URL *</label>
+          <label className={labelClass}>Banner Image *</label>
           <Form.Control
+            type="file"
+            accept="image/*"
             className={inputClass}
-            value={form.image}
-            onChange={(e) => handleChange("image", e.target.value)}
+            onChange={handleImageUpload}
           />
+
+          {/* Preview */}
+          {imagePreview && (
+            <div className="mt-3">
+              <img
+                src={imagePreview}
+                alt="Banner Preview"
+                className="h-32 rounded-lg border object-cover"
+              />
+            </div>
+          )}
         </Form.Group>
 
+        {/* Title */}
         <Form.Group>
           <label className={labelClass}>Title *</label>
           <Form.Control
@@ -81,6 +113,7 @@ const BannerForm = ({
           />
         </Form.Group>
 
+        {/* Subtitle */}
         <Form.Group>
           <label className={labelClass}>Subtitle *</label>
           <Form.Control
@@ -90,6 +123,7 @@ const BannerForm = ({
           />
         </Form.Group>
 
+        {/* Button Text + Link */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Form.Group>
             <label className={labelClass}>Button Text *</label>
@@ -110,6 +144,7 @@ const BannerForm = ({
           </Form.Group>
         </div>
 
+        {/* Order + Status */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Form.Group>
             <label className={labelClass}>Order *</label>
@@ -121,7 +156,6 @@ const BannerForm = ({
             />
           </Form.Group>
 
-          {/* STATUS BOOLEAN RADIO */}
           <Form.Group>
             <label className={labelClass}>Status *</label>
             <div className="flex gap-6 pt-2">

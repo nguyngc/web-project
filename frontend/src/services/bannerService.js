@@ -6,10 +6,16 @@ export const getAllBanners = async () => {
   return res.json();
 };
 
+// ---------- ADMIN CRUD ----------
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmViMDU3OGY5MTY2MWE0NjQ1N2E4MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzY0NjY3NDc5LCJleHAiOjE3NjQ5MjY2Nzl9.MP0b-k35lF2PHlUJK1fjVdS4yCyTvTTuueRZtqQ4EOo';
+
 export const createBanner = async (form) => {
   const res = await fetch(BASE, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
     body: JSON.stringify(form),
   });
 
@@ -20,7 +26,10 @@ export const createBanner = async (form) => {
 export const updateBanner = async (id, form) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
     body: JSON.stringify(form),
   });
 
@@ -31,6 +40,10 @@ export const updateBanner = async (id, form) => {
 export const toggleBanner = async (id) => {
   const res = await fetch(`${BASE}/${id}/toggle`, {
     method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
   });
 
   if (!res.ok) throw new Error("Failed to toggle status");
@@ -40,6 +53,10 @@ export const toggleBanner = async (id) => {
 export const deleteBanner = async (id) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
   });
 
   if (!res.ok) throw new Error("Failed to delete banner");
@@ -48,13 +65,16 @@ export const deleteBanner = async (id) => {
 
 export const reorderBanners = async (list) => {
   const payload = list.map((b, i) => ({
-    id: b.id,
+    id: b._id,
     order: i + 1,
   }));
 
   const res = await fetch(`${BASE}/reorder`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
     body: JSON.stringify(payload),
   });
 

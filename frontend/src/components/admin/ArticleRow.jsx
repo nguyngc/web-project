@@ -2,11 +2,8 @@ import { Edit2, Trash2 } from "lucide-react";
 import ToggleSwitch from "../common/ToggleSwitch";
 
 const ArticleRow = ({ article, onToggleStatus, onEdit, onDelete }) => {
-  const statusLabel = article.status ? "published" : "draft";
-  const statusClass =
-    article.status
-      ? "bg-blue-100 text-blue-700"
-      : "bg-gray-200 text-gray-600";
+  const statusLabel = article.isPublished ? "published" : "draft";
+  const statusClass = article.isPublished ? "bg-blue-100 text-blue-700" : "bg-gray-200 text-gray-600";
 
   return (
     <div
@@ -19,7 +16,7 @@ const ArticleRow = ({ article, onToggleStatus, onEdit, onDelete }) => {
       {/* Thumbnail */}
       <div className="w-full md:w-32 h-32 md:h-20 rounded-lg overflow-hidden">
         <img
-          src={article.imageUrl}
+          src={article.image}
           alt={article.title}
           className="w-full h-full object-cover"
         />
@@ -47,20 +44,17 @@ const ArticleRow = ({ article, onToggleStatus, onEdit, onDelete }) => {
 
       {/* Status + actions */}
       <div className="flex items-center gap-3">
-        {/* Status badge */}
         <span
           className={`px-3 py-1 text-xs rounded-full capitalize ${statusClass}`}
         >
           {statusLabel}
         </span>
 
-        {/* Toggle */}
         <ToggleSwitch
-          checked={article.status}
+          checked={article.isPublished}
           onChange={() => onToggleStatus(article.id)}
         />
 
-        {/* Edit */}
         <button
           onClick={() => onEdit(article)}
           className="w-9 h-9 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50"
@@ -68,7 +62,6 @@ const ArticleRow = ({ article, onToggleStatus, onEdit, onDelete }) => {
           <Edit2 className="w-4 h-4" />
         </button>
 
-        {/* Delete */}
         <button
           onClick={() => onDelete(article)}
           className="w-9 h-9 border border-gray-300 rounded-lg flex items-center justify-center hover:bg-gray-50"
