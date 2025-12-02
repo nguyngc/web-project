@@ -2,7 +2,7 @@ const Banner = require("../models/bannerModel");
 
 const toBool = (v) => ["true", "1", true, 1, "on"].includes(v);
 
-// GET /banners?active=true&q=kid
+// GET /api/banners?active=true&q=kw
 const getAll = async (req, res) => {
   try {
     const { active, q } = req.query;
@@ -25,7 +25,7 @@ const getAll = async (req, res) => {
   }
 };
 
-// GET /banners/:bannerId
+// GET /api/banners/:bannerId
 const getById = async (req, res) => {
   try {
     const b = await Banner.findById(req.params.bannerId);
@@ -37,11 +37,19 @@ const getById = async (req, res) => {
   }
 };
 
-// POST /banners
+// POST /api/banners
 const create = async (req, res) => {
   try {
-    const { badge, image, title, subtitle, buttonText, buttonLink, order, isActive } =
-      req.body || {};
+    const {
+      badge,
+      image,
+      title,
+      subtitle,
+      buttonText,
+      buttonLink,
+      order,
+      isActive,
+    } = req.body || {};
 
     if (!image || !title) {
       return res
@@ -63,7 +71,8 @@ const create = async (req, res) => {
       buttonText: buttonText || "",
       buttonLink: buttonLink || "",
       order: Number(resolvedOrder),
-      isActive: isActive !== undefined ? !!isActive : true,
+      isActive:
+        isActive !== undefined ? toBool(isActive) : true,
       createdBy: req.user?.id || "api",
     });
 
@@ -74,13 +83,13 @@ const create = async (req, res) => {
   }
 };
 
-// PUT /banners/:bannerId
+// PUT /api/banners/:bannerId
 const update = async (req, res) => {
   try {
     const data = { ...req.body, modifiedBy: req.user?.id || "api" };
 
     if (data.order !== undefined) data.order = Number(data.order);
-    if (data.isActive !== undefined) data.isActive = !!data.isActive;
+    if (data.isActive !== undefined) data.isActive = toBool(data.isActive);
 
     const updated = await Banner.findByIdAndUpdate(
       req.params.bannerId,
@@ -96,7 +105,7 @@ const update = async (req, res) => {
   }
 };
 
-// DELETE /banners/:bannerId
+// DELETE /api/banners/:bannerId
 const remove = async (req, res) => {
   try {
     const deleted = await Banner.findByIdAndDelete(req.params.bannerId);
@@ -109,7 +118,7 @@ const remove = async (req, res) => {
   }
 };
 
-// PATCH /banners/:bannerId/toggle
+// PATCH /api/banners/:bannerId/toggle
 const toggle = async (req, res) => {
   try {
     const b = await Banner.findById(req.params.bannerId);
@@ -126,7 +135,7 @@ const toggle = async (req, res) => {
   }
 };
 
-// PATCH /banners/reorder   body = [{ id, order }, ...]
+// PUT /api/banners/reorder   body = [{ id, order }, ...]
 const reorder = async (req, res) => {
   try {
     if (!Array.isArray(req.body)) {
@@ -137,7 +146,6 @@ const reorder = async (req, res) => {
 
     const pairs = req.body;
 
-    // option: validate
     for (const p of pairs) {
       if (!p || !p.id || p.order === undefined) {
         return res.status(400).json({ message: "Invalid ids/orders" });

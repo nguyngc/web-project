@@ -3,8 +3,8 @@ const router = express.Router();
 const ctrl = require("../controllers/articleController");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 
-// GET /api/articles
-// Public: list articles (optional ?q=kw&isActive=true)
+// GET /api/articles?q=kw&category=Eye%20Health&isPublished=true
+// Public: list articles
 router.get("/", ctrl.getAll);
 
 // GET /api/articles/:articleId

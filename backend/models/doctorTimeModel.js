@@ -8,20 +8,31 @@ const doctorTimeSchema = new mongoose.Schema(
       required: true,
     },
     week: { type: String, default: "" },
-    date: { type: String, required: true }, // e.g. "2025-01-20"
+    //  format "YYYY-MM-DD"
+    date: { type: String, required: true },
+
     availableTime: {
       slot1: { type: Boolean, default: false }, // 8:00-9:00
       slot2: { type: Boolean, default: false }, // 9:00-10:00
       slot3: { type: Boolean, default: false }, // 10:00-11:00
       slot4: { type: Boolean, default: false }, // 11:00-12:00
     },
-    status: { type: String, default: "active" },
+
+    // "active" | "inactive"
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+    },
 
     createdBy: { type: String, default: "api" },
     modifiedBy: { type: String, default: null },
   },
   {
-    timestamps: { createdAt: "createdDateTime", updatedAt: "modifiedDateTime" },
+    timestamps: {
+      createdAt: "createdDateTime",
+      updatedAt: "modifiedDateTime",
+    },
   }
 );
 
