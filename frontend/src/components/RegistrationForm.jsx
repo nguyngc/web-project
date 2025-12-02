@@ -1,4 +1,6 @@
 import { useState } from "react";
+import useField from "../hooks/useField";
+import useSignup from "../hooks/useSignup";
 import { useNavigate } from "react-router-dom";
 import { User, Phone, Mail, Eye, EyeOff } from "lucide-react";
 import Form from "react-bootstrap/Form";
@@ -6,117 +8,97 @@ import GradientButton from "./GradientButton";
 
 const RegistrationForm = ({ onSuccess }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    terms: false,
-    promotional: false,
-  });
-
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [errors, setErrors] = useState({});
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const firstName = useField("text");
+  const lastName = useField("text");
+  const email = useField("email");
+  const phone = useField("text");
+  const password = useField("password");
+  const confirmPassword = useField("password");
 
-    let newValue = type === "checkbox" ? checked : value;
-
-    // Auto-format phone number
-    if (name === "phone" && type !== "checkbox") {
-      newValue = formatPhoneNumber(value);
-    }
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: newValue,
-    }));
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
+  const dob = useField("date");
+  const gender = useField("select");
+  const address = useField("text");
+  const term = useField("checkbox");
+  const promotional = useField("checkbox");
 
-  const formatPhoneNumber = (value) => {
-    if (!value) return value;
+  const { signup, error, isLoading } = useSignup("/api/users/signup");
 
-    // Remove all non-digits
-    const digits = value.replace(/\D/g, "");
-
-    // Format based on number of digits
-    if (digits.length <= 3) {
-      return `(${digits}`;
-    }
-    if (digits.length <= 6) {
-      return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-    }
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
-  };
-
-
+  // validate input
   const validate = () => {
     const newErrors = {};
-    const nameRegex = /^[A-Za-z]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const phoneRegex = /^\(?([0-9]{3})\)?[-.●\s]?([0-9]{3})[-.●\s]?([0-9]{4})$/;
 
-    // First Name
-    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-    else if (!nameRegex.test(formData.firstName)) newErrors.firstName = "Only letters allowed";
+    if (!firstName.value.trim()) newErrors.firstName = "First name is required";
+    if (!lastName.value.trim()) newErrors.lastName = "Last name is required";
 
-    // Last Name
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-    else if (!nameRegex.test(formData.lastName)) newErrors.lastName = "Only letters allowed";
+    if (!email.value.trim()) newErrors.email = "Email is required";
+    else if (!emailRegex.test(email.value)) newErrors.email = "Invalid email";
 
-    // Email
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!emailRegex.test(formData.email)) newErrors.email = "Invalid email address";
-
-    // Phone (optional)
-    if (formData.phone && !phoneRegex.test(formData.phone))
-      newErrors.phone = "Invalid phone number";
-
-    // Password
-    if (!formData.password) newErrors.password = "Password is required";
-    else if (formData.password.length < 6)
+    if (!password.value) newErrors.password = "Password is required";
+    else if (password.value.length < 6)
       newErrors.password = "Password must be at least 6 characters";
 
-    // Confirm Password
-    if (!formData.confirmPassword) newErrors.confirmPassword = "Confirm your password";
-    else if (formData.confirmPassword !== formData.password)
+    if (confirmPassword.value !== password.value)
       newErrors.confirmPassword = "Passwords do not match";
 
-    // Terms
-    if (!formData.terms) newErrors.terms = "You must agree to the Terms and Privacy Policy";
+    if (!term.value) newErrors.term = "You must agree to the Terms";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     if (!validate()) return;
+    const result = await signup({
+      firstName: firstName.value,
+      lastName: lastName.value,
+      email: email.value,
+      password: password.value,
+      dob: formatDate(dob.value),
+      gender: gender.value,
+      phone: phone.value,
+      address: address.value,
 
-    console.log("Registration data:", formData);
+      term: term.value,
+      promotional: promotional.value
+    });
 
-    const newUser = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      email: formData.email,
-      phone: formData.phone,
-      role: "user"
-    };
+    if (result) {
+      if (result.token) {
+        sessionStorage.setItem("token", result.token);
+      }
+      const newUser = {
+        firstName: firstName.value,
+        lastName: lastName.value,
+        email: email.value,
+        phone: phone.value,
+        role: "user",
+      };
 
-    localStorage.setItem("currentUser", JSON.stringify(newUser));
-    window.dispatchEvent(new Event("userLogin"));
+      sessionStorage.setItem("currentUser", JSON.stringify(newUser));
+      window.dispatchEvent(new Event("userLogin"));
 
-    if (onSuccess) {
-      onSuccess(newUser);
+      if (onSuccess) {
+        onSuccess(newUser);
+      } else {
+        navigate("/profile");
+      }
     } else {
-      navigate("/profile");
-    }
-
-  };
+      console.error("Signup failed:");
+    };
+  }
 
   return (
     <Form
@@ -132,10 +114,7 @@ const RegistrationForm = ({ onSuccess }) => {
           <div className="relative">
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Form.Control
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleChange}
-              type="text"
+              {...firstName}
               placeholder="John"
               className={`pl-10 h-12 bg-gray-50 border ${errors.firstName ? "border-red-500" : "border-gray-200"
                 } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
@@ -151,10 +130,7 @@ const RegistrationForm = ({ onSuccess }) => {
           <div className="relative">
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Form.Control
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleChange}
-              type="text"
+              {...lastName}
               placeholder="Doe"
               className={`pl-10 h-12 bg-gray-50 border ${errors.lastName ? "border-red-500" : "border-gray-200"
                 } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
@@ -172,10 +148,7 @@ const RegistrationForm = ({ onSuccess }) => {
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Form.Control
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            type="email"
+            {...email}
             placeholder="john.doe@example.com"
             className={`w-full pl-10 h-12 bg-gray-50 border ${errors.email ? "border-red-500" : "border-gray-200"
               } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
@@ -192,10 +165,7 @@ const RegistrationForm = ({ onSuccess }) => {
         <div className="relative">
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Form.Control
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            type="tel"
+            {...phone}
             placeholder="(123) 123-4567"
             className={`w-full pl-10 h-12 bg-gray-50 border ${errors.phone ? "border-red-500" : "border-gray-200"
               } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
@@ -211,10 +181,7 @@ const RegistrationForm = ({ onSuccess }) => {
         </Form.Label>
         <div className="relative">
           <Form.Control
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            type={showPassword ? "text" : "password"}
+            {...password}
             placeholder="Create a password"
             className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${errors.password ? "border-red-500" : "border-gray-200"
               } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
@@ -237,10 +204,7 @@ const RegistrationForm = ({ onSuccess }) => {
         </Form.Label>
         <div className="relative">
           <Form.Control
-            name="confirmPassword"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            type={showConfirmPassword ? "text" : "password"}
+            {...confirmPassword}
             placeholder="Re-enter your password"
             className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${errors.confirmPassword ? "border-red-500" : "border-gray-200"
               } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
@@ -257,15 +221,67 @@ const RegistrationForm = ({ onSuccess }) => {
           <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
         )}
       </Form.Group>
+      {/* Birthday */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <Form.Group>
+          <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
+            Day of Birth
+          </Form.Label>
+          <div className="relative">
+            {/* <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
+            <Form.Control
+              {...dob}
+              placeholder="DD/MM/YYYY"
+              className={`pl-10 h-12 bg-gray-50 border ${errors.dob ? "border-red-500" : "border-gray-200"
+                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            />
+          </div>
+          {errors.dob && <p className="text-red-500 text-sm mt-1">{errors.dob}</p>}
+        </Form.Group>
+
+        <Form.Group>
+          <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
+            Gender
+          </Form.Label>
+          <div className="relative">
+            {/* <Gender className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
+            <select
+              {...gender}
+              className={`pl-10 h-12 bg-gray-50 border ${errors.gender ? "border-red-500" : "border-gray-200"
+                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          {errors.gender && (
+            <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
+          )}
+        </Form.Group>
+
+      </div>
+      {/* Address */}
+      <Form.Group className="mb-6 relative">
+        <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
+          Address
+        </Form.Label>
+        <div className="relative">
+          {/* <address className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
+          <Form.Control
+            {...address}
+            placeholder="Vuoritie 4D 02103 Espoo"
+            className={`w-full pl-10 h-12 bg-gray-50 border ${errors.address ? "border-red-500" : "border-gray-200"
+              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+          />
+        </div>
+        {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+      </Form.Group>
 
       {/* Terms & Promotional */}
       <Form.Group className="mb-4 flex items-start space-x-2">
         <Form.Check
-          id="terms"
-          type="checkbox"
-          name="terms"
-          checked={formData.terms}
-          onChange={handleChange}
+          {...term}
           className="mt-1 cursor-pointer"
         />
 
@@ -284,18 +300,14 @@ const RegistrationForm = ({ onSuccess }) => {
         </label>
       </Form.Group>
 
-      {errors.terms && (
-        <p className="text-red-500 text-sm mb-4">{errors.terms}</p>
+      {errors.term && (
+        <p className="text-red-500 text-sm mb-4">{errors.term}</p>
       )}
-
 
       <Form.Group className="mb-6 flex items-start space-x-2">
         <Form.Check
-          id="promotional"
-          type="checkbox"
-          name="promotional"
-          checked={formData.promotional}
-          onChange={handleChange}
+          // id="promotional"
+          {...promotional}
           className="mt-1 cursor-pointer"
         />
 
@@ -307,11 +319,12 @@ const RegistrationForm = ({ onSuccess }) => {
         </label>
       </Form.Group>
 
-
       {/* Register Button */}
       <GradientButton type="submit">
         Create Account
       </GradientButton>
+      {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+
     </Form>
   );
 };

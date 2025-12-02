@@ -12,7 +12,7 @@ export default function Header() {
 
   useEffect(() => {
     // Check for logged in user
-    const user = localStorage.getItem("currentUser");
+    const user = sessionStorage.getItem("currentUser");
     if (user) {
       const userData = JSON.parse(user);
       setCurrentUser(userData);
@@ -21,7 +21,7 @@ export default function Header() {
 
     // Listen for storage changes
     const handleStorageChange = () => {
-      const user = localStorage.getItem("currentUser");
+      const user = sessionStorage.getItem("currentUser");
       setCurrentUser(user ? JSON.parse(user) : null);
     };
 
@@ -36,7 +36,7 @@ export default function Header() {
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("currentUser");
+    sessionStorage.removeItem("currentUser");
     setCurrentUser(null);
     navigate("/");
   };

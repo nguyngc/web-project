@@ -1,46 +1,92 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import DoctorProfileForm from "./DoctorProfileForm";
 import ChangePasswordSection from "../admin/ChangePasswordSection";
 import InfoMessage from "../common/InfoMessage";
 
 const DoctorProfile = () => {
-  const [user, setUser] = useState({
-    firstName: "Sarah",
-    lastName: "Jonhson",
-    email: "doctor@clinic.com",
-    dob: "01/01/2000",
-    gender:"Male",
-    phone: "(555) 234-5678",
-    address: "456 Medical Plaza, Suite 200, New York, NY 10002",
-    specialization:"Ophthalmology",
-    licenseNumber:"MD-987654",
-    yoe:"12",
-    education:"MD, Harvard Medical School; Residency in Ophthalmology, Johns Hopkins Hospital",
-    bio: "Tell us about yourself and your expertise...",
-  });
-
-  const [editing, setEditing] = useState(false);
-  const [message, setMessage] = useState(null);
-
-  const showMessage = (text, type = "success") => {
-    setMessage({ text, type });
-    setTimeout(() => setMessage(null), 4000);
-  };
-
-  const updateProfile = (updated) => {
-    setUser(updated);
-    setEditing(false);
-    showMessage("Profile updated successfully");
-  };
-
-  const updatePassword = (current, newPass) => {
-    // Mock: always accept "admin123" as the current password
-    if (current !== "admin123") {
-      showMessage("Incorrect current password", "error");
-      return;
-    }
-    showMessage("Password updated successfully");
-  };
+  const [user, setUser] = useState(null);
+    const [editing, setEditing] = useState(false);
+    const [message, setMessage] = useState(null);
+  
+    const token = sessionStorage.getItem("token");
+    const currentUser = JSON.parse(sessionStorage.getItem("user"));
+    const id = currentUser?.id;
+  
+    // Fetch user info from backend
+    useEffect(() => {
+      const fetchUser = async () => {
+        try {
+          const res = await fetch(`/api/users/${id}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          const data = await res.json();
+          if (res.ok) {
+            setUser(data);
+          } else {
+            showMessage(data.error || "Failed to load profile", "error");
+          }
+        } catch (err) {
+          showMessage("Network error", "error");
+        }
+      };
+      if (id && token) fetchUser();
+    }, [id, token]);
+  
+    const showMessage = (text, type = "success") => {
+      setMessage({ text, type });
+      setTimeout(() => setMessage(null), 4000);
+    };
+  
+    // Update profile via backend
+    const updateProfile = async (updated) => {
+      try {
+        const res = await fetch(`/api/users/${id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(updated),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setUser(data);
+          setEditing(false);
+          showMessage("Profile updated successfully");
+        } else {
+          showMessage(data.error || "Failed to update profile", "error");
+        }
+      } catch (err) {
+        showMessage("Network error", "error");
+      }
+    };
+  
+    // Update password via backend
+    const updatePassword = async (currentPassword, newPassword) => {
+      try {
+        const res = await fetch(`/api/users/${id}/password`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ currentPassword, newPassword }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          showMessage("Password updated successfully");
+        } else {
+          showMessage(data.error || "Failed to update password", "error");
+        }
+      } catch (err) {
+        showMessage("Network error", "error");
+      }
+    };
+  
+    if (!user) return <p>Loading profile...</p>;
 
   return (
     <div className="flex flex-col gap-6">

@@ -19,12 +19,12 @@ function ConfirmApp1() {
       notes: ""
     };
 
-    let appointments = JSON.parse(localStorage.getItem("appointments"));
+    let appointments = JSON.parse(sessionStorage.getItem("appointments"));
     if (!Array.isArray(appointments)) {
       appointments = [];
     }
     appointments.push(appointmentData);
-    localStorage.setItem("appointments", JSON.stringify(appointments));
+    sessionStorage.setItem("appointments", JSON.stringify(appointments));
     setConfirmed(true);
   };
 

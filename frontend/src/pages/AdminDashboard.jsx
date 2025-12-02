@@ -17,7 +17,7 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const user = localStorage.getItem("currentUser");
+    const user = sessionStorage.getItem("currentUser");
     if (user) {
       const parsedUser = JSON.parse(user);
       setCurrentUser(parsedUser);

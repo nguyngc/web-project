@@ -1,5 +1,4 @@
-import { useState } from "react";
-import appointmentData from "../../data/appointments";
+import { useState, useEffect } from "react";
 import Pagination from "../common/Pagination";
 import InfoMessage from "../common/InfoMessage";
 import ConfirmDialog from "../common/ComfirmDialog";
@@ -7,7 +6,7 @@ import RescheduleDialog from "../RescheduleDialog";
 import AppointmentCard from "./AppointmentCard";
 
 const Appointments = () => {
-  const [appointments, setAppointments] = useState([...appointmentData]);
+  const [appointments, setAppointments] = useState([]);
   const [search] = useState("");
   const [page, setPage] = useState(1);
   const [message, setMessage] = useState(null);
@@ -19,19 +18,51 @@ const Appointments = () => {
 
   const itemsPerPage = 3;
 
-  const filtered = appointments.filter(
-    (a) =>
-      a.patient.toLowerCase().includes(search.toLowerCase()) ||
-      a.doctor.toLowerCase().includes(search.toLowerCase()) ||
-      a.service.toLowerCase().includes(search.toLowerCase())
-  );
+  // fetch user
+  const user = JSON.parse(sessionStorage.getItem("user"));
+
+  // Fetch appointments from backend
+  useEffect(() => {
+    const fetchAppointments = async () => {
+      try {
+        const token = sessionStorage.getItem("token");
+        const res = await fetch(`/api/appointments?userId=${user.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setAppointments(data);
+        } else {
+          setMessage({ text: data.message || "Failed to fetch appointments", type: "error" });
+        }
+      } catch (err) {
+        setMessage({ text: "Network error", type: "error" });
+      }
+    };
+
+    if (user) fetchAppointments();
+  }, [user]);
+
+  // Filter + paginate
+  const filtered = appointments.filter((a) => {
+    const doctorName = a.doctorId
+      ? `${a.doctorId.firstName || ""} ${a.doctorId.lastName || ""}`.toLowerCase()
+      : "";
+
+    const serviceName = a.serviceId?.serviceName
+      ? a.serviceId.serviceName.toLowerCase()
+      : "";
+
+    return (
+      doctorName.includes(search.toLowerCase()) ||
+      serviceName.includes(search.toLowerCase())
+    );
+  });
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
-
-  const paginated = filtered.slice(
-    (page - 1) * itemsPerPage,
-    page * itemsPerPage
-  );
+  const paginated = filtered.slice((page - 1) * itemsPerPage, page * itemsPerPage);
 
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
@@ -45,7 +76,7 @@ const Appointments = () => {
 
   const handleRescheduleSave = (updated) => {
     setAppointments(
-      appointments.map((a) => (a.id === updated.id ? updated : a))
+      appointments.map((a) => (a._id === updated._id ? updated : a))
     );
     showMessage("Appointment rescheduled successfully");
     setShowReschedule(false);
@@ -60,7 +91,7 @@ const Appointments = () => {
   const confirmCancel = () => {
     setAppointments(
       appointments.map((a) =>
-        a.id === selectedAppt.id ? { ...a, status: "cancelled" } : a
+        a._id === selectedAppt._id ? { ...a, status: "cancelled" } : a
       )
     );
     showMessage("Appointment cancelled");
@@ -78,11 +109,12 @@ const Appointments = () => {
       {message && (
         <InfoMessage message={message} onClose={() => setMessage(null)} />
       )}
+
       {/* Cards */}
       <div className="flex flex-col gap-6">
         {paginated.map((apt) => (
           <AppointmentCard
-            key={apt.id}
+            key={apt._id}
             appt={apt}
             onReschedule={handleRescheduleClick}
             onCancel={handleCancelClick}

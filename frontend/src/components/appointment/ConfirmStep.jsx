@@ -1,23 +1,36 @@
 import { CalendarDays, Clock, MapPin, CheckCircle2 } from "lucide-react";
 
 export default function ConfirmStep({ user, appointment, setStep }) {
-  const handleConfirm = () => {
-    let appointments = JSON.parse(localStorage.getItem("appointments")) || [];
-
-    appointments.push({
-      patientName: `${user.firstName} ${user.lastName}`,
-      phone: user.phone,
-      doctor: appointment.doctor,
-      type: appointment.title,
-      date: appointment.date,
-      time: appointment.time,
-      status: "confirmed",
+  const handleConfirm = async () => {
+  try {
+    const token = sessionStorage.getItem("token");
+    
+    const res = await fetch("/api/appointments", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        userId: user.id,         
+        doctorId: appointment.doctorId, 
+        date: appointment.date,
+        time: appointment.time,
+        type: appointment.title,  
+        status: "confirmed",
+      }),
     });
 
-    localStorage.setItem("appointments", JSON.stringify(appointments));
-
-    setStep(4);
-  };
+    const data = await res.json();
+    if (res.ok) {
+      setStep(4); 
+    } else {
+      alert(data.message || "Failed to book appointment");
+    }
+  } catch (err) {
+    alert("Network error");
+  }
+};
 
   return (
     <div className="w-full min-h-screen bg-[#F5F6FA] py-8">
@@ -64,7 +77,7 @@ export default function ConfirmStep({ user, appointment, setStep }) {
 
             {/* Tag */}
             <span className="inline-block bg-[#E0F2FE] text-[#2563EB] px-3 py-1 rounded-md text-xs font-medium mb-4">
-              Comprehensive Eye Exam
+              {appointment.title}
             </span>
 
             {/* Description */}

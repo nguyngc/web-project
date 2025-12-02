@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 
-export const useLocalStorage = (key, initialValue = null) => {
+const useSessionStorage = (key, initialValue = null) => {
   const readValue = useCallback(() => {
     try {
-      const item = localStorage.getItem(key);
+      const item = sessionStorage.getItem(key);
       return item ? JSON.parse(item) : initialValue;
     } catch (error) {
-      console.error("Error reading localStorage key:", key, error);
+      console.error("Error reading sessionStorage key:", key, error);
       return initialValue;
     }
   }, [key]);
@@ -14,32 +14,32 @@ export const useLocalStorage = (key, initialValue = null) => {
   // Store the initial value
   const [value, setValue] = useState(() => readValue());
 
-  // Save value to state + localStorage
+  // Save value to state + sessionStorage
   const setItem = useCallback((newValue) => {
     try {
-      localStorage.setItem(key, JSON.stringify(newValue));
+      sessionStorage.setItem(key, JSON.stringify(newValue));
       setValue(newValue);
     } catch (error) {
-      console.error("Error setting localStorage key:", key, error);
+      console.error("Error setting sessionStorage key:", key, error);
     }
   },
     [key]
   );
 
-  // Force reload from localStorage
+  // Force reload from sessionStorage
   const getItem = useCallback(() => {
     const val = readValue();
     setValue(val);
     return val;
   }, [readValue]);
 
-  // Remove item from localStorage + reset state
+  // Remove item from sessionStorage + reset state
   const removeItem = useCallback(() => {
     try {
-      localStorage.removeItem(key);
+      sessionStorage.removeItem(key);
       setValue(null);
     } catch (error) {
-      console.error("Error removing localStorage key:", key, error);
+      console.error("Error removing sessionStorage key:", key, error);
     }
   }, [key]);
 
@@ -60,3 +60,4 @@ export const useLocalStorage = (key, initialValue = null) => {
 
   return { value, setItem, getItem, removeItem };
 };
+export default useSessionStorage;

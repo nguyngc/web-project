@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Clock, CalendarDays, AlertCircle } from "lucide-react";
 import Calendar from "../Calendar";
 import { format, isToday } from "date-fns";
@@ -13,17 +13,42 @@ const timeSlots = [
   { id: "6", time: "4:00 PM - 5:00 PM", duration: "60 minutes", available: true },
 ];
 
+// 1 doctor
+const doctor = {
+  id: "692e0f8938dbd5a43580cb11",
+  name: "Dr. Doe"
+};
+
 export default function SelectStep({ onSelectSlot }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedService, setSelectedService] = useState("");
+  const [services, setServices] = useState([]);
+
+  // fetch services từ backend
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await fetch("/api/services?isActive=true");
+        const data = await res.json();
+        if (res.ok) {
+          setServices(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch services", err);
+      }
+    };
+    fetchServices();
+  }, []);
 
   const handleClick = (slot) => {
-    if (!slot.available || !selectedDate) return;
+    if (!slot.available || !selectedDate || !selectedService) return;
 
     onSelectSlot({
       date: format(selectedDate, "EEEE, MMMM d, yyyy"),
       time: slot.time,
-      doctor: "Dr. Smith",
-      title: "Eye Checkup",
+      doctorId: doctor.id,
+      doctorName: doctor.name,
+      title: selectedService, // serviceName 
     });
   };
 
@@ -45,6 +70,30 @@ export default function SelectStep({ onSelectSlot }) {
             complete any necessary paperwork. If you need to cancel or
             reschedule, please contact us at least 24 hours in advance.
           </p>
+        </div>
+
+        {/* Service selection */}
+        <div className="mb-6">
+          <h2 className="text-[18px] font-semibold text-[#111827] mb-2">
+            Select a Service
+          </h2>
+          <select
+            value={selectedService}
+            onChange={(e) => setSelectedService(e.target.value)}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          >
+            <option value="">-- Choose a service --</option>
+            {services.map((s) => (
+              <option key={s._id} value={s.serviceName}>
+                {s.serviceName}
+              </option>
+            ))}
+          </select>
+          {selectedService && (
+            <p className="mt-2 text-sm text-[#2563EB]">
+              Selected: {selectedService}
+            </p>
+          )}
         </div>
 
         {/* Main cards */}
@@ -103,7 +152,7 @@ export default function SelectStep({ onSelectSlot }) {
 
             <div className="flex flex-col gap-3">
               {timeSlots.map((slot) => {
-                const isClickable = selectedDate && slot.available;
+                const isClickable = selectedDate && slot.available && selectedService;
 
                 return (
                   <div
