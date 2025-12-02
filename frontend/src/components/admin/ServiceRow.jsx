@@ -4,11 +4,7 @@ import ToggleSwitch from "../common/ToggleSwitch";
 const ServiceRow = ({
   service,
   onToggleStatus,
-  onMoveUp,
-  onMoveDown,
-  onEdit,
-  isFirst,
-  isLast
+  onEdit
 }) => {
   return (
     <div
@@ -21,8 +17,8 @@ const ServiceRow = ({
       {/* Thumbnail */}
       <div className="w-full md:w-28 h-28 md:h-20 rounded-lg overflow-hidden flex-shrink-0">
         <img
-          src={service.imageUrl}
-          alt={service.name}
+          src={service.image}
+          alt={service.serviceName}
           className="w-full h-full object-cover"
         />
       </div>
@@ -30,7 +26,7 @@ const ServiceRow = ({
       {/* Text */}
       <div className="flex-1">
         <h3 className="text-base font-semibold text-[#111827]">
-          {service.name}
+          {service.serviceName}
         </h3>
         <p className="text-sm text-[#6B7280]">{service.shortDescription}</p>
       </div>
@@ -40,33 +36,9 @@ const ServiceRow = ({
 
         {/* Toggle */}
         <ToggleSwitch
-          checked={service.status}
-          onChange={() => onToggleStatus(service.id)}
+          checked={service.isActive}
+          onChange={() => onToggleStatus(service._id)}
         />
-
-        {/* Move Up */}
-        <button
-          disabled={isFirst}
-          onClick={() => !isFirst && onMoveUp(service.id)}
-          className={`
-            w-9 h-9 border border-gray-300 rounded-lg flex items-center justify-center
-            ${isFirst ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}
-          `}
-        >
-          <ArrowUp className="w-4 h-4" />
-        </button>
-
-        {/* Move Down */}
-        <button
-          disabled={isLast}
-          onClick={() => !isLast && onMoveDown(service.id)}
-          className={`
-            w-9 h-9 border border-gray-300 rounded-lg flex items-center justify-center
-            ${isLast ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}
-          `}
-        >
-          <ArrowDown className="w-4 h-4" />
-        </button>
 
         {/* Edit */}
         <button

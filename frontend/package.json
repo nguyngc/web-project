@@ -3,7 +3,6 @@
   "name": "ivision",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -19,6 +18,8 @@
     "bootstrap": "^5.3.8",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "jodit": "^4.7.9",
+    "jodit-react": "^5.2.38",
     "jspdf": "^3.0.4",
     "lucide-react": "^0.553.0",
     "phosphor-react": "^1.4.1",

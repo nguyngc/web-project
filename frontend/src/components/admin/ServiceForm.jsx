@@ -4,7 +4,7 @@ import GradientButton from "../GradientButton";
 
 const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) => {
   const [form, setForm] = useState({
-    name: "",
+    serviceName: "",
     shortDescription: "",
     fullDescription: "",
     imageUrl: "",
@@ -20,8 +20,9 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
     if (initialData) {
       setForm({
         ...initialData,
-        features: initialData.features.join(", "),
-        benefits: initialData.benefits.join(", ")
+        features: initialData.features || "",
+        benefits: initialData.benefits || "",
+        image: initialData.image || ""
       });
     }
   }, [initialData]);
@@ -32,14 +33,7 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    const output = {
-      ...form,
-      features: form.features.split(",").map((s) => s.trim()),
-      benefits: form.benefits.split(",").map((s) => s.trim())
-    };
-
-    onSubmit(output);
+    onSubmit(form);
   };
 
   const labelClass = "block text-[#364153] text-sm mb-2 mt-4";
@@ -67,8 +61,8 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
             <label className={labelClass}>Service Name *</label>
             <Form.Control
               className={inputClass}
-              value={form.name}
-              onChange={(e) => handleChange("name", e.target.value)}
+              value={form.serviceName}
+              onChange={(e) => handleChange("serviceName", e.target.value)}
             />
           </Form.Group>
 
@@ -93,13 +87,28 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
           </Form.Group>
 
           <Form.Group>
-            <label className={labelClass}>Image URL *</label>
+            <label className={labelClass}>Image *</label>
             <Form.Control
+              type="file"
+              accept="image/*"
               className={inputClass}
-              value={form.imageUrl}
-              onChange={(e) => handleChange("imageUrl", e.target.value)}
+              onChange={(e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                  setForm((prev) => ({ ...prev, image: reader.result }));
+                };
+                reader.readAsDataURL(file);
+              }}
             />
+
+            {form.image && (
+              <img src={form.image} className="h-32 mt-3 rounded-lg border object-cover" />
+            )}
           </Form.Group>
+
 
           {/* SERVICE DETAILS */}
 
@@ -133,7 +142,7 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
           </div>
 
           <Form.Group>
-            <label className={labelClass}>Features (comma-separated)</label>
+            <label className={labelClass}>Features (semicolon-separated)</label>
             <Form.Control
               as="textarea"
               rows={2}
@@ -144,7 +153,7 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
           </Form.Group>
 
           <Form.Group>
-            <label className={labelClass}>Benefits (comma-separated)</label>
+            <label className={labelClass}>Benefits (semicolon-separated)</label>
             <Form.Control
               as="textarea"
               rows={2}
@@ -162,10 +171,10 @@ const ServiceForm = ({ mode = "add", initialData = null, onCancel, onSubmit }) =
                 <label key={value} className="flex items-center gap-2 text-gray-700 text-sm">
                   <input
                     type="radio"
-                    name="status"
+                    name="isActive"
                     value={value.toString()}
-                    checked={form.status === value}
-                    onChange={() => handleChange("status", value)}
+                    checked={form.isActive === value}
+                    onChange={() => handleChange("isActive", value)}
                   />
                   <span className="capitalize">{value ? "active" : "inactive"}</span>
                 </label>

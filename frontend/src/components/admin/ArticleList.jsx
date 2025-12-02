@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Search } from "lucide-react";
-import { articles as articlesData} from "../../data/articles";
 import ArticleRow from "./ArticleRow";
 import ArticleForm from "./ArticleForm";
 import Pagination from "../common/Pagination";
 import InfoMessage from "../common/InfoMessage";
 import ConfirmDialog from "../common/ComfirmDialog";
 
+import {
+  getAdminArticles,
+  createArticle,
+  updateArticle,
+  deleteArticle,
+  toggleArticleStatus,
+} from "../../services/articleService";
+
 const ArticleList = () => {
-  const [articles, setArticles] = useState([...articlesData]);
+  const [articles, setArticles] = useState([]);
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -16,10 +23,9 @@ const ArticleList = () => {
   const [showForm, setShowForm] = useState(false);
   const [selectedArticle, setSelectedArticle] = useState(null);
 
-  // message like UserList / ServiceList
   const [message, setMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  // delete confirm dialog
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [articleToDelete, setArticleToDelete] = useState(null);
 
@@ -27,14 +33,29 @@ const ArticleList = () => {
 
   const showMessage = (text, type = "success") => {
     setMessage({ text, type });
-    setTimeout(() => setMessage(null), 5000);
+    setTimeout(() => setMessage(null), 4000);
   };
 
-  const filteredArticles = articles.filter((a) =>
-    a.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const loadArticles = async () => {
+    try {
+      setLoading(true);
+      const list = await getAdminArticles(search);
+      setArticles(list);
+    } catch (err) {
+      showMessage(err.message || "Failed to load articles", "error");
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    loadArticles();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  const filteredArticles = articles; // backend already filtered by q
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
+
   const paginated = filteredArticles.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
@@ -50,36 +71,41 @@ const ArticleList = () => {
     setShowForm(true);
   };
 
-  const handleSave = (data) => {
-    if (selectedArticle) {
-      // update
-      setArticles((prev) =>
-        prev.map((a) =>
-          a.id === selectedArticle.id ? { ...data, id: selectedArticle.id } : a
-        )
-      );
-      showMessage("Article updated successfully");
-    } else {
-      // create
-      const newArticle = {
-        ...data,
-        id: `art-${Date.now()}`,
-      };
-      setArticles((prev) => [newArticle, ...prev]);
-      showMessage("Article created successfully");
-    }
+  const handleSave = async (formData) => {
+    try {
+      if (selectedArticle) {
+        const updated = await updateArticle(selectedArticle.id, formData);
+        setArticles((prev) =>
+          prev.map((a) => (a.id === updated.id ? updated : a))
+        );
+        showMessage("Article updated successfully");
+      } else {
+        const created = await createArticle(formData);
+        setArticles((prev) => [created, ...prev]);
+        showMessage("Article created successfully");
+      }
 
-    setShowForm(false);
-    setSelectedArticle(null);
+      setShowForm(false);
+      setSelectedArticle(null);
+    } catch (err) {
+      showMessage(err.message || "Save failed", "error");
+    }
   };
 
-  const handleToggleStatus = (id) => {
-    setArticles((prev) =>
-      prev.map((a) =>
-        a.id === id ? { ...a, status: !a.status } : a
-      )
-    );
-    showMessage("Article status updated");
+  const handleToggleStatus = async (id) => {
+    try {
+      const current = articles.find((a) => a.id === id);
+      if (!current) return;
+
+      const updated = await toggleArticleStatus(id, current.isPublished);
+
+      setArticles((prev) =>
+        prev.map((a) => (a.id === updated.id ? updated : a))
+      );
+      showMessage("Article status updated");
+    } catch (err) {
+      showMessage(err.message || "Failed to update status", "error");
+    }
   };
 
   const handleRequestDelete = (article) => {
@@ -87,12 +113,18 @@ const ArticleList = () => {
     setDeleteDialogOpen(true);
   };
 
-  const confirmDeleteArticle = () => {
+  const confirmDeleteArticle = async () => {
     if (!articleToDelete) return;
-    setArticles((prev) => prev.filter((a) => a.id !== articleToDelete.id));
-    showMessage("Article deleted successfully");
-    setArticleToDelete(null);
-    setDeleteDialogOpen(false);
+    try {
+      await deleteArticle(articleToDelete.id);
+      setArticles((prev) => prev.filter((a) => a.id !== articleToDelete.id));
+      showMessage("Article deleted successfully");
+    } catch (err) {
+      showMessage(err.message || "Failed to delete article", "error");
+    } finally {
+      setArticleToDelete(null);
+      setDeleteDialogOpen(false);
+    }
   };
 
   return (
@@ -108,21 +140,20 @@ const ArticleList = () => {
           </p>
         </div>
 
-        <button
-          onClick={handleAdd}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] text-white text-sm"
-        >
-          <Plus className="w-4 h-4" />
-          {showForm ? "Cancel" : "Add New Article"}
-        </button>
+        {!showForm && (
+          <button
+            onClick={handleAdd}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] text-white text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add New Article
+          </button>
+        )}
       </div>
 
       {/* Info message */}
       {message && (
-        <InfoMessage
-          message={message}
-          onClose={() => setMessage(null)}
-        />
+        <InfoMessage message={message} onClose={() => setMessage(null)} />
       )}
 
       {/* Form */}
@@ -156,16 +187,19 @@ const ArticleList = () => {
             />
           </div>
 
+          {loading && <p className="text-sm text-gray-500">Loading...</p>}
+
           {/* Rows */}
-          {paginated.map((article) => (
-            <ArticleRow
-              key={article.id}
-              article={article}
-              onToggleStatus={handleToggleStatus}
-              onEdit={handleEdit}
-              onDelete={handleRequestDelete}
-            />
-          ))}
+          {!loading &&
+            paginated.map((article) => (
+              <ArticleRow
+                key={article.id}
+                article={article}
+                onToggleStatus={handleToggleStatus}
+                onEdit={handleEdit}
+                onDelete={handleRequestDelete}
+              />
+            ))}
 
           {/* Pagination */}
           <Pagination
@@ -179,7 +213,7 @@ const ArticleList = () => {
         </div>
       )}
 
-      {/* Common ConfirmDialog for delete */}
+      {/* Delete confirm dialog */}
       <ConfirmDialog
         show={deleteDialogOpen}
         title="Delete Article"

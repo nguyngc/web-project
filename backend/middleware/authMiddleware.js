@@ -26,7 +26,7 @@ const requireAuth = async (req, res, next) => {
       return res.status(401).json({ error: "User not found" });
     }
 
-    if (user.status !== "active") {
+    if (!user.status) {
       return res.status(403).json({ error: "User is not active" });
     }
 

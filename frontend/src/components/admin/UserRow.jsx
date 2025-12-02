@@ -1,7 +1,9 @@
 import { Edit2, RotateCcw, EyeOff, Trash2 } from "lucide-react";
 import StatusBox from "../common/StatusBox";
 
-const UserRow = ({ user, onEdit, onResetPassword, onToggleStatus, onDelete }) => {
+const UserRow = ({ user, onEdit, onResetPassword, onToggleStatus, onDelete, currentUserId }) => {
+  const isSelf = user._id === currentUserId;
+
   return (
     <div
       className="
@@ -42,29 +44,37 @@ const UserRow = ({ user, onEdit, onResetPassword, onToggleStatus, onDelete }) =>
         "
       >
         <button
-          onClick={() => onEdit(user)}
-          className="w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50"
+          disabled={isSelf}
+          onClick={() => !isSelf && onEdit(user)}
+          className={`w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50
+                  ${isSelf ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
         >
           <Edit2 className="w-4 h-4 text-[#0A0A0A]" />
         </button>
 
         <button
-          onClick={() => onResetPassword(user)}
-          className="w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50"
+          disabled={isSelf}
+          onClick={() => !isSelf && onResetPassword(user)}
+          className={`w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50
+                  ${isSelf ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
         >
           <RotateCcw className="w-4 h-4 text-[#0A0A0A]" />
         </button>
 
         <button
-          onClick={() => onToggleStatus(user.id)}
-          className="w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50"
+          disabled={isSelf}
+          onClick={() => !isSelf && onToggleStatus(user._id)}
+          className={`w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50
+                  ${isSelf ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
         >
           <EyeOff className="w-4 h-4 text-[#0A0A0A]" />
         </button>
 
         <button
-          onClick={() => onDelete(user)}
-          className="w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50"
+          disabled={isSelf}
+          onClick={() => !isSelf && onDelete(user)}
+          className={`w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-white hover:bg-gray-50
+                  ${isSelf ? "opacity-40 cursor-not-allowed" : "hover:bg-gray-50 cursor-pointer"}`}
         >
           <Trash2 className="w-4 h-4 text-[#0A0A0A]" />
         </button>
