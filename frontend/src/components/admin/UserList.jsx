@@ -1,14 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Plus } from "lucide-react";
-import userData from "../../data/users";
 import ConfirmDialog from "../common/ComfirmDialog";
 import InfoMessage from "../common/InfoMessage";
 import Pagination from "../common/Pagination";
 import UserForm from "./UserForm";
 import UserRow from "./UserRow";
 
+import {
+  getUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+  toggleStatus,
+} from "../../services/userService";
+
 const UserList = () => {
-  const [users, setUsers] = useState([...userData]);
+  const [users, setUsers] = useState([]);
 
   // Message state
   const [message, setMessage] = useState(null);
@@ -27,8 +34,20 @@ const UserList = () => {
   const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
   const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
 
+  const currentUser = { _id: "692eb0578f91661a46457a80" };
+
   // Filter and paginate users
   const itemsPerPage = 10;
+
+  useEffect(() => {
+    loadUsers();
+  }, []);
+
+  const loadUsers = async () => {
+    const data = await getUsers();
+    setUsers(data);
+  };
+
 
   // New user form fields
   const [newUserData, setNewUserData] = useState({
@@ -43,13 +62,16 @@ const UserList = () => {
     confirmPassword: "",
     role: "user",
     status: true,
-    photo: "",
-    specialization: "",
-    licenseNumber: "",
-    yearsOfExperience: 0,
-    education: "",
-    bio: ""
   });
+
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      const data = await getUsers(userSearch);
+      setUsers(data);
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [userSearch]);
 
   const filteredUsers = users.filter(user =>
     user.firstName.toLowerCase().includes(userSearch.toLowerCase()) ||
@@ -78,13 +100,14 @@ const UserList = () => {
     setShowEditUserForm(true);
   };
 
-  const handleSaveEditedUser = (updatedUser) => {
+  const handleSaveEditedUser = async (updatedUser) => {
     if (updatedUser) {
-      console.log("update user: ", updatedUser)
-      setUsers(users.map(u => u.id === updatedUser.id ? updatedUser : u));
+      const { password, ...safeForm } = updatedUser;  // remove password
+      await updateUser(updatedUser._id, safeForm);
       showMessage("User updated successfully");
       setShowEditUserForm(false);
       setSelectedUser(null);
+      loadUsers();
     }
   };
 
@@ -93,50 +116,55 @@ const UserList = () => {
     setSelectedUser(null);
   };
 
-  const handleCreateUser = (newData) => {
-    const newUser = {
-      id: `user-${Date.now()}`,
-      firstName: newData.firstName,
-      lastName: newData.lastName,
-      email: newData.email,
-      phone: newData.phone,
-      role: newData.role,
-      status: newData.status,
-      createdDate: new Date().toISOString().split('T')[0],
-      lastLogin: new Date().toISOString().split('T')[0],
-      ...(newData.role === "doctor" && {
-        photo: newData.photo,
-        specialization: newData.specialization,
-        licenseNumber: newData.licenseNumber,
-        yearsOfExperience: newData.yearsOfExperience,
-        education: newData.education,
-        bio: newData.bio
-      })
-    };
-
-    setUsers([newUser, ...users]);
+  const handleCreateUser = async (data) => {
+    const newUser = await createUser(data);
     showMessage("User created successfully");
     setShowAddUserForm(false);
-    // Reset form
-    setNewUserData({
-      firstName: "",
-      lastName: "",
-      dateOfBirth: "",
-      gender: "male",
-      email: "",
-      phone: "",
-      address: "",
-      password: "",
-      confirmPassword: "",
-      role: "user",
-      status: true,
-      photo: "",
-      specialization: "",
-      licenseNumber: "",
-      yearsOfExperience: 0,
-      education: "",
-      bio: ""
-    });
+    loadUsers();
+
+    // const newUser = {
+    //   id: `user-${Date.now()}`,
+    //   firstName: newData.firstName,
+    //   lastName: newData.lastName,
+    //   email: newData.email,
+    //   phone: newData.phone,
+    //   role: newData.role,
+    //   status: newData.status,
+    //   createdDate: new Date().toISOString().split('T')[0],
+    //   lastLogin: new Date().toISOString().split('T')[0],
+    //   ...(newData.role === "doctor" && {
+    //     photo: newData.photo,
+    //     specialization: newData.specialization,
+    //     licenseNumber: newData.licenseNumber,
+    //     yearsOfExperience: newData.yearsOfExperience,
+    //     education: newData.education,
+    //     bio: newData.bio
+    //   })
+    // };
+
+    // setUsers([newUser, ...users]);
+    // showMessage("User created successfully");
+    // setShowAddUserForm(false);
+    // // Reset form
+    // setNewUserData({
+    //   firstName: "",
+    //   lastName: "",
+    //   dateOfBirth: "",
+    //   gender: "male",
+    //   email: "",
+    //   phone: "",
+    //   address: "",
+    //   password: "",
+    //   confirmPassword: "",
+    //   role: "user",
+    //   status: true,
+    //   photo: "",
+    //   specialization: "",
+    //   licenseNumber: "",
+    //   yearsOfExperience: 0,
+    //   education: "",
+    //   bio: ""
+    // });
   };
 
   const handleCancelAddUser = () => {
@@ -154,12 +182,6 @@ const UserList = () => {
       confirmPassword: "",
       role: "user",
       status: true,
-      photo: "",
-      specialization: "",
-      licenseNumber: "",
-      yearsOfExperience: 0,
-      education: "",
-      bio: ""
     });
   };
 
@@ -179,22 +201,26 @@ const UserList = () => {
     setDeleteUserDialogOpen(true);
   };
 
-  const confirmDeleteUser = () => {
+  const confirmDeleteUser = async () => {
     if (userToDelete) {
-      setUsers(users.filter(u => u.id !== userToDelete.id));
+      await deleteUser(userToDelete._id);
+      // setUsers(users.filter(u => u.id !== userToDelete.id));
       showMessage("User deleted successfully");
       setDeleteUserDialogOpen(false);
       setUserToDelete(null);
+      loadUsers();
     }
   };
 
-  const handleToggleUserStatus = (userId) => {
-    setUsers(users.map(u =>
-      u.id === userId
-        ? { ...u, status: !u.status }
-        : u
-    ));
+  const handleToggleUserStatus = async (userId) => {
+    // setUsers(users.map(u =>
+    //   u.id === userId
+    //     ? { ...u, status: !u.status }
+    //     : u
+    // ));
+    await toggleStatus(userId);
     showMessage("User status updated");
+    loadUsers();
   };
 
   return (
@@ -206,13 +232,16 @@ const UserList = () => {
             <h1 className="text-base font-medium text-[#0A0A0A]">User Management</h1>
             <p className="text-base text-[#717182]">Manage user accounts and permissions</p>
           </div>
-          <button
-            onClick={handleAddUser}
-            className="flex items-center gap-2 px-2.5 py-2 bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] rounded-lg text-white text-sm font-medium hover:opacity-90 transition-opacity"
-          >
-            <Plus className="w-4 h-4" />
-            {showAddUserForm ? "Cancel" : "Add New User"}
-          </button>
+
+          {!showAddUserForm && !showEditUserForm &&
+            <button
+              onClick={handleAddUser}
+              className="flex items-center gap-2 px-2.5 py-2 bg-gradient-to-b from-[#1C398E] to-[rgba(110,133,195,0.8)] rounded-lg text-white text-sm font-medium hover:opacity-90 transition-opacity"
+            >
+              <Plus className="w-4 h-4" />
+              Add New User
+            </button>
+          }
         </div>
 
         {message && (
@@ -221,7 +250,7 @@ const UserList = () => {
             onClose={() => setMessage(null)}
           />
         )}
-        
+
         {/* Add User Form */}
         {showAddUserForm && (
           <UserForm
@@ -282,8 +311,9 @@ const UserList = () => {
           <div className="flex flex-col">
             {paginatedUsers.map((user) => (
               <UserRow
-                key={user.id}
+                key={user._id}
                 user={user}
+                currentUserId={currentUser?._id}
                 onEdit={handleEditUser}
                 onResetPassword={handleResetPassword}
                 onToggleStatus={handleToggleUserStatus}

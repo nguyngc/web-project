@@ -17,7 +17,7 @@ const UserForm = ({
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
-    dateOfBirth: "",
+    dob: "",
     gender: "male",
     email: "",
     phone: "",
@@ -26,12 +26,14 @@ const UserForm = ({
     confirmPassword: "",
     status: true, // "active"
     // doctor fields
-    photo: "",
-    specialization: "",
-    licenseNumber: "",
-    yearsOfExperience: 0,
-    education: "",
-    bio: "",
+    doctorInfo: {
+      profilePicture: "",
+      specialization: "",
+      licenseNumber: "",
+      yoe: "",
+      education: "",
+      bio: ""
+    }
   });
 
   // Load initial data for edit mode
@@ -52,19 +54,6 @@ const UserForm = ({
   const validateForm = () => {
     const temp = {};
 
-    // Required base info
-    if (!form.firstName) temp.firstName = "First name is required.";
-    if (!form.lastName) temp.lastName = "Last name is required.";
-    if (!form.dateOfBirth) temp.dateOfBirth = "Date of birth is required.";
-    if (!form.email) temp.email = "Email is required.";
-    if (!form.phone) temp.phone = "Phone number is required.";
-    if (!form.address) temp.address = "Address is required.";
-
-    // Email check
-    if (form.email && !/^\S+@\S+\.\S+$/.test(form.email)) {
-      temp.email = "Invalid email format.";
-    }
-
     // Password checks only in Add mode
     if (mode === "add") {
       if (!form.password) temp.password = "Password is required.";
@@ -74,14 +63,6 @@ const UserForm = ({
       if (form.password !== form.confirmPassword) {
         temp.confirmPassword = "Passwords do not match.";
       }
-    }
-
-    // Doctor validation
-    if (role === "doctor") {
-      if (!form.specialization) temp.specialization = "Specialization required.";
-      if (!form.licenseNumber) temp.licenseNumber = "License number required.";
-      if (!form.education) temp.education = "Education is required.";
-      if (!form.bio) temp.bio = "Short bio is required.";
     }
 
     setErrors(temp);
@@ -134,25 +115,21 @@ const UserForm = ({
             <Form.Group>
               <label className={labelClass}>First Name <span className={errorClass}>*</span></label>
               <Form.Control
-                className={`${inputClass} ${errors.firstName && "border-red-500"}`}
+                required
+                className={`${inputClass}`}
                 value={form.firstName}
                 onChange={(e) => handleChange("firstName", e.target.value)}
               />
-              {errors.firstName && (
-                <p className={errorClass}>{errors.firstName}</p>
-              )}
             </Form.Group>
 
             <Form.Group>
               <label className={labelClass}>Last Name <span className={errorClass}>*</span></label>
               <Form.Control
-                className={`${inputClass} ${errors.lastName && "border-red-500"}`}
+                required
+                className={`${inputClass}`}
                 value={form.lastName}
                 onChange={(e) => handleChange("lastName", e.target.value)}
               />
-              {errors.lastName && (
-                <p className={errorClass}>{errors.lastName}</p>
-              )}
             </Form.Group>
           </div>
 
@@ -160,20 +137,17 @@ const UserForm = ({
           {/* DOB / GENDER */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Form.Group>
-              <label className={labelClass}>Date of Birth <span className={errorClass}>*</span></label>
+              <label className={labelClass}>Date of Birth</label>
               <Form.Control
                 type="date"
-                className={`${inputClass} ${errors.dateOfBirth && "border-red-500"}`}
-                value={form.dateOfBirth}
-                onChange={(e) => handleChange("dateOfBirth", e.target.value)}
+                className={`${inputClass}`}
+                value={form.dob}
+                onChange={(e) => handleChange("dob", e.target.value)}
               />
-              {errors.dateOfBirth && (
-                <p className={errorClass}>{errors.dateOfBirth}</p>
-              )}
             </Form.Group>
 
             <Form.Group>
-              <label className={labelClass}>Gender <span className={errorClass}>*</span></label>
+              <label className={labelClass}>Gender</label>
               <div className="flex gap-6 pt-2">
                 {["male", "female", "other"].map((g) => (
                   <label key={g} className="flex items-center gap-2 text-gray-700 text-sm font-inter">
@@ -197,41 +171,33 @@ const UserForm = ({
             <Form.Group>
               <label className={labelClass}>Email <span className={errorClass}>*</span></label>
               <Form.Control
+                required
                 type="email"
-                className={`${inputClass} ${errors.email && "border-red-500"}`}
+                className={`${inputClass}`}
                 value={form.email}
                 onChange={(e) => handleChange("email", e.target.value)}
               />
-              {errors.email && (
-                <p className={errorClass}>{errors.email}</p>
-              )}
             </Form.Group>
 
             <Form.Group>
-              <label className={labelClass}>Phone <span className={errorClass}>*</span></label>
+              <label className={labelClass}>Phone</label>
               <Form.Control
-                className={`${inputClass} ${errors.phone && "border-red-500"}`}
+                className={`${inputClass}`}
                 value={form.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
               />
-              {errors.phone && (
-                <p className={errorClass}>{errors.phone}</p>
-              )}
             </Form.Group>
           </div>
 
 
           {/* ADDRESS */}
           <Form.Group className="mb-4">
-            <label className={labelClass}>Address <span className={errorClass}>*</span></label>
+            <label className={labelClass}>Address</label>
             <Form.Control
-              className={`${inputClass} ${errors.address && "border-red-500"}`}
+              className={`${inputClass}`}
               value={form.address}
               onChange={(e) => handleChange("address", e.target.value)}
             />
-            {errors.address && (
-              <p className={errorClass}>{errors.address}</p>
-            )}
           </Form.Group>
 
           {/* PASSWORD / CONFIRM */}
@@ -243,8 +209,9 @@ const UserForm = ({
                 <label className={labelClass}>Password <span className={errorClass}>*</span></label>
                 <div className="relative">
                   <Form.Control
+                    required
                     type={showPassword ? "text" : "password"}
-                    className={`${inputClass} pr-10 ${errors.password && "border-red-500"}`}
+                    className={`${inputClass} pr-10`}
                     value={form.password}
                     onChange={(e) => handleChange("password", e.target.value)}
                   />
@@ -264,8 +231,9 @@ const UserForm = ({
                 <label className={labelClass}>Confirm Password <span className={errorClass}>*</span></label>
                 <div className="relative">
                   <Form.Control
+                    required
                     type={showConfirm ? "text" : "password"}
-                    className={`${inputClass} pr-10 ${errors.confirmPassword && "border-red-500"}`}
+                    className={`${inputClass} pr-10`}
                     value={form.confirmPassword}
                     onChange={(e) => handleChange("confirmPassword", e.target.value)}
                   />
@@ -298,7 +266,7 @@ const UserForm = ({
               </Form.Select>
             </Form.Group>
             <Form.Group>
-              <label className={labelClass}>Status <span className={errorClass}>*</span></label>
+              <label className={labelClass}>Status</label>
               <div className="flex gap-6 pt-2">
                 {[true, false].map((item) => (
                   <label key={item.toString()} className="flex items-center gap-2 text-gray-700 text-sm font-inter">
@@ -327,60 +295,108 @@ const UserForm = ({
             </h3>
 
             <Form.Group className="mb-4">
-              <label className={labelClass}>Photo URL</label>
+              <label className={labelClass}>Profile Picture</label>
               <Form.Control
+                type="file"
+                accept="image/*"
                 className={inputClass}
-                value={form.photo}
-                onChange={(e) => handleChange("photo", e.target.value)}
+                onChange={(e) => {
+                  const file = e.target.files[0];
+                  if (!file) return;
+
+                  const reader = new FileReader();
+                  reader.onloadend = () => {
+                    handleChange("doctorInfo", {
+                      ...form.doctorInfo,
+                      profilePicture: reader.result,
+                    });
+                  };
+                  reader.readAsDataURL(file);
+                }}
               />
+
+              {form.doctorInfo?.profilePicture && (
+                <img
+                  src={form.doctorInfo.profilePicture}
+                  className="h-28 mt-2 rounded-lg border object-cover"
+                />
+              )}
             </Form.Group>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <Form.Group>
                 <label className={labelClass}>Specialization <span className={errorClass}>*</span></label>
                 <Form.Control
-                  className={`${inputClass} ${errors.specialization && "border-red-500"}`}
-                  value={form.specialization}
-                  onChange={(e) => handleChange("specialization", e.target.value)}
+                  required
+                  className={`${inputClass}`}
+                  value={form.doctorInfo.specialization}
+                  onChange={(e) => handleChange("doctorInfo",
+                    {
+                      ...form.doctorInfo, specialization: e.target.value
+                    })
+                  }
                 />
-                {errors.specialization && (<p className={errorClass}>{errors.specialization}</p>)}
               </Form.Group>
 
               <Form.Group>
                 <label className={labelClass}>License Number <span className={errorClass}>*</span></label>
                 <Form.Control
-                  className={`${inputClass} ${errors.licenseNumber && "border-red-500"}`}
-                  value={form.licenseNumber}
-                  onChange={(e) => handleChange("licenseNumber", e.target.value)}
+                  required
+                  className={`${inputClass}`}
+                  value={form.doctorInfo.licenseNumber}
+                  onChange={(e) => handleChange("doctorInfo",
+                    {
+                      ...form.doctorInfo, licenseNumber: e.target.value
+                    })
+                  }
                 />
-                {errors.licenseNumber && (<p className={errorClass}>{errors.licenseNumber}</p>)}
+              </Form.Group>
+
+              <Form.Group>
+                <label className={labelClass}>Years of Experience <span className={errorClass}>*</span></label>
+                <Form.Control
+                  required
+                  className={`${inputClass}`}
+                  value={form.doctorInfo.yoe}
+                  onChange={(e) => handleChange("doctorInfo",
+                    {
+                      ...form.doctorInfo, yoe: e.target.value
+                    })
+                  }
+                />
               </Form.Group>
             </div>
 
             <Form.Group className="mb-4">
               <label className={labelClass}>Education <span className={errorClass}>*</span></label>
               <Form.Control
+                required
                 as="textarea"
                 rows={3}
-                className={`${textareaClass} ${errors.education ? "border-red-500" : ""
-                  }`}
-                value={form.education}
-                onChange={(e) => handleChange("education", e.target.value)}
+                className={`${textareaClass}`}
+                value={form.doctorInfo.education}
+                onChange={(e) => handleChange("doctorInfo",
+                  {
+                    ...form.doctorInfo, education: e.target.value
+                  })
+                }
               />
-              {errors.education && (<p className={errorClass}>{errors.education}</p>)}
             </Form.Group>
 
             <Form.Group>
               <label className={labelClass}>Bio <span className={errorClass}>*</span></label>
               <Form.Control
+                required
                 as="textarea"
                 rows={4}
-                className={`${textareaClass} ${errors.bio ? "border-red-500" : ""
-                  }`}
-                value={form.bio}
-                onChange={(e) => handleChange("bio", e.target.value)}
+                className={`${textareaClass}`}
+                value={form.doctorInfo.bio}
+                onChange={(e) => handleChange("doctorInfo",
+                  {
+                    ...form.doctorInfo, bio: e.target.value
+                  })
+                }
               />
-              {errors.bio && (<p className={errorClass}>{errors.bio}</p>)}
             </Form.Group>
           </div>
         )}
