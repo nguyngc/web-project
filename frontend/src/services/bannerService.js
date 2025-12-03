@@ -1,3 +1,5 @@
+import { getToken } from "../hooks/useLogin";
+
 const BASE = "/api/banners";
 
 export const getAllBanners = async () => {
@@ -7,14 +9,12 @@ export const getAllBanners = async () => {
 };
 
 // ---------- ADMIN CRUD ----------
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmViMDU3OGY5MTY2MWE0NjQ1N2E4MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzY0NjY3NDc5LCJleHAiOjE3NjQ5MjY2Nzl9.MP0b-k35lF2PHlUJK1fjVdS4yCyTvTTuueRZtqQ4EOo';
-
 export const createBanner = async (form) => {
   const res = await fetch(BASE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(form),
   });
@@ -28,7 +28,7 @@ export const updateBanner = async (id, form) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(form),
   });
@@ -41,7 +41,7 @@ export const toggleBanner = async (id) => {
   const res = await fetch(`${BASE}/${id}/toggle`, {
     method: "PATCH",
     headers: {
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
   });
 
@@ -53,7 +53,7 @@ export const deleteBanner = async (id) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "DELETE",
     headers: {
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
   });
 
@@ -71,7 +71,7 @@ export const reorderBanners = async (list) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(payload),
   });

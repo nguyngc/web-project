@@ -37,6 +37,7 @@ export default function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
+    localStorage.removeItem("token");
     setCurrentUser(null);
     navigate("/");
   };
