@@ -34,7 +34,7 @@ const UserList = () => {
   const [deleteUserDialogOpen, setDeleteUserDialogOpen] = useState(false);
   const [resetPasswordDialogOpen, setResetPasswordDialogOpen] = useState(false);
 
-  const currentUser = { _id: "692eb0578f91661a46457a80" };
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
 
   // Filter and paginate users
   const itemsPerPage = 10;
@@ -121,50 +121,6 @@ const UserList = () => {
     showMessage("User created successfully");
     setShowAddUserForm(false);
     loadUsers();
-
-    // const newUser = {
-    //   id: `user-${Date.now()}`,
-    //   firstName: newData.firstName,
-    //   lastName: newData.lastName,
-    //   email: newData.email,
-    //   phone: newData.phone,
-    //   role: newData.role,
-    //   status: newData.status,
-    //   createdDate: new Date().toISOString().split('T')[0],
-    //   lastLogin: new Date().toISOString().split('T')[0],
-    //   ...(newData.role === "doctor" && {
-    //     photo: newData.photo,
-    //     specialization: newData.specialization,
-    //     licenseNumber: newData.licenseNumber,
-    //     yearsOfExperience: newData.yearsOfExperience,
-    //     education: newData.education,
-    //     bio: newData.bio
-    //   })
-    // };
-
-    // setUsers([newUser, ...users]);
-    // showMessage("User created successfully");
-    // setShowAddUserForm(false);
-    // // Reset form
-    // setNewUserData({
-    //   firstName: "",
-    //   lastName: "",
-    //   dateOfBirth: "",
-    //   gender: "male",
-    //   email: "",
-    //   phone: "",
-    //   address: "",
-    //   password: "",
-    //   confirmPassword: "",
-    //   role: "user",
-    //   status: true,
-    //   photo: "",
-    //   specialization: "",
-    //   licenseNumber: "",
-    //   yearsOfExperience: 0,
-    //   education: "",
-    //   bio: ""
-    // });
   };
 
   const handleCancelAddUser = () => {
@@ -204,7 +160,6 @@ const UserList = () => {
   const confirmDeleteUser = async () => {
     if (userToDelete) {
       await deleteUser(userToDelete._id);
-      // setUsers(users.filter(u => u.id !== userToDelete.id));
       showMessage("User deleted successfully");
       setDeleteUserDialogOpen(false);
       setUserToDelete(null);
@@ -213,11 +168,6 @@ const UserList = () => {
   };
 
   const handleToggleUserStatus = async (userId) => {
-    // setUsers(users.map(u =>
-    //   u.id === userId
-    //     ? { ...u, status: !u.status }
-    //     : u
-    // ));
     await toggleStatus(userId);
     showMessage("User status updated");
     loadUsers();
@@ -313,7 +263,7 @@ const UserList = () => {
               <UserRow
                 key={user._id}
                 user={user}
-                currentUserId={currentUser?._id}
+                currentUserId={currentUser?.id}
                 onEdit={handleEditUser}
                 onResetPassword={handleResetPassword}
                 onToggleStatus={handleToggleUserStatus}

@@ -1,3 +1,5 @@
+import { getToken } from "../hooks/useLogin";
+
 const BASE = "/api/services";
 
 export const getServices = async (query = "") => {
@@ -13,14 +15,12 @@ export const getServiceById = async (id) => {
 };
 
 // ---------- ADMIN CRUD ----------
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmViMDU3OGY5MTY2MWE0NjQ1N2E4MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzY0NjY3NDc5LCJleHAiOjE3NjQ5MjY2Nzl9.MP0b-k35lF2PHlUJK1fjVdS4yCyTvTTuueRZtqQ4EOo';
-
 export const createService = async (data) => {
   const res = await fetch(BASE, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(data),
   });
@@ -34,7 +34,7 @@ export const updateService = async (id, data) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(data),
   });
@@ -47,7 +47,7 @@ export const deleteService = async (id) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "DELETE",
     headers: {
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     }
   });
   
@@ -59,7 +59,7 @@ export const toggleService = async (id) => {
   const res = await fetch(`${BASE}/${id}/toggle`, {
     method: "PATCH",
     headers: {
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
   });
   

@@ -53,12 +53,9 @@ const LoginForm = ({ onForgot, onSuccess }) => {
     console.log("Token:", result.token);
 
     const role = result.user?.role || "user";
-    const user = {
-      email: result.user.email,
-      role: role,
-    };
 
-    localStorage.setItem("currentUser", JSON.stringify(user));
+    localStorage.setItem("currentUser", JSON.stringify(result.user));
+    localStorage.setItem("token", result.token);
     window.dispatchEvent(new Event("userLogin"));
 
     if (onSuccess) {

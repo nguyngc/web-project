@@ -1,3 +1,5 @@
+import { getToken } from "../hooks/useLogin";
+
 const BASE = "/api/articles";
 
 // Normalize _id → id and createdDateTime → date
@@ -38,13 +40,15 @@ export const fetchArticleById = async (id) => {
 };
 
 // ---------- ADMIN CRUD ----------
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5MmViMDU3OGY5MTY2MWE0NjQ1N2E4MCIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzY0NjY3NDc5LCJleHAiOjE3NjQ5MjY2Nzl9.MP0b-k35lF2PHlUJK1fjVdS4yCyTvTTuueRZtqQ4EOo';
-
 export const getAdminArticles = async (q = "") => {
   const params = {};
   if (q) params.q = q;
 
-  const res = await fetch(`${BASE}?${new URLSearchParams(params)}`);
+  const res = await fetch(`${BASE}?${new URLSearchParams(params)}`, {
+    headers: {
+      "Authorization": `Bearer ${getToken()}`
+    }
+  });
   if (!res.ok) throw new Error("Failed to load articles");
 
   const data = await res.json();
@@ -56,7 +60,7 @@ export const createArticle = async (form) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(form),
   });
@@ -71,7 +75,7 @@ export const updateArticle = async (id, form) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify(form),
   });
@@ -85,7 +89,7 @@ export const deleteArticle = async (id) => {
   const res = await fetch(`${BASE}/${id}`, {
     method: "DELETE",
     headers: {
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     }
   });
   if (!res.ok) throw new Error("Failed to delete article");
@@ -98,7 +102,7 @@ export const toggleArticleStatus = async (id, currentStatus) => {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
+      "Authorization": `Bearer ${getToken()}`
     },
     body: JSON.stringify({ isPublished: !currentStatus }),
   });
