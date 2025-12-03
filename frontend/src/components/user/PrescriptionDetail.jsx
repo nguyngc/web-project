@@ -22,11 +22,11 @@ const PrescriptionDetail = ({ appt, onBack }) => {
       <div className="flex flex-col md:flex-row gap-4">
         <div className="flex items-center gap-2 text-sm text-[#4A5565]">
           <User className="w-4 h-4" />
-          <span>Patient: {appt.patient}</span>
+          <span>Patient: {appt.userId ? `${appt.userId.firstName} ${appt.userId.lastName}` : ""}</span>
         </div>
         <div className="flex items-center gap-2 text-sm text-[#4A5565]">
           <Stethoscope className="w-4 h-4" />
-          <span>Doctor: {appt.doctor}</span>
+          <span>Doctor: {appt.doctorId ? `${appt.doctorId.firstName} ${appt.doctorId.lastName}` : ""}</span>
         </div>
       </div>
 
@@ -34,11 +34,11 @@ const PrescriptionDetail = ({ appt, onBack }) => {
       <div className="flex flex-col md:flex-row gap-4 text-sm text-[#4A5565]">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4" />
-          <span>Date: {appt.date}</span>
+          <span>Date: {appt.date || "-"}</span>
         </div>
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4" />
-          <span>Time: {appt.time}</span>
+          <span>Time: {appt.time || "-"}</span>
         </div>
         {appt.nextAppointment && (
           <div className="flex items-center gap-2">

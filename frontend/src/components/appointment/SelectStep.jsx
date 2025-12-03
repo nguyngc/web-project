@@ -13,16 +13,13 @@ const timeSlots = [
   { id: "6", time: "4:00 PM - 5:00 PM", duration: "60 minutes", available: true },
 ];
 
-// 1 doctor
-const doctor = {
-  id: "692e0f8938dbd5a43580cb11",
-  name: "Dr. Doe"
-};
-
 export default function SelectStep({ onSelectSlot }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedService, setSelectedService] = useState("");
   const [services, setServices] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [doctors, setDoctors] = useState([]);
+
 
   // fetch services từ backend
   useEffect(() => {
@@ -40,14 +37,35 @@ export default function SelectStep({ onSelectSlot }) {
     fetchServices();
   }, []);
 
+  //fetch doctor
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await fetch("/api/doctors?isActive=true", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setDoctors(data);
+        }
+      } catch (err) {
+        console.error("Failed to fetch doctors", err);
+      }
+    };
+    fetchDoctors();
+  }, []);
+
   const handleClick = (slot) => {
-    if (!slot.available || !selectedDate || !selectedService) return;
+    if (!slot.available || !selectedDate || !selectedService || !selectedDoctor) return;
 
     onSelectSlot({
       date: format(selectedDate, "EEEE, MMMM d, yyyy"),
       time: slot.time,
-      doctorId: doctor.id,
-      doctorName: doctor.name,
+      doctorId: selectedDoctor._id,
+      doctorName: `${selectedDoctor.firstName} ${selectedDoctor.lastName}`,
       title: selectedService, // serviceName 
     });
   };
@@ -78,20 +96,50 @@ export default function SelectStep({ onSelectSlot }) {
             Select a Service
           </h2>
           <select
-            value={selectedService}
-            onChange={(e) => setSelectedService(e.target.value)}
+            value={selectedService?._id || ""}
+            onChange={(e) => {
+              const svc = services.find((s) => s._id === e.target.value);
+              setSelectedService(svc);
+            }}
             className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
           >
-            <option value="">-- Choose a service --</option>
+            <option value="">-- Choose a Service --</option>
             {services.map((s) => (
-              <option key={s._id} value={s.serviceName}>
+              <option key={s._id} value={s._id}>
                 {s.serviceName}
               </option>
             ))}
           </select>
           {selectedService && (
             <p className="mt-2 text-sm text-[#2563EB]">
-              Selected: {selectedService}
+              Selected: {selectedService.serviceName}
+            </p>
+          )}
+        </div>
+
+        {/* Doctor selection */}
+        <div className="mb-6">
+          <h2 className="text-[18px] font-semibold text-[#111827] mb-2">
+            Select a Doctor
+          </h2>
+          <select
+            value={selectedDoctor?._id || ""}
+            onChange={(e) => {
+              const doc = doctors.find((d) => d._id === e.target.value);
+              setSelectedDoctor(doc);
+            }}
+            className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
+          >
+            <option value="">-- Choose a Doctor --</option>
+            {doctors.map((d) => (
+              <option key={d._id} value={d._id}>
+                {d.firstName} {d.lastName}
+              </option>
+            ))}
+          </select>
+          {selectedDoctor && (
+            <p className="mt-2 text-sm text-[#2563EB]">
+              Selected: {selectedDoctor.firstName} {selectedDoctor.lastName}
             </p>
           )}
         </div>

@@ -5,7 +5,7 @@ const AppointmentCard = ({ appt, onReschedule, onCancel }) => {
   const isRescheduleDisabled =
     appt.status === "completed" || appt.status === "cancelled";
 
-  const isCancelDisabled = appt.status !== "scheduled";
+  const isCancelDisabled = appt.status !== "pending" || appt.status === "scheduled"
 
   //  populate 
   const serviceName = appt.serviceId?.serviceName || appt.service || "";
@@ -33,11 +33,14 @@ const AppointmentCard = ({ appt, onReschedule, onCancel }) => {
                   ? "scheduled"
                   : appt.status === "completed"
                     ? "completed"
-                    : "inactive"
+                    : appt.status === "cancelled"
+                      ? "cancelled"
+                      : "inactive"
               }
             >
               {appt.status}
             </StatusBox>
+
           </div>
         </div>
 

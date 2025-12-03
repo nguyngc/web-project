@@ -20,12 +20,12 @@ const Appointments = () => {
 
   // fetch user
   const user = JSON.parse(localStorage.getItem("user"));
+  const token = localStorage.getItem("token");
 
   // Fetch appointments from backend
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const token = localStorage.getItem("token");
         const res = await fetch(`/api/appointments?userId=${user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -35,15 +35,15 @@ const Appointments = () => {
         if (res.ok) {
           setAppointments(data);
         } else {
-          setMessage({ text: data.message || "Failed to fetch appointments", type: "error" });
+          showMessage(data.message || "Failed to fetch appointments", "error");
         }
       } catch (err) {
-        setMessage({ text: "Network error", type: "error" });
+        showMessage("Network error", "error");
       }
     };
 
-    if (user) fetchAppointments();
-  }, [user]);
+    if (user && token) fetchAppointments();
+  }, [user, token]);
 
   // Filter + paginate
   const filtered = appointments.filter((a) => {
@@ -69,34 +69,70 @@ const Appointments = () => {
     setTimeout(() => setMessage(null), 3000);
   };
 
+  // Reschedule
   const handleRescheduleClick = (apt) => {
     setSelectedAppt(apt);
     setShowReschedule(true);
   };
 
-  const handleRescheduleSave = (updated) => {
-    setAppointments(
-      appointments.map((a) => (a._id === updated._id ? updated : a))
-    );
-    showMessage("Appointment rescheduled successfully");
-    setShowReschedule(false);
-    setSelectedAppt(null);
+  const handleRescheduleSave = async (updatedFields) => {
+    try {
+      const res = await fetch(`/api/appointments/${selectedAppt._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(updatedFields), // { date, time, userNotes }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAppointments(
+          appointments.map((a) => (a._id === data._id ? data : a))
+        );
+        showMessage("Appointment rescheduled successfully");
+      } else {
+        showMessage(data.message || "Failed to reschedule", "error");
+      }
+    } catch (err) {
+      showMessage("Network error", "error");
+    } finally {
+      setShowReschedule(false);
+      setSelectedAppt(null);
+    }
   };
 
+  // Cancel
   const handleCancelClick = (apt) => {
     setSelectedAppt(apt);
     setShowCancel(true);
   };
 
-  const confirmCancel = () => {
-    setAppointments(
-      appointments.map((a) =>
-        a._id === selectedAppt._id ? { ...a, status: "cancelled" } : a
-      )
-    );
-    showMessage("Appointment cancelled");
-    setShowCancel(false);
-    setSelectedAppt(null);
+  const confirmCancel = async () => {
+    try {
+      const res = await fetch(`/api/appointments/${selectedAppt._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: "cancelled" }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAppointments(
+          appointments.map((a) => (a._id === data._id ? data : a))
+        );
+        showMessage("Appointment cancelled");
+      } else {
+        showMessage(data.message || "Failed to cancel", "error");
+      }
+    } catch (err) {
+      showMessage("Network error", "error");
+    } finally {
+      setShowCancel(false);
+      setSelectedAppt(null);
+    }
   };
 
   return (

@@ -10,6 +10,7 @@ const LoginForm = ({ onForgot, onSuccess }) => {
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const email = useField("email");
   const password = useField("password");
@@ -20,14 +21,12 @@ const LoginForm = ({ onForgot, onSuccess }) => {
     let valid = true;
     const newErrors = { email: "", password: "" };
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
       newErrors.email = "Please enter a valid email address.";
       valid = false;
     }
 
-    // Password validation (min 6 characters)
     if (password.value.length < 6) {
       newErrors.password = "Password must be at least 6 characters.";
       valid = false;
@@ -38,79 +37,73 @@ const LoginForm = ({ onForgot, onSuccess }) => {
   };
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-    const result = await login({
+  e.preventDefault();
+  if (!validate()) return;
+
+  const result = await login(
+    {
       email: email.value,
       password: password.value,
-    });
-    if (result) {
-      console.log("User:", result.user);
-      console.log("Token:", result.token);
+    },
+    rememberMe // truyền vào để useLogin biết lưu ở đâu
+  );
 
-      let role = "user";
-      // let firstName = "";
-      // let lastName = "";
+  if (result) {
+    console.log("User:", result.user);
+    console.log("Token:", result.token);
 
-      if (email.value.toLowerCase().includes("doctor")) {
-        role = "doctor";
-        // firstName = "Dr. Sarah";
-        // lastName = "Johnson";
-      } else if (email.value.toLowerCase().includes("admin")) {
-        role = "admin";
-        //  firstName = currentUser.firstName 
-        //   lastName = currentUser.lastName 
-      }
-      if (!error) {
-        const user = {
-          email: email.value,
-          password: password.value,
-          role: role,
-        };
+    const role = result.user?.role || "user";
+    const user = {
+      email: result.user.email,
+      role: role,
+    };
 
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        window.dispatchEvent(new Event("userLogin"));
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.dispatchEvent(new Event("userLogin"));
 
-        if (onSuccess) {
-          // Used when called from BookAppointment
-          onSuccess(user);
-        } else {
-          // Default behavior when used from Login page
-          if (role === "user") navigate("/profile");
-          else navigate("/" + role);
-        }
-      }
+    if (onSuccess) {
+      onSuccess(user);
+    } else {
+      if (role === "user") navigate("/profile");
+      else navigate("/" + role);
     }
-  };
+  }
+};
 
   return (
-    <Form
-      onSubmit={handleLogin}
-      className="max-w-md mx-auto bg-white"
-    >
+    <Form onSubmit={handleLogin} className="max-w-md mx-auto bg-white">
       {/* Email */}
       <Form.Group className="mb-4 relative">
         <label className="block text-sm font-semibold text-gray-700 mb-1">
           Email Address
         </label>
         <div className="relative">
-          <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+          <Mail
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={18}
+          />
           <Form.Control
             {...email}
+            type="email"
             placeholder="email@example.com"
             className={`w-full pl-10 h-12 bg-gray-50 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 ${errors.email ? "border-red-500" : "border-gray-200"
               }`}
           />
         </div>
-        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+        {errors.email && (
+          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+        )}
       </Form.Group>
 
       {/* Password */}
       <Form.Group className="mb-4 relative">
-        <label className="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+        <label className="block text-sm font-semibold text-gray-700 mb-1">
+          Password
+        </label>
         <div className="relative">
           <Form.Control
             {...password}
+            type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
             className={`h-12 w-full bg-gray-50 pl-3 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-10 ${errors.password ? "border-red-500" : "border-gray-200"
               }`}
@@ -123,13 +116,19 @@ const LoginForm = ({ onForgot, onSuccess }) => {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
-        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+        {errors.password && (
+          <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+        )}
       </Form.Group>
 
       {/* Remember + Forgot */}
       <div className="flex justify-between items-center mb-4 text-sm">
         <label className="flex items-center gap-2 cursor-pointer">
-          <Form.Check type="checkbox" />
+          <Form.Check
+            type="checkbox"
+            checked={rememberMe}
+            onChange={(e) => setRememberMe(e.target.checked)}
+          />
           Remember me
         </label>
         <button
@@ -141,9 +140,12 @@ const LoginForm = ({ onForgot, onSuccess }) => {
         </button>
       </div>
 
+      {/* Error từ useLogin */}
+      {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
+
       {/* Submit Button */}
-      <GradientButton type="submit">
-        Login
+      <GradientButton type="submit" disabled={isLoading}>
+        {isLoading ? "Logging in..." : "Login"}
       </GradientButton>
     </Form>
   );
