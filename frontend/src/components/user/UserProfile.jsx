@@ -67,7 +67,7 @@ const UserProfile = () => {
   // Update password via backend
   const updatePassword = async (currentPassword, newPassword) => {
     try {
-      const res = await fetch(`/api/users/${id}/password`, {
+      const res = await fetch(`/api/users/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

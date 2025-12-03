@@ -8,10 +8,10 @@ const PrescriptionCard = ({ appt, onView, onDownload }) => {
         <div className="flex flex-row justify-between items-start w-full">
           <div className="flex flex-col gap-2">
             <h4 className="text-[#101828] text-[16px] leading-[24px]">
-              {appt.service}
+              {appt.serviceId?.serviceName || ""}
             </h4>
             <p className="text-[#4A5565] text-[14px] leading-[20px]">
-              {appt.doctor}
+              {appt.doctorId ? `${appt.doctorId.firstName} ${appt.doctorId.lastName}` : ""}
             </p>
           </div>
 
@@ -19,7 +19,7 @@ const PrescriptionCard = ({ appt, onView, onDownload }) => {
           <div className="bg-[#3F9C36] rounded-lg px-3 py-1 flex items-center gap-2">
             <FileText className="w-3 h-3 text-white" />
             <span className="text-white text-[12px] font-medium">
-              {appt.id}
+              {appt._id}
             </span>
           </div>
         </div>
@@ -28,11 +28,11 @@ const PrescriptionCard = ({ appt, onView, onDownload }) => {
         <div className="flex flex-row justify-between w-full text-[#4A5565] text-[14px]">
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[#4A5565]" />
-            <span>Issued: {appt.date}</span>
+            <span>Issued: {appt.date || "-"}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-[#4A5565]" />
-            <span>Next Visit: {appt.nextAppointment}</span>
+            <span>Next Visit: {appt.nextAppointment || "-"}</span>
           </div>
         </div>
 
