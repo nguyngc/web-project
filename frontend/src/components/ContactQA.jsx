@@ -11,7 +11,7 @@ function ContactQA() {
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const res = await fetch("/api/faqs");
+        const res = await fetch("/api/faq");
         if (!res.ok) {
           throw new Error("Failed to fetch FAQs");
         }

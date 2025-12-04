@@ -12,6 +12,9 @@ const Banner = require("./models/bannerModel.js");
 const articles = require("./data/articles.js");
 const Article = require("./models/articleModel.js");
 
+const faq = require("./data/faq.js");
+const FAQ = require("./models/faqModel.js");
+
 connectDB();
 
 const importData = async () => {
@@ -29,8 +32,8 @@ const importData = async () => {
     await Article.insertMany(articles);
 
     // FAQ
-
-
+    await FAQ.deleteMany();
+    await FAQ.insertMany(faq);
 
     console.log('Data Imported!'.green.inverse);
     process.exit();
