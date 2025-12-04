@@ -3,6 +3,11 @@ const router = express.Router();
 const ctrl = require("../controllers/userController");
 const { requireAuth, requireRole } = require("../middleware/authMiddleware");
 
+
+// Public route: list doctors 
+// GET /api/users/doctors/public
+router.get("/doctors/public", ctrl.getPublicDoctors);
+
 // Auth routes (public, no token needed)
 
 // POST /api/users/signup

@@ -42,6 +42,26 @@ const getAll = async (req, res) => {
   }
 };
 
+/ GET /api/users/doctors/public
+// Public: list all active doctors with basic public info
+const getPublicDoctors = async (req, res) => {
+  try {
+    const doctors = await User.find({
+      role: "doctor",
+      status: true, // boolean: chỉ lấy doctor đang active
+    }).select(
+      "firstName lastName email phone doctorInfo"
+      // FE nhận được: doctorInfo.specialization, bio, profilePicture, yoe, ...
+    );
+
+    res.json(doctors);
+  } catch (error) {
+    console.error("getPublicDoctors error:", error);
+    res.status(500).json({ message: "Failed to retrieve doctors" });
+  }
+};
+
+
 // GET /api/users/:userId
 // - admin & doctor: can view any user
 // - normal user: can only view their own profile
@@ -321,4 +341,5 @@ module.exports = {
   remove,
   signup,
   login,
+  getPublicDoctors,
 };
