@@ -6,13 +6,16 @@ const jwt = require("jsonwebtoken");
 // Helper: create JWT token for user
 const createToken = (user) => {
   return jwt.sign(
-    { id: user._id, role: user.role },     // payload
-    process.env.JWT_SECRET,                // secret in .env
-    { expiresIn: "3d" }                    // token valid for 3 days
+    { id: user._id, role: user.role }, // payload
+    process.env.JWT_SECRET,            // secret in .env
+    { expiresIn: "3d" }                // token valid for 3 days
   );
 };
 
-// GET /api/users?q=kw&role=doctor&status=active
+// Small helper: normalize bool from querystring
+const toBool = (v) => ["true", "1", true, 1, "on", "yes"].includes(v);
+
+// GET /api/users?q=kw&role=doctor&status=true
 // Only admin & doctor (checked in routes with requireRole)
 const getAll = async (req, res) => {
   const { q, role, status } = req.query;
@@ -21,7 +24,7 @@ const getAll = async (req, res) => {
     const filter = {};
 
     if (role !== undefined) filter.role = role;
-    if (status !== undefined) filter.status = status;
+    if (status !== undefined) filter.status = toBool(status);
 
     if (q) {
       const regex = new RegExp(q, "i");
@@ -42,16 +45,15 @@ const getAll = async (req, res) => {
   }
 };
 
-/ GET /api/users/doctors/public
+// GET /api/users/doctors/public
 // Public: list all active doctors with basic public info
 const getPublicDoctors = async (req, res) => {
   try {
     const doctors = await User.find({
       role: "doctor",
-      status: true, // boolean: chỉ lấy doctor đang active
+      status: true, // only active doctors
     }).select(
       "firstName lastName email phone doctorInfo"
-      // FE nhận được: doctorInfo.specialization, bio, profilePicture, yoe, ...
     );
 
     res.json(doctors);
@@ -60,7 +62,6 @@ const getPublicDoctors = async (req, res) => {
     res.status(500).json({ message: "Failed to retrieve doctors" });
   }
 };
-
 
 // GET /api/users/:userId
 // - admin & doctor: can view any user
@@ -245,6 +246,7 @@ const login = async (req, res) => {
 // - normal user: only update themselves
 // - only admin can change role/status
 // - supports toggleStatus for admin
+// - CANNOT update password here
 const update = async (req, res) => {
   const { userId } = req.params;
 
@@ -273,6 +275,7 @@ const update = async (req, res) => {
         return res.status(404).json({ message: "User not found" });
       }
 
+      // status is boolean
       existing.status = !existing.status;
       existing.modifiedBy = requester.id;
 
@@ -285,6 +288,9 @@ const update = async (req, res) => {
 
     const updateData = { ...req.body };
 
+    //  never allow password change in this endpoint
+    delete updateData.password;
+
     // Only admin is allowed to change role or status directly
     if (requester.role !== "admin") {
       delete updateData.role;
@@ -293,11 +299,6 @@ const update = async (req, res) => {
     }
 
     updateData.modifiedBy = requester.id || "api";
-
-    // If updating password, hash it
-    if (updateData.password && updateData.password.trim() !== "") {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
-    }
 
     const updated = await User.findByIdAndUpdate(userId, updateData, {
       new: true,
@@ -309,7 +310,73 @@ const update = async (req, res) => {
 
     res.json(updated);
   } catch (error) {
+    console.error("update user error:", error);
     res.status(500).json({ message: "Failed to update user" });
+  }
+};
+
+// PUT /api/users/:userId/password
+// - user/doctor: change password of themselves (need currentPassword + newPassword)
+// - admin: change password of any user (need newPassword only)
+const changePassword = async (req, res) => {
+  const { userId } = req.params;
+  const { currentPassword, newPassword } = req.body;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid User ID" });
+  }
+
+  if (!newPassword || newPassword.length < 6) {
+    return res
+      .status(400)
+      .json({ message: "New password must be at least 6 characters" });
+  }
+
+  try {
+    const requester = req.user;
+
+    if (!requester) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    // user/doctor can only change password of themselves
+    if (requester.role !== "admin" && requester.id !== userId) {
+      return res
+        .status(403)
+        .json({ message: "You can only change your own password" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // If not admin → must check currentPassword
+    if (requester.role !== "admin") {
+      if (!currentPassword) {
+        return res
+          .status(400)
+          .json({ message: "Current password is required" });
+      }
+
+      const match = await bcrypt.compare(currentPassword, user.password);
+      if (!match) {
+        return res
+          .status(400)
+          .json({ message: "Current password is incorrect" });
+      }
+    }
+
+    // Set new password
+    user.password = await bcrypt.hash(newPassword, 10);
+    user.modifiedBy = requester.id || "api";
+
+    await user.save();
+
+    res.json({ message: "Password updated successfully" });
+  } catch (error) {
+    console.error("changePassword error:", error);
+    res.status(500).json({ message: "Failed to change password" });
   }
 };
 
@@ -342,4 +409,5 @@ module.exports = {
   signup,
   login,
   getPublicDoctors,
+  changePassword,
 };
