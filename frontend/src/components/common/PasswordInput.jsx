@@ -7,6 +7,7 @@ const PasswordInput = ({ value, onChange, placeholder }) => {
   return (
     <div className="relative">
       <input
+        required
         type={show ? "text" : "password"}
         className="w-full h-10 bg-[#F3F3F5] border border-transparent rounded-lg px-3 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-vision-blue-accent"
         placeholder={placeholder}

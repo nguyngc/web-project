@@ -22,6 +22,7 @@ const getAll = async (req, res) => {
     } else {
       // normal user
       filter.userId = requesterId;
+      if (doctorId !== undefined) filter.doctorId = doctorId;
     }
 
     if (status !== undefined) filter.status = status;
@@ -148,20 +149,6 @@ const create = async (req, res) => {
       return res.status(400).json({ message: "Invalid doctorId" });
     }
 
-    // CONFLICT CHECK: is this slot already booked for this doctor?
-    const existingAppointment = await Appointment.findOne({
-      doctorId,
-      date,
-      time,
-      status: { $ne: "cancelled" },
-    });
-
-    if (existingAppointment) {
-      return res.status(400).json({
-        message: "This time slot is no longer available. Please choose another.",
-      });
-    }
-
     // Status logic:
     // - default: "pending"
     // - only admin can override on creation
@@ -174,21 +161,21 @@ const create = async (req, res) => {
     const medicalPayload =
       requester.role === "user"
         ? {
-            diagnosis: "",
-            rightEye: "",
-            leftEye: "",
-            prescriptionNotes: "",
-            doctorNotes: "",
-            nextAppointment: null,
-          }
+          diagnosis: "",
+          rightEye: "",
+          leftEye: "",
+          prescriptionNotes: "",
+          doctorNotes: "",
+          nextAppointment: null,
+        }
         : {
-            diagnosis: diagnosis || "",
-            rightEye: rightEye || "",
-            leftEye: leftEye || "",
-            prescriptionNotes: prescriptionNotes || "",
-            doctorNotes: doctorNotes || "",
-            nextAppointment: nextAppointment || null,
-          };
+          diagnosis: diagnosis || "",
+          rightEye: rightEye || "",
+          leftEye: leftEye || "",
+          prescriptionNotes: prescriptionNotes || "",
+          doctorNotes: doctorNotes || "",
+          nextAppointment: nextAppointment || null,
+        };
 
     const createdBy = requesterId || "api";
 
@@ -254,13 +241,21 @@ const update = async (req, res) => {
     delete updateData.createdBy;
 
     if (requester.role === "user") {
-      const allowed = ["date", "time", "userNotes"];
+      const allowed = ["date", "time", "userNotes", "status"];
       const safe = {};
       for (const key of allowed) {
         if (updateData[key] !== undefined) {
           safe[key] = updateData[key];
         }
       }
+
+      // Users may ONLY update status to "cancelled"
+      if (safe.status && safe.status !== "cancelled") {
+        return res.status(400).json({
+          message: "Users can only cancel appointments",
+        });
+      }
+      
       updateData = safe;
     }
 
@@ -284,25 +279,6 @@ const update = async (req, res) => {
     }
 
     updateData.modifiedBy = requesterId || "api";
-
-    // CONFLICT CHECK for rescheduling:
-    // Only if date or time is changing (or both)
-    const newDate = updateData.date || current.date;
-    const newTime = updateData.time || current.time;
-
-    const conflict = await Appointment.findOne({
-      _id: { $ne: appointmentId },       // exclude this appointment
-      doctorId: current.doctorId,        // same doctor
-      date: newDate,
-      time: newTime,
-      status: { $ne: "cancelled" },      // ignore cancelled
-    });
-
-    if (conflict) {
-      return res.status(400).json({
-        message: "This time slot is already booked. Please choose another.",
-      });
-    }
 
     const updated = await Appointment.findByIdAndUpdate(
       appointmentId,

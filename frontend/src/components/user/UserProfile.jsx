@@ -9,8 +9,8 @@ const UserProfile = () => {
   const [message, setMessage] = useState(null);
 
   const token = localStorage.getItem("token");
-  const currentUser = JSON.parse(localStorage.getItem("user"));
-  const id = currentUser?.id;
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const id = currentUser?._id || currentUser?.id;
 
   // Fetch user info from backend
   useEffect(() => {
@@ -55,6 +55,8 @@ const UserProfile = () => {
       if (res.ok) {
         setUser(data);
         setEditing(false);
+        localStorage.setItem("currentUser", JSON.stringify(data));
+        window.dispatchEvent(new Event("userUpdated"));
         showMessage("Profile updated successfully");
       } else {
         showMessage(data.error || "Failed to update profile", "error");
@@ -67,7 +69,7 @@ const UserProfile = () => {
   // Update password via backend
   const updatePassword = async (currentPassword, newPassword) => {
     try {
-      const res = await fetch(`/api/users/${id}`, {
+      const res = await fetch(`/api/users/${id}/password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -79,7 +81,7 @@ const UserProfile = () => {
       if (res.ok) {
         showMessage("Password updated successfully");
       } else {
-        showMessage(data.error || "Failed to update password", "error");
+        showMessage(data.message || data.error || "Failed to update password", "error");
       }
     } catch (err) {
       showMessage("Network error", "error");

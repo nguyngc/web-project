@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import prescription from "../../data/appointments";
 import Pagination from "../common/Pagination";
 import InfoMessage from "../common/InfoMessage";
 import ConfirmDialog from "../common/ComfirmDialog";
@@ -20,21 +19,25 @@ const Prescriptions = () => {
   const itemsPerPage = 3;
 
   // fetch user
-  const user = JSON.parse(localStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("currentUser"));
   const token = localStorage.getItem("token");
+
+  const userId = user?._id || user?.id;
 
   // Fetch prescriptions from backend
   useEffect(() => {
     const fetchPrescriptions = async () => {
       try {
-        const res = await fetch(`/api/appointments?userId=${user.id}`, {
+        if (!userId || !token) return;
+
+        const res = await fetch(`/api/appointments?userId=${userId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
         const data = await res.json();
         if (res.ok) {
-          setItems(data);
+          setItems(data.filter((appt) => appt.status === "completed"));
         } else {
           showMessage(data.message || "Failed to fetch prescriptions", "error");
         }
@@ -44,7 +47,7 @@ const Prescriptions = () => {
     };
 
     if (user && token) fetchPrescriptions();
-  }, [user, token]);
+  }, [token]);
 
   // Filter + paginate
   const filtered = appointments.filter((a) => {
@@ -76,7 +79,7 @@ const Prescriptions = () => {
 
   const handleView = (appt) => {
     setSelectedPrescription(appt);
-    showMessage(`Viewing prescription ${appt.serviceId?.serviceName || ""}`);
+    // showMessage(`Viewing prescription ${appt.serviceId?.serviceName || ""}`);
   };
 
   const handleBack = () => {
@@ -137,14 +140,21 @@ const Prescriptions = () => {
         />
       ) : (
         <div className="flex flex-col gap-6">
-          {paginated.map((p) => (
-            <PrescriptionCard
-              key={p._id}
-              appt={p}
-              onView={handleView}
-              onDownload={handleDownload}
-            />
-          ))}
+          {paginated.length === 0 ? (
+            <div className="text-center py-10 text-gray-500 text-sm">
+              You don't have any prescriptions yet.
+              <br />
+              Completed prescriptions will appear here after your appointment.
+            </div>
+          ) : (
+            paginated.map((p) => (
+              <PrescriptionCard
+                key={p._id}
+                appt={p}
+                onView={handleView}
+                onDownload={handleDownload}
+              />
+            )))}
         </div>
       )}
 

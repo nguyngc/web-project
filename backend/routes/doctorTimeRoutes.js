@@ -15,6 +15,9 @@ router.get("/user/:userId/date/:date", ctrl.getByUserIdAndDate);
 // GET /api/doctor-time/:doctorTimeId
 router.get("/:doctorTimeId", ctrl.getById);
 
+// GET /api/doctor-time/user/:userId/week/:week
+router.get("/user/:userId/week/:week", ctrl.getByWeek);
+
 // Protected routes
 
 // POST /api/doctor-time

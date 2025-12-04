@@ -4,6 +4,7 @@ import BookAppointment from "../components/BookAppointment.jsx";
 function Services() {
   return (
     <div>
+      <Hero page="bookApp" />
       <BookAppointment />
     </div>
   );

@@ -12,11 +12,12 @@ export default function ConfirmStep({ user, appointment, setStep }) {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        userId: user.id,         
-        doctorId: appointment.doctorId, 
+        userId: user._id,
+        serviceId: appointment.serviceId,
+        serviceName: appointment.serviceName,
+        doctorId: appointment.doctorId,
         date: appointment.date,
         time: appointment.time,
-        type: appointment.title,  
         status: "confirmed",
       }),
     });
@@ -77,7 +78,7 @@ export default function ConfirmStep({ user, appointment, setStep }) {
 
             {/* Tag */}
             <span className="inline-block bg-[#E0F2FE] text-[#2563EB] px-3 py-1 rounded-md text-xs font-medium mb-4">
-              {appointment.title}
+              {appointment.serviceName}
             </span>
 
             {/* Description */}

@@ -37,22 +37,9 @@ const RegistrationForm = ({ onSuccess }) => {
   // validate input
   const validate = () => {
     const newErrors = {};
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!firstName.value.trim()) newErrors.firstName = "First name is required";
-    if (!lastName.value.trim()) newErrors.lastName = "Last name is required";
-
-    if (!email.value.trim()) newErrors.email = "Email is required";
-    else if (!emailRegex.test(email.value)) newErrors.email = "Invalid email";
-
-    if (!password.value) newErrors.password = "Password is required";
-    else if (password.value.length < 6)
-      newErrors.password = "Password must be at least 6 characters";
 
     if (confirmPassword.value !== password.value)
       newErrors.confirmPassword = "Passwords do not match";
-
-    if (!term.value) newErrors.term = "You must agree to the Terms";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -79,15 +66,11 @@ const RegistrationForm = ({ onSuccess }) => {
       if (result.token) {
         localStorage.setItem("token", result.token);
       }
-      const newUser = {
-        firstName: firstName.value,
-        lastName: lastName.value,
-        email: email.value,
-        phone: phone.value,
-        role: "user",
-      };
 
-      localStorage.setItem("currentUser", JSON.stringify(newUser));
+      console.log(result);
+      const newUser = result.user;
+
+      localStorage.setItem("currentUser", JSON.stringify(result.user));
       window.dispatchEvent(new Event("userLogin"));
 
       if (onSuccess) {
@@ -114,13 +97,12 @@ const RegistrationForm = ({ onSuccess }) => {
           <div className="relative">
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Form.Control
+              required
               {...firstName}
               placeholder="John"
-              className={`pl-10 h-12 bg-gray-50 border ${errors.firstName ? "border-red-500" : "border-gray-200"
-                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
             />
           </div>
-          {errors.firstName && <p className="text-red-500 text-sm mt-1">{errors.firstName}</p>}
         </Form.Group>
 
         <Form.Group>
@@ -130,13 +112,12 @@ const RegistrationForm = ({ onSuccess }) => {
           <div className="relative">
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
             <Form.Control
+              required
               {...lastName}
               placeholder="Doe"
-              className={`pl-10 h-12 bg-gray-50 border ${errors.lastName ? "border-red-500" : "border-gray-200"
-                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
             />
           </div>
-          {errors.lastName && <p className="text-red-500 text-sm mt-1">{errors.lastName}</p>}
         </Form.Group>
       </div>
 
@@ -148,13 +129,12 @@ const RegistrationForm = ({ onSuccess }) => {
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Form.Control
+            required
             {...email}
             placeholder="john.doe@example.com"
-            className={`w-full pl-10 h-12 bg-gray-50 border ${errors.email ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
         </div>
-        {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
       </Form.Group>
 
       {/* Phone */}
@@ -165,13 +145,12 @@ const RegistrationForm = ({ onSuccess }) => {
         <div className="relative">
           <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" />
           <Form.Control
+            required
             {...phone}
             placeholder="(123) 123-4567"
-            className={`w-full pl-10 h-12 bg-gray-50 border ${errors.phone ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
         </div>
-        {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone}</p>}
       </Form.Group>
 
       {/* Password */}
@@ -181,10 +160,10 @@ const RegistrationForm = ({ onSuccess }) => {
         </Form.Label>
         <div className="relative">
           <Form.Control
+            required
             {...password}
             placeholder="Create a password"
-            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${errors.password ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
           <button
             type="button"
@@ -194,7 +173,6 @@ const RegistrationForm = ({ onSuccess }) => {
             {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
           </button>
         </div>
-        {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
       </Form.Group>
 
       {/* Confirm Password */}
@@ -204,10 +182,10 @@ const RegistrationForm = ({ onSuccess }) => {
         </Form.Label>
         <div className="relative">
           <Form.Control
+            required
             {...confirmPassword}
             placeholder="Re-enter your password"
-            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border ${errors.confirmPassword ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
           <button
             type="button"
@@ -232,11 +210,9 @@ const RegistrationForm = ({ onSuccess }) => {
             <Form.Control
               {...dob}
               placeholder="DD/MM/YYYY"
-              className={`pl-10 h-12 bg-gray-50 border ${errors.dob ? "border-red-500" : "border-gray-200"
-                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
             />
           </div>
-          {errors.dob && <p className="text-red-500 text-sm mt-1">{errors.dob}</p>}
         </Form.Group>
 
         <Form.Group>
@@ -247,17 +223,13 @@ const RegistrationForm = ({ onSuccess }) => {
             {/* <Gender className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
             <select
               {...gender}
-              className={`pl-10 h-12 bg-gray-50 border ${errors.gender ? "border-red-500" : "border-gray-200"
-                } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
             >
               <option value="">Select gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
             </select>
           </div>
-          {errors.gender && (
-            <p className="text-red-500 text-sm mt-1">{errors.gender}</p>
-          )}
         </Form.Group>
 
       </div>
@@ -269,18 +241,18 @@ const RegistrationForm = ({ onSuccess }) => {
         <div className="relative">
           {/* <address className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
           <Form.Control
+            required
             {...address}
             placeholder="Vuoritie 4D 02103 Espoo"
-            className={`w-full pl-10 h-12 bg-gray-50 border ${errors.address ? "border-red-500" : "border-gray-200"
-              } focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
           />
         </div>
-        {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
       </Form.Group>
 
       {/* Terms & Promotional */}
       <Form.Group className="mb-4 flex items-start space-x-2">
         <Form.Check
+          required
           {...term}
           className="mt-1 cursor-pointer"
         />
@@ -299,10 +271,6 @@ const RegistrationForm = ({ onSuccess }) => {
           </a>
         </label>
       </Form.Group>
-
-      {errors.term && (
-        <p className="text-red-500 text-sm mb-4">{errors.term}</p>
-      )}
 
       <Form.Group className="mb-6 flex items-start space-x-2">
         <Form.Check

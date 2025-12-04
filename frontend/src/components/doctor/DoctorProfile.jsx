@@ -9,7 +9,7 @@ const DoctorProfile = () => {
     const [message, setMessage] = useState(null);
   
     const token = localStorage.getItem("token");
-    const currentUser = JSON.parse(localStorage.getItem("user"));
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     const id = currentUser?.id;
   
     // Fetch user info from backend
