@@ -19,7 +19,7 @@ const optionalAuth = async (req, res, next) => {
     );
 
     if (!user || user.status !== "active") {
-      // Nếu token sai / user inactive -> coi như guest
+      //if token wrong or user not found or user inactive => skip auth
       return next();
     }
 
@@ -28,7 +28,7 @@ const optionalAuth = async (req, res, next) => {
     next();
   } catch (error) {
     console.error("optionalAuth error:", error);
-    // Token hỏng => bỏ qua, cho request chạy tiếp như guest
+    //token invalid or expired => skip auth
     next();
   }
 };

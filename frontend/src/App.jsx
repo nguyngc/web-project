@@ -14,6 +14,7 @@ import Login from './pages/Login';
 import UserDashboard from './pages/UserDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import DoctorDashboard from './pages/DoctorDashboard';
+import ChatAiWidget from './components/ChatAiWidget';
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
         {/* Admin Dashboard */}
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>
+      <ChatAiWidget />
     </BrowserRouter>
   );
 }
