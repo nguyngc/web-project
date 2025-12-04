@@ -4,14 +4,42 @@ import Calendar from "../Calendar";
 import { format, isToday } from "date-fns";
 import { cn } from "../../lib/utils";
 
-const timeSlots = [
-  { id: "1", time: "9:00 AM - 10:00 AM", duration: "60 minutes", available: false },
-  { id: "2", time: "10:00 AM - 11:00 AM", duration: "60 minutes", available: false },
-  { id: "3", time: "11:00 AM - 12:00 AM", duration: "60 minutes", available: false },
-  { id: "4", time: "2:00 PM - 3:00 PM", duration: "60 minutes", available: true },
-  { id: "5", time: "3:00 PM - 4:00 PM", duration: "60 minutes", available: false },
-  { id: "6", time: "4:00 PM - 5:00 PM", duration: "60 minutes", available: true },
+const SLOT_MAP = [
+  { key: "slot1", time: "9:00 AM - 10:00 AM", duration: "60 minutes" },
+  { key: "slot2", time: "10:00 AM - 11:00 AM", duration: "60 minutes" },
+  { key: "slot3", time: "11:00 AM - 12:00 PM", duration: "60 minutes" },
+  { key: "slot4", time: "2:00 PM - 3:00 PM", duration: "60 minutes" },
+  { key: "slot5", time: "3:00 PM - 4:00 PM", duration: "60 minutes" },
+  { key: "slot6", time: "4:00 PM - 5:00 PM", duration: "60 minutes" },
 ];
+
+function isPastDate(date) {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+
+  return d < now;
+}
+
+function isPastSlot(date, slotKey) {
+  const now = new Date();
+
+  const slotStartHour = {
+    slot1: 9,
+    slot2: 10,
+    slot3: 11,
+    slot4: 14,
+    slot5: 15,
+    slot6: 16,
+  }[slotKey];
+
+  const slotDate = new Date(date);
+  slotDate.setHours(slotStartHour, 0, 0, 0);
+
+  return slotDate < now;
+}
 
 export default function SelectStep({ onSelectSlot }) {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -19,7 +47,8 @@ export default function SelectStep({ onSelectSlot }) {
   const [services, setServices] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [doctors, setDoctors] = useState([]);
-
+  const [doctorSchedule, setDoctorSchedule] = useState(null);
+  const [loadingSlots, setLoadingSlots] = useState(false);
 
   // fetch services từ backend
   useEffect(() => {
@@ -41,7 +70,7 @@ export default function SelectStep({ onSelectSlot }) {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const res = await fetch("/api/doctors?isActive=true", {
+        const res = await fetch("/api/users/doctors/public", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -58,15 +87,50 @@ export default function SelectStep({ onSelectSlot }) {
     fetchDoctors();
   }, []);
 
+  //fetch doctor time
+  useEffect(() => {
+    const fetchDoctorTime = async () => {
+      if (!selectedDoctor || !selectedDate) {
+        setDoctorSchedule(null);
+        return;
+      }
+
+      const dateStr = format(selectedDate, "yyyy-MM-dd");
+
+      setLoadingSlots(true);
+
+      try {
+        const res = await fetch(`/api/doctor-time/user/${selectedDoctor._id}/date/${dateStr}`);
+        if (res.ok) {
+          const data = await res.json();
+          setDoctorSchedule(data);
+        } else {
+          setDoctorSchedule(null); // doctor has no schedule for this day
+        }
+      } catch (err) {
+        console.error("Failed to load doctor schedule", err);
+        setDoctorSchedule(null);
+      }
+
+      setLoadingSlots(false);
+    };
+
+    fetchDoctorTime();
+  }, [selectedDoctor, selectedDate]);
+
+
   const handleClick = (slot) => {
     if (!slot.available || !selectedDate || !selectedService || !selectedDoctor) return;
 
     onSelectSlot({
       date: format(selectedDate, "EEEE, MMMM d, yyyy"),
       time: slot.time,
+      serviceId: selectedService._id,
+      serviceName: selectedService.serviceName,
       doctorId: selectedDoctor._id,
       doctorName: `${selectedDoctor.firstName} ${selectedDoctor.lastName}`,
-      title: selectedService, // serviceName 
+      title: selectedService, // serviceName
+      slotKey: slot.key, // send slot identifier to booking system
     });
   };
 
@@ -75,6 +139,25 @@ export default function SelectStep({ onSelectSlot }) {
     : "";
 
   const showTodayBadge = selectedDate && isToday(selectedDate);
+
+  const activeSlots = SLOT_MAP.map((slot, index) => {
+    const available = doctorSchedule?.availableTime?.[slot.key] || false;
+
+    const pastSlot =
+      selectedDate &&
+      (isPastDate(selectedDate) ||
+        (isToday(selectedDate) && isPastSlot(selectedDate, slot.key)));
+
+    return {
+      id: index + 1,
+      key: slot.key,
+      time: slot.time,
+      duration: slot.duration,
+      available: available && !pastSlot, // disable if in past
+      isPast: pastSlot,
+    };
+  });
+
 
   return (
     <section className="bg-[#F5F6FA] py-10 lg:py-12">
@@ -198,19 +281,29 @@ export default function SelectStep({ onSelectSlot }) {
               </p>
             </div>
 
+            {loadingSlots ? (
+              <p className="text-sm text-gray-500">Loading available time...</p>
+            ) : !doctorSchedule ? (
+              <p className="text-sm text-gray-500">
+                No schedule available for this doctor on this date.
+              </p>
+            ) : null}
+
             <div className="flex flex-col gap-3">
-              {timeSlots.map((slot) => {
-                const isClickable = selectedDate && slot.available && selectedService;
+              {activeSlots.map((slot) => {
+                const isClickable = selectedDate && slot.available && !slot.isPast && selectedService && selectedDoctor;
 
                 return (
                   <div
                     key={slot.id}
                     onClick={() => handleClick(slot)}
                     className={cn(
-                      "flex cursor-pointer items-center justify-between rounded-2xl border px-4 py-3 transition",
+                      "flex items-center justify-between rounded-2xl border px-4 py-3 transition",
                       isClickable
-                        ? "border-[#E5E7EB] bg-white hover:border-[#2563EB] hover:shadow-sm"
-                        : "border-[#E5E7EB] bg-[#F9FAFB] opacity-60 cursor-not-allowed"
+                        ? "cursor-pointer border-[#E5E7EB] bg-white hover:border-[#2563EB] hover:shadow-sm"
+                        : slot.isPast
+                          ? "cursor-not-allowed bg-gray-200 border-gray-300 opacity-70"
+                          : "cursor-not-allowed border-[#E5E7EB] bg-[#F9FAFB] opacity-60"
                     )}
                   >
                     <div className="flex items-center gap-3">

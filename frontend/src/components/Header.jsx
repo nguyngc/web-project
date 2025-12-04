@@ -6,7 +6,7 @@ import Topbar from "./Topbar";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
   const [profileLink, setProfileLink] = useState("");
   const navigate = useNavigate();
 
@@ -26,12 +26,14 @@ export default function Header() {
     };
 
     window.addEventListener("storage", handleStorageChange);
-    // Also listen for custom event when user logs in
     window.addEventListener("userLogin", handleStorageChange);
+    window.addEventListener("userUpdated", handleStorageChange);
+
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("userLogin", handleStorageChange);
+      window.removeEventListener("userUpdated", handleStorageChange);
     };
   }, []);
 

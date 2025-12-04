@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { CalendarDays, Clock, MapPin, CheckCircle2 } from "lucide-react";
 
 import LoginForm from "../LoginForm";
@@ -53,7 +52,7 @@ export default function AuthStep({ appointment, setStep }) {
 
             {/* Tag */}
             <span className="inline-block bg-[#E0F2FE] text-[#2563EB] px-3 py-1 rounded-md text-xs font-medium mb-4">
-              Comprehensive Eye Exam
+              {appointment.serviceName}
             </span>
 
             {/* Description */}

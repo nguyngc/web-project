@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import GradientButton from "../GradientButton";
 import ReadonlyField from "../common/ReadonlyField";
@@ -8,15 +8,9 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
   const [form, setForm] = useState(user);
   const [errors, setErrors] = useState({});
 
-  const validate = () => {
-    let e = {};
-    if (!form.firstName) e.firstName = "First name is required";
-    if (!form.lastName) e.lastName = "Last name is required";
-    if (!form.email) e.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Invalid email";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
+  useEffect(() => {
+    setForm(user);
+  }, [user]);
 
   const handleChange = (field, value) => {
     setForm((p) => ({ ...p, [field]: value }));
@@ -47,13 +41,13 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
       {!editing && (
         <div className="grid md:grid-cols-2 gap-4">
           <ReadonlyField label="First Name" value={user.firstName} />
-          <ReadonlyField label="First Name" value={user.lastName} />
-          <ReadonlyField label="Day of Birth" value={user.dob ? format(new Date(user.dob), "dd/MM/yyyy"):""} />
+          <ReadonlyField label="Last Name" value={user.lastName} />
+          <ReadonlyField label="Day of Birth" value={user.dob ? format(new Date(user.dob), "dd/MM/yyyy") : ""} />
           <ReadonlyField label="Gender" value={user.gender} />
           <ReadonlyField label="Email" value={user.email} />
           <ReadonlyField label="Phone" value={user.phone} />
           <ReadonlyField label="Address" value={user.address} />
-          
+
         </div>
       )}
 
@@ -62,7 +56,7 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            if (validate()) onSave(form);
+            onSave(form);
           }}
           className="grid md:grid-cols-2 gap-4"
         >
@@ -71,6 +65,7 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
               First Name *
             </Form.Label>
             <Form.Control
+              required
               className={inputClass}
               value={form.firstName}
               onChange={(e) => handleChange("firstName", e.target.value)}
@@ -85,6 +80,7 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
               Last Name *
             </Form.Label>
             <Form.Control
+              required
               className={inputClass}
               value={form.lastName}
               onChange={(e) => handleChange("lastName", e.target.value)}
@@ -97,6 +93,8 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
           <Form.Group className="md:col-span-2">
             <Form.Label className="text-sm text-gray-700 mb-1">Email *</Form.Label>
             <Form.Control
+              required
+              type="email"
               className={inputClass}
               value={form.email}
               onChange={(e) => handleChange("email", e.target.value)}

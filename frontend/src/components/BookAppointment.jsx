@@ -7,11 +7,11 @@ import SuccessStep from "./appointment/SuccessStep";
 function BookAppointment() {
   const [step, setStep] = useState(1);    // step 1=select, 2=auth, 3=confirm, 4=success
   const [appointment, setAppointment] = useState(null);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("user")));
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("currentUser")));
 
   useEffect(() => {
     const handleLogin = () => {
-      const updatedUser = JSON.parse(localStorage.getItem("user"));
+      const updatedUser = JSON.parse(localStorage.getItem("currentUser"));
       setUser(updatedUser);
       setStep(3);
     };
