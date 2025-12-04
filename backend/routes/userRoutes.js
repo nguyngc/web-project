@@ -18,6 +18,12 @@ router.post("/signup", ctrl.signup);
 // - Login, returns { user, token }
 router.post("/login", ctrl.login);
 
+// change password (need login, any role)
+// user/doctor: only change their own password, need currentPassword
+// admin: can change anyone's password without currentPassword
+router.put("/:userId/password", requireAuth, ctrl.changePassword);
+
+
 //  From here down: token required (requireAuth)
 
 // GET /api/users
