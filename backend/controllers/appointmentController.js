@@ -148,6 +148,20 @@ const create = async (req, res) => {
       return res.status(400).json({ message: "Invalid doctorId" });
     }
 
+    // CONFLICT CHECK: is this slot already booked for this doctor?
+    const existingAppointment = await Appointment.findOne({
+      doctorId,
+      date,
+      time,
+      status: { $ne: "cancelled" },
+    });
+
+    if (existingAppointment) {
+      return res.status(400).json({
+        message: "This time slot is no longer available. Please choose another.",
+      });
+    }
+
     // Status logic:
     // - default: "pending"
     // - only admin can override on creation
@@ -270,6 +284,25 @@ const update = async (req, res) => {
     }
 
     updateData.modifiedBy = requesterId || "api";
+
+    // CONFLICT CHECK for rescheduling:
+    // Only if date or time is changing (or both)
+    const newDate = updateData.date || current.date;
+    const newTime = updateData.time || current.time;
+
+    const conflict = await Appointment.findOne({
+      _id: { $ne: appointmentId },       // exclude this appointment
+      doctorId: current.doctorId,        // same doctor
+      date: newDate,
+      time: newTime,
+      status: { $ne: "cancelled" },      // ignore cancelled
+    });
+
+    if (conflict) {
+      return res.status(400).json({
+        message: "This time slot is already booked. Please choose another.",
+      });
+    }
 
     const updated = await Appointment.findByIdAndUpdate(
       appointmentId,

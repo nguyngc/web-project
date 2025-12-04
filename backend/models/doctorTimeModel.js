@@ -7,15 +7,17 @@ const doctorTimeSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    week: { type: String, default: "" },
+    week: { type: Number, default: 1 },
     //  format "YYYY-MM-DD"
     date: { type: String, required: true },
 
     availableTime: {
-      slot1: { type: Boolean, default: false }, // 8:00-9:00
-      slot2: { type: Boolean, default: false }, // 9:00-10:00
-      slot3: { type: Boolean, default: false }, // 10:00-11:00
-      slot4: { type: Boolean, default: false }, // 11:00-12:00
+      slot1: { type: Boolean, default: false }, // 9:00-10:00
+      slot2: { type: Boolean, default: false }, // 10:00-11:00
+      slot3: { type: Boolean, default: false }, // 11:00-12:00
+      slot4: { type: Boolean, default: false }, // 2:00-3:00
+      slot5: { type: Boolean, default: false }, // 3:00-4:00
+      slot6: { type: Boolean, default: false }, // 4:00-5:00
     },
 
     // "active" | "inactive"
