@@ -1,6 +1,6 @@
 import { useState } from "react";
 import GradientButton from "../GradientButton";
-import PasswordInput from "../common/PasswordInput";
+import PasswordInput from "./PasswordInput";
 
 const ChangePasswordSection = ({ onPasswordChange }) => {
   const [current, setCurrent] = useState("");

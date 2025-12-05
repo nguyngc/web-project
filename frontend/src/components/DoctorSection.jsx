@@ -1,14 +1,38 @@
-import { useState } from "react";
-import { doctorsCard } from "../data/data";
+import { useEffect, useState } from "react";
 import DoctorCard from "./doctorCard";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import doctor1 from "../assets/images/doctor1.jpg";
+import doctor2 from "../assets/images/doctor2.jpg";
 
 function DoctorSection() {
+  const [doctors, setDoctors] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
-  const visibleCount = 3; 
+  const [loading, setLoading] = useState(true);
+
+  const visibleCount = 3;
+
+  // Fetch doctors from API
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const res = await fetch("/api/users/doctors/public");
+        const data = await res.json();
+
+        if (res.ok) {
+          setDoctors(data);
+        }
+      } catch (error) {
+        console.error("Failed to load doctors:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDoctors();
+  }, []);
 
   const handleNext = () => {
-    if (startIndex + visibleCount < doctorsCard.length) {
+    if (startIndex + visibleCount < doctors.length) {
       setStartIndex(startIndex + 1);
     }
   };
@@ -19,7 +43,7 @@ function DoctorSection() {
     }
   };
 
-  const visibleDoctors = doctorsCard.slice(startIndex, startIndex + visibleCount);
+  const visibleDoctors = doctors.slice(startIndex, startIndex + visibleCount);
 
   return (
     <section className="px-4 lg:px-[200px] py-12 md:py-[50px] flex flex-col items-center gap-10">
@@ -33,33 +57,47 @@ function DoctorSection() {
         </p>
       </div>
 
-      {/* Doctors grid */}
-      <div className="flex items-center gap-4 w-full max-w-[1040px]">
-        {/* Prev button */}
-        <button
-          onClick={handlePrev}
-          disabled={startIndex === 0}
-          className="p-2 border rounded-full disabled:opacity-50"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
+      {/* Loading */}
+      {loading && <p className="text-gray-500">Loading doctors...</p>}
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 flex-1">
-          {visibleDoctors.map((doctor) => (
-            <DoctorCard {...doctor} key={doctor.name} />
-          ))}
+      {/* Empty state */}
+      {!loading && doctors.length === 0 && (
+        <p className="text-gray-500">No doctors available at the moment.</p>
+      )}
+
+      {/* Doctors */}
+      {!loading && doctors.length > 0 && (
+        <div className="flex items-center gap-4 w-full max-w-[1040px]">
+          <button
+            onClick={handlePrev}
+            disabled={startIndex === 0}
+            className="p-2 border rounded-full disabled:opacity-50"
+          >
+            <ArrowLeft className="w-5 h-5" />
+          </button>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 flex-1">
+            {visibleDoctors.map((doctor, index) => (
+              <DoctorCard
+                key={doctor._id}
+                Image={doctor.doctorInfo?.profilePicture || (index % 2 === 0 ? doctor1 : doctor2)}
+                name={`${doctor.firstName} ${doctor.lastName}`}
+                specialty={doctor.doctorInfo?.specialization || "Eye Specialist"}
+                bio={doctor.doctorInfo?.bio || ""}
+                rate={doctor.doctorInfo?.rate || 5}
+              />
+            ))}
+          </div>
+
+          <button
+            onClick={handleNext}
+            disabled={startIndex + visibleCount >= doctors.length}
+            className="p-2 border rounded-full disabled:opacity-50"
+          >
+            <ArrowRight className="w-5 h-5" />
+          </button>
         </div>
-
-        {/* Next button */}
-        <button
-          onClick={handleNext}
-          disabled={startIndex + visibleCount >= doctorsCard.length}
-          className="p-2 border rounded-full disabled:opacity-50"
-        >
-          <ArrowRight className="w-5 h-5" />
-        </button>
-      </div>
+      )}
     </section>
   );
 }
