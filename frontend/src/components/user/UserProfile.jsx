@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import UserProfileForm from "./UserProfileForm";
-import ChangePasswordSection from "../admin/ChangePasswordSection";
+import ChangePasswordSection from "../common/ChangePasswordSection";
 import InfoMessage from "../common/InfoMessage";
 
 const UserProfile = () => {
