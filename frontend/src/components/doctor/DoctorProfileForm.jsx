@@ -1,11 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import GradientButton from "../GradientButton";
 import ReadonlyField from "../common/ReadonlyField";
 
-const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
-  const [form, setForm] = useState(user);
+const DoctorProfileForm = ({ onSave, onCancel, editing }) => {
+  const [form, setForm] = useState(null);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  const token = localStorage.getItem("token");
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const userId = currentUser?._id || currentUser?.id;
+
+  // Fetch profile
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`/api/users/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setForm(data);
+        } else {
+          console.error("Failed to load profile:", data.message);
+        }
+      } catch (err) {
+        console.error("Network error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchProfile();
+  }, [userId, token]);
 
   const validate = () => {
     let e = {};
@@ -24,6 +52,14 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
   const inputClass =
     "w-full h-10 bg-[#F3F3F5] rounded-lg border border-transparent px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-vision-blue-accent";
 
+  if (loading) {
+    return <p className="text-sm text-gray-500">Loading profile...</p>;
+  }
+
+  if (!form) {
+    return <p className="text-sm text-red-500">Profile not found</p>;
+  }
+
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -34,7 +70,7 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
 
         {!editing && (
           <button
-            onClick={onSave}
+            onClick={() => onSave(form)}
             className="px-4 py-2 bg-gradient-to-b from-[#1C398E] to-[#6E85C3] text-white rounded-lg text-sm"
           >
             Edit Profile
@@ -45,18 +81,18 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
       {/* READONLY MODE */}
       {!editing && (
         <div className="grid md:grid-cols-2 gap-4">
-          <ReadonlyField label="First Name" value={user.firstName} />
-          <ReadonlyField label="Last Name" value={user.lastName} />
-          <ReadonlyField label="Email" value={user.email} />
-          <ReadonlyField label="Date of birth" value={user.dob} />
-          <ReadonlyField label="Gender" value={user.gender} />
-          <ReadonlyField label="Phone" value={user.phone} />
-          <ReadonlyField label="Address" value={user.address} />
-          <ReadonlyField label="Specialization" value={user.specialization} />
-          <ReadonlyField label="License number" value={user.licenseNumber} />
-          <ReadonlyField label="Year of experience" value={user.yoe} />
-          <ReadonlyField label="Education" value={user.education} />
-          <ReadonlyField label="Bio" value={user.bio} />
+          <ReadonlyField label="First Name" value={form.firstName} />
+          <ReadonlyField label="Last Name" value={form.lastName} />
+          <ReadonlyField label="Email" value={form.email} />
+          <ReadonlyField label="Date of birth" value={form.dob} />
+          <ReadonlyField label="Gender" value={form.gender} />
+          <ReadonlyField label="Phone" value={form.phone} />
+          <ReadonlyField label="Address" value={form.address} />
+          <ReadonlyField label="Specialization" value={form.specialization} />
+          <ReadonlyField label="License number" value={form.licenseNumber} />
+          <ReadonlyField label="Year of experience" value={form.yoe} />
+          <ReadonlyField label="Education" value={form.education} />
+          <ReadonlyField label="Bio" value={form.bio} />
         </div>
       )}
 
@@ -116,7 +152,9 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
             >
               Cancel
             </Button>
-            <GradientButton type="submit" isFull={false}>Update Profile</GradientButton>
+            <GradientButton type="submit" isFull={false}>
+              Update Profile
+            </GradientButton>
           </div>
         </Form>
       )}

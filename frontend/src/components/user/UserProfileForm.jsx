@@ -4,13 +4,47 @@ import GradientButton from "../GradientButton";
 import ReadonlyField from "../common/ReadonlyField";
 import { format } from "date-fns";
 
-const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
-  const [form, setForm] = useState(user);
+const ProfileInfoForm = ({ onSave, onCancel, editing, onEdit }) => {
+  const [form, setForm] = useState(null);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(true);
 
+  const token = localStorage.getItem("token");
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const userId = currentUser?._id || currentUser?.id;
+
+  // Fetch profile từ backend khi login
   useEffect(() => {
-    setForm(user);
-  }, [user]);
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(`/api/users/${userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setForm(data);
+        } else {
+          console.error("Failed to load profile:", data.message);
+        }
+      } catch (err) {
+        console.error("Network error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (userId) fetchProfile();
+  }, [userId, token]);
+
+  const validate = () => {
+  let e = {};
+  if (!form.firstName) e.firstName = "First name is required";
+  if (!form.lastName) e.lastName = "Last name is required";
+  if (!form.email) e.email = "Email is required";
+  else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Invalid email";
+  setErrors(e);
+  return Object.keys(e).length === 0;
+};
 
   const handleChange = (field, value) => {
     setForm((p) => ({ ...p, [field]: value }));
@@ -18,6 +52,14 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
 
   const inputClass =
     "w-full h-10 bg-[#F3F3F5] rounded-lg border border-transparent px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-vision-blue-accent";
+
+  if (loading) {
+    return <p className="text-sm text-gray-500">Loading profile...</p>;
+  }
+
+  if (!form) {
+    return <p className="text-sm text-red-500">Profile not found</p>;
+  }
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
@@ -29,7 +71,7 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
 
         {!editing && (
           <button
-            onClick={onSave}
+            onClick={onEdit}
             className="px-4 py-2 bg-gradient-to-b from-[#1C398E] to-[#6E85C3] text-white rounded-lg text-sm"
           >
             Edit Profile
@@ -40,14 +82,16 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
       {/* READONLY MODE */}
       {!editing && (
         <div className="grid md:grid-cols-2 gap-4">
-          <ReadonlyField label="First Name" value={user.firstName} />
-          <ReadonlyField label="Last Name" value={user.lastName} />
-          <ReadonlyField label="Day of Birth" value={user.dob ? format(new Date(user.dob), "dd/MM/yyyy") : ""} />
-          <ReadonlyField label="Gender" value={user.gender} />
-          <ReadonlyField label="Email" value={user.email} />
-          <ReadonlyField label="Phone" value={user.phone} />
-          <ReadonlyField label="Address" value={user.address} />
-
+          <ReadonlyField label="First Name" value={form.firstName} />
+          <ReadonlyField label="Last Name" value={form.lastName} />
+          <ReadonlyField
+            label="Day of Birth"
+            value={form.dob ? format(new Date(form.dob), "dd/MM/yyyy") : ""}
+          />
+          <ReadonlyField label="Gender" value={form.gender} />
+          <ReadonlyField label="Email" value={form.email} />
+          <ReadonlyField label="Phone" value={form.phone} />
+          <ReadonlyField label="Address" value={form.address} />
         </div>
       )}
 
@@ -56,7 +100,7 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            onSave(form);
+            if (validate()) onSave(form); // send data
           }}
           className="grid md:grid-cols-2 gap-4"
         >
@@ -111,7 +155,9 @@ const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
             >
               Cancel
             </Button>
-            <GradientButton type="submit" isFull={false}>Update Profile</GradientButton>
+            <GradientButton type="submit" isFull={false}>
+              Update Profile
+            </GradientButton>
           </div>
         </Form>
       )}

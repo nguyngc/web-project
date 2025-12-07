@@ -1,8 +1,20 @@
-import { Calendar, Clock, Eye, User, FileText, CheckCircle, XCircle } from "lucide-react";
+import { Calendar, Clock, Eye, FileText, CheckCircle, XCircle } from "lucide-react";
 
 const AppointmentCard = ({ appt, onAddNotes, onComplete, onCancel }) => {
   const borderColor =
-    appt.status === "cancelled" ? "#B43F3F" : appt.status === "completed" ? "#3F9C36" : "#159EEC";
+    appt.status === "cancelled"
+      ? "#B43F3F"
+      : appt.status === "completed"
+      ? "#3F9C36"
+      : "#159EEC";
+
+  // serviceId backend
+  const serviceName = appt.serviceId?.serviceName || "";
+
+  // userId backend
+  const userName = appt.userId
+    ? `${appt.userId.firstName || ""} ${appt.userId.lastName || ""}`.trim()
+    : "";
 
   return (
     <div
@@ -12,7 +24,7 @@ const AppointmentCard = ({ appt, onAddNotes, onComplete, onCancel }) => {
       {/* Left Side */}
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex flex-row items-center gap-4">
-          <h3 className="text-[#101828] text-base">{appt.patient}</h3>
+          <h3 className="text-[#101828] text-base">{userName}</h3>
           <div
             className="px-2.5 py-0.5 rounded-lg"
             style={{ backgroundColor: borderColor }}
@@ -28,27 +40,33 @@ const AppointmentCard = ({ appt, onAddNotes, onComplete, onCancel }) => {
             <Clock className="w-4 h-4 text-[#4A5565]" />
             <span className="text-sm text-[#4A5565]">{appt.time}</span>
           </div>
-          <div className="flex items-center gap-2"></div>
           <div className="flex items-center gap-2">
             <Eye className="w-4 h-4 text-[#4A5565]" />
-            <span className="text-sm text-[#4A5565]">{appt.service}</span>
+            <span className="text-sm text-[#4A5565]">{serviceName}</span>
           </div>
-          {/* <div className="flex items-center gap-2">
-            <User className="w-4 h-4 text-[#4A5565]" />
-            <span className="text-sm text-[#4A5565]">{appt.phone}</span>
-          </div> */}
         </div>
 
-        {appt.notes && (
-          <div className="bg-[#F9FAFB] rounded-lg p-3 flex items-start gap-2">
-            <span className="text-[#364153] text-sm font-bold">Notes:</span>
-            <span className="text-[#364153] text-sm">{appt.notes}</span>
+        {/* Notes backend */}
+        {(appt.userNotes || appt.doctorNotes) && (
+          <div className="bg-[#F9FAFB] rounded-lg p-3 flex flex-col gap-2">
+            {appt.userNotes && (
+              <div className="flex items-start gap-2">
+                <span className="text-[#364153] text-sm font-bold">User Notes:</span>
+                <span className="text-[#364153] text-sm">{appt.userNotes}</span>
+              </div>
+            )}
+            {appt.doctorNotes && (
+              <div className="flex items-start gap-2">
+                <span className="text-[#364153] text-sm font-bold">Doctor Notes:</span>
+                <span className="text-[#364153] text-sm">{appt.doctorNotes}</span>
+              </div>
+            )}
           </div>
         )}
       </div>
 
       {/* Right Side: Actions */}
-      {appt.status === "scheduled" && (
+      {["pending", "confirmed"].includes(appt.status) && (
         <div className="flex flex-col gap-2 w-[120px]">
           <button
             onClick={() => onAddNotes(appt)}
