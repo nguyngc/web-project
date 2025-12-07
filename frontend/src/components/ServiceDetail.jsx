@@ -24,7 +24,7 @@ function ServiceDetail() {
     }
 
     const { serviceName: name, image, shortDescription, fullDescription, duration, price, frequency, features, benefits } = service;
-    console.log(service);
+    // console.log(service);
     const featureList = features.split(';');
     const benefitList = benefits.split(';');
 
