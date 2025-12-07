@@ -178,7 +178,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
               <div
                 className={`rounded-2xl border-l-4 ${visit.status === "completed"
                   ? "border-l-emerald-500"
-                  : visit.status === "scheduled"
+                  : visit.status === "confirmed"
                     ? "border-l-blue-500"
                     : "border-l-gray-300"
                   } px-5 py-4 md:px-6 md:py-5`}
@@ -267,7 +267,7 @@ const VisitHeader = ({ visit }) => {
   const statusColor =
     visit.status === "completed"
       ? "bg-emerald-50 text-emerald-700"
-      : visit.status === "scheduled"
+      : visit.status === "confirmed"
         ? "bg-blue-50 text-blue-700"
         : "bg-gray-100 text-gray-600";
 

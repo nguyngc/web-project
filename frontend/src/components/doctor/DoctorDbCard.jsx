@@ -31,11 +31,11 @@ function DoctorDbCard() {
 
   // ========== FILTER DATA ==========
   const todaysAppointments = appointments.filter(
-    (a) => a.date === todayString && a.status === "scheduled"
+    (a) => a.date === todayString && a.status === "confirmed"
   );
 
   const upcomingAppointments = appointments
-    .filter((a) => a.date > todayString && a.status === "scheduled")
+    .filter((a) => a.date > todayString && a.status === "confirmed")
     .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   const nextUpcoming = upcomingAppointments[0] || null;

@@ -148,13 +148,6 @@ const heroSlides = {
   ],
 };
 
-const doctorsCard = [
-  { Image: eyeExamImage, name: "Dr. Jane Smith1", specialty: "Lead Optometrist", bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.", rate: "4.9/5" },
-  { Image: eyeExamImage, name: "Dr. Jane Smith2", specialty: "Ophthalmologist", bio: "DSpecializes in LASIK surgery and advanced treatment of eye diseases.", rate: "4.9/5" },
-  { Image: eyeExamImage, name: "Dr. Jane Smith3", specialty: "Pediatric Eye Specialist", bio: "Dedicated to providing gentle, expert care for children's vision needs.", rate: "4.9/5", },
-  { Image: eyeExamImage, name: "Dr. Jane Smith4", specialty: "Optometrist", bio: "Dr. Smith has over 15 years of experience in comprehensive eye care and is dedicated to providing personalized treatment plans for her patients.", rate: "4.9/5", },
-];
-
 const socialLinks = [
   { id: 1, label: "Facebook", link: "https://www.facebook.com/ivisionclinic", Icon: Facebook },
   { id: 2, label: "Twitter", link: "https://www.twitter.com/ivisionclinic", Icon: Twitter },
@@ -186,5 +179,5 @@ const menuItems = {
   ]
 };
 
-export { websiteInfo, pageLinks, heroSlides, socialLinks, doctorsCard, aboutSectionCard, menuItems };
+export { websiteInfo, pageLinks, heroSlides, socialLinks, aboutSectionCard, menuItems };
 
