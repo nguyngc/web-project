@@ -16,7 +16,7 @@ export default function ConfirmStep({ user, appointment, setStep }) {
         serviceId: appointment.serviceId,
         serviceName: appointment.serviceName,
         doctorId: appointment.doctorId,
-        date: appointment.date,
+        date: appointment.dateISO,
         time: appointment.time,
         status: "confirmed",
       }),
@@ -61,7 +61,7 @@ export default function ConfirmStep({ user, appointment, setStep }) {
             {/* Date */}
             <div className="flex items-center gap-3 mb-3">
               <CalendarDays className="h-5 w-5 text-[#1D4ED8]" />
-              <span className="text-[#1F2937]">{appointment.date}</span>
+              <span className="text-[#1F2937]">{appointment.dateDisplay}</span>
             </div>
 
             {/* Time */}

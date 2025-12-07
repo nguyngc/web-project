@@ -9,7 +9,6 @@ import AppointmentList from "../components/doctor/AppointmentList";
 import Availability from "../components/doctor/Availability";
 import DoctorProfile from "../components/doctor/DoctorProfile";
 import DoctorDbCard from "../components/doctor/DoctorDbCard";
-import { ChevronDown } from "lucide-react";
 
 function DoctorDashboard() {
   const location = useLocation();
@@ -61,20 +60,29 @@ function DoctorDashboard() {
               <DashboardSidebar onSelect={setActiveTab} activeTab={activeTab} />
             </aside>
 
-            <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-10">
-              {activeTab === "dashboard" && <DoctorDbCard />}
+            {activeTab === "dashboard" && <DoctorDbCard />}
 
-              {activeTab === "appointments" && (
-                <AppointmentList />
-              )}
+            {activeTab !== "profile" && activeTab !== "dashboard" && (
+              <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-10">
 
-              {activeTab === "patients" && (
-                <PatientList currentDoctorId={3}/>
-              )}
 
-              {activeTab === "availability" && <Availability />}
-              {activeTab === "profile" && <DoctorProfile />}
-            </section>
+                {activeTab === "appointments" && (
+                  <AppointmentList />
+                )}
+
+                {activeTab === "patients" && (
+                  <PatientList currentDoctorId={currentUser._id} />
+                )}
+
+                {activeTab === "availability" && <Availability />}
+              </section>
+            )}
+
+            {activeTab === "profile" && (
+              <section className="flex-1 flex flex-col gap-10">
+                <DoctorProfile />
+              </section>
+            )}
           </div>
         </main>
       </div>

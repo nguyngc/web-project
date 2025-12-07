@@ -80,6 +80,58 @@ const getByUserIdAndDate = async (req, res) => {
   }
 };
 
+const getByUserIdAndDateForReschedule = async (req, res) => {
+  const { userId, date } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    return res.status(400).json({ message: "Invalid User ID" });
+  }
+
+  try {
+    let doctorTime = await DoctorTime.findOne({ userId, date }).populate("userId");
+
+    // If schedule exists → return it
+    if (doctorTime) {
+      return res.json(doctorTime);
+    }
+
+    // --- NO SCHEDULE EXISTS ---
+    // ROLE CHECK: Only admin and doctor may auto-create
+    const requesterRole = req.user.role;
+    const canAutoCreate = requesterRole === "admin" || requesterRole === "doctor";
+
+    if (!canAutoCreate) {
+      // User is patient → must NOT create schedules
+      return res.status(404).json({ message: "Doctor time not found" });
+    }
+
+    // --- AUTO-CREATE (admin/doctor only) ---
+    const newSchedule = await DoctorTime.create({
+      userId,
+      date,
+      week: getWeekNumber(date),
+      availableTime: {
+        slot1: true,
+        slot2: true,
+        slot3: true,
+        slot4: true,
+        slot5: true,
+        slot6: true,
+      },
+      status: "active",
+      createdBy: req.user.id,
+    });
+
+    return res.json(newSchedule);
+
+  } catch (error) {
+    console.error("Auto-create doctorTime error:", error);
+    res.status(500).json({
+      message: "Failed to retrieve or create doctor time",
+    });
+  }
+};
+
 // GET /api/doctor-time/user/:userId/week/:week
 const getByWeek = async (req, res) => {
   try {
@@ -285,6 +337,7 @@ module.exports = {
   getAll,
   getById,
   getByUserIdAndDate,
+  getByUserIdAndDateForReschedule,
   getByWeek,
   create,
   update,

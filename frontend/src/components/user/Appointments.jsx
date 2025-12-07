@@ -94,7 +94,16 @@ const Appointments = () => {
 
       // SUCCESS — update UI
       setAppointments((prev) =>
-        prev.map((a) => (a._id === data._id ? data : a))
+        prev.map((a) =>
+          a._id === data._id
+            ? {
+              ...a,          // keep old doctorId object
+              ...data,       // update new fields: date, time, slotKey
+              doctorId: a.doctorId, // keep doctor info
+              serviceId: a.serviceId, // also recommended to preserve
+            }
+            : a
+        )
       );
       showMessage("Appointment rescheduled successfully");
 

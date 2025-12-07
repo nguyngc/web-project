@@ -2,34 +2,27 @@ import { User, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { menuItems } from "../data/data";
-import  useLocalStorage  from "../hooks/useLocalStorage";
 
 const DashboardSidebar = ({ onSelect, activeTab }) => {
   const navigate = useNavigate();
-  const { getItem, removeItem } = useLocalStorage("currentUser");
-
-  const [currentUser, setCurrentUser] = useState(null);
+  const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem("currentUser") || "{}"));
 
   useEffect(() => {
-    // Check for logged in user
-    const user = getItem();
-    if (user) {
-      setCurrentUser(user);
-    }
-
     // Listen for storage changes
     const handleStorageChange = () => {
-      const user = getItem();
-      setCurrentUser(user ? user : null);
+      const updated = JSON.parse(localStorage.getItem("currentUser") || "{}");
+      setCurrentUser(updated);
     };
 
     window.addEventListener("storage", handleStorageChange);
     // Also listen for custom event when user logs in
     window.addEventListener("userLogin", handleStorageChange);
+    window.addEventListener("userUpdated", handleStorageChange);
 
     return () => {
       window.removeEventListener("storage", handleStorageChange);
       window.removeEventListener("userLogin", handleStorageChange);
+      window.removeEventListener("userUpdated", handleStorageChange);
     };
   }, []);
 
@@ -51,15 +44,31 @@ const DashboardSidebar = ({ onSelect, activeTab }) => {
   const items = menuItems[userRole];
   console.log("Items:", items);
 
+  const doctorProfilePic = currentUser?.role === "doctor"
+    ? currentUser?.profilePicture || currentUser?.doctorInfo?.profilePicture
+    : null;
+
   return (
     <div className="bg-white rounded-2xl border border-black/10 p-6 flex flex-col gap-8 w-full lg:sticky lg:top-6">
       {userRole !== 'admin' ? (
         <>
           {/* User info */}
           <div className="flex flex-col items-center gap-2.5">
-            <div className="w-20 h-20 rounded-full bg-[#159EEC] flex items-center justify-center">
+            {/* <div className="w-20 h-20 rounded-full bg-[#159EEC] flex items-center justify-center">
               <User className="w-10 h-10 text-white" strokeWidth={2.5} />
+            </div> */}
+            <div className="w-20 h-20 rounded-full overflow-hidden bg-[#159EEC] flex items-center justify-center">
+              {doctorProfilePic ? (
+                <img
+                  src={doctorProfilePic}
+                  alt="Doctor Profile"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <User className="w-10 h-10 text-white" strokeWidth={2.5} />
+              )}
             </div>
+
             <h3 className="text-[#101828] text-base text-center">{currentUser?.firstName} {currentUser?.lastName}</h3>
             <p className="text-[#4A5565] text-sm text-center">{currentUser?.email}</p>
           </div>
