@@ -3,6 +3,7 @@ import { CalendarDays, Clock, MapPin, CheckCircle2 } from "lucide-react";
 
 import LoginForm from "../LoginForm";
 import RegistrationForm from "../RegistrationForm";
+import GradientButton from "../GradientButton";
 
 export default function AuthStep({ appointment, setStep }) {
   const [activeTab, setActiveTab] = useState("register");
@@ -12,14 +13,14 @@ export default function AuthStep({ appointment, setStep }) {
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Back button */}
-        <button
+        <GradientButton
           onClick={() => setStep(1)}
-          className="mb-6 inline-flex items-center rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] px-4 py-2 text-white text-sm font-medium shadow"
+          isFull={false}
         >
           ← Back to Appointment Selection
-        </button>
+        </GradientButton>
 
-        <h1 className="text-2xl font-semibold text-[#1F2B6C] mb-6">
+        <h1 className="text-2xl font-semibold text-[#1F2B6C] mb-6 pt-5">
           Confirm Your Appointment
         </h1>
 

@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import Pagination from "../common/Pagination";
 import InfoMessage from "../common/InfoMessage";
 import ConfirmDialog from "../common/ComfirmDialog";
-import RescheduleDialog from "../RescheduleDialog";
+import RescheduleDialog from "../common/RescheduleDialog";
 import AppointmentCard from "./AppoitmentCard";
+import CompleteDialog from "./CompleteDialog";
 
 const AppointmentList = () => {
   const token = localStorage.getItem("token");
   const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const id = currentUser?._id || currentUser?.id;
 
   const [appointments, setAppointments] = useState([]);
   const [page, setPage] = useState(1);
@@ -16,6 +18,7 @@ const AppointmentList = () => {
   const [selectedAppt, setSelectedAppt] = useState(null);
   const [showCancel, setShowCancel] = useState(false);
   const [showReschedule, setShowReschedule] = useState(false);
+  const [showComplete, setShowComplete] = useState(false);
 
   const itemsPerPage = 3;
 
@@ -25,7 +28,7 @@ const AppointmentList = () => {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const res = await fetch(`/api/appointments?doctorId=${currentUser.id}`, {
+        const res = await fetch(`/api/appointments?doctorId=${id}`, {
           headers: { "Authorization": `Bearer ${token}` }
         });
         const data = await res.json();
@@ -101,26 +104,79 @@ const AppointmentList = () => {
   // -----------------------------
   // RESCHEDULE APPOINTMENT
   // -----------------------------
-  const handleRescheduleSave = (updatedData) => {
-    setAppointments((prev) =>
-      prev.map((a) =>
-        a._id === updated._id
-          ? {
-            ...a,
-            date: updated.date,
-            time: updated.time,
-            slotKey: updated.slotKey,
-            doctorId: a.doctorId, // KEEP original
-            userId: a.userId,
-            serviceId: a.serviceId,
-          }
-          : a
-      )
-    );
+  const handleRescheduleSave = async (updatedData) => {
+    try {
+      // Update appointment
+      await fetch(`/api/appointments/${selectedAppt._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          date: updatedData.isoDate,
+          time: updatedData.time,
+          slotKey: updatedData.slotKey,
+          status: "confirmed"
+        }),
+      });
 
-    showMessage("Appointment rescheduled successfully");
-    setShowReschedule(false);
-    setSelectedAppt(null);
+      // Fetch fully populated appointment
+      const populatedRes = await fetch(`/api/appointments/${selectedAppt._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const populated = await populatedRes.json();
+
+      setAppointments((prev) =>
+        prev.map((a) => (a._id === populated._id ? populated : a))
+      );
+
+      showMessage("Appointment rescheduled successfully");
+      setShowReschedule(false);
+      setSelectedAppt(null);
+
+    } catch (err) {
+      console.error("Reschedule error:", err);
+      showMessage("Failed to reschedule", "error");
+    }
+  };
+
+  // -----------------------------
+  // COMPLETE APPOINTMENT
+  // -----------------------------
+  const handleCompleteSave = async (fields) => {
+    try {
+      await fetch(`/api/appointments/${selectedAppt._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...fields,
+          status: "completed"
+        }),
+      });
+
+      // Fetch populated result
+      const populatedRes = await fetch(`/api/appointments/${selectedAppt._id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const populated = await populatedRes.json();
+
+      setAppointments((prev) =>
+        prev.map((a) => (a._id === populated._id ? populated : a))
+      );
+
+      showMessage("Appointment completed successfully");
+
+      setShowComplete(false);
+      setSelectedAppt(null);
+
+    } catch (err) {
+      console.error("Failed to complete:", err);
+      showMessage("Failed to complete appointment", "error");
+    }
   };
 
   // -----------------------------
@@ -147,7 +203,10 @@ const AppointmentList = () => {
           <AppointmentCard
             key={apt._id}
             appt={apt}
-            onComplete={handleComplete}
+            onComplete={(apt) => {
+              setSelectedAppt(apt);
+              setShowComplete(true);
+            }}
             onCancel={(apt) => {
               setSelectedAppt(apt);
               setShowCancel(true);
@@ -172,12 +231,23 @@ const AppointmentList = () => {
       {/* Reschedule Dialog */}
       {selectedAppt && (
         <RescheduleDialog
-          show={showReschedule}
+          open={showReschedule}
           appointment={selectedAppt}
           onSave={handleRescheduleSave}
-          onCancel={() => setShowReschedule(false)}
+          onClose={() => setShowReschedule(false)}
         />
       )}
+
+      {/* Complete Dialog */}
+      {selectedAppt && (
+        <CompleteDialog
+          show={showComplete}
+          appointment={selectedAppt}
+          onSave={handleCompleteSave}
+          onCancel={() => setShowComplete(false)}
+        />
+      )}
+
 
       {/* Cancel Dialog */}
       <ConfirmDialog

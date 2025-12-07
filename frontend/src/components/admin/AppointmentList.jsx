@@ -105,7 +105,7 @@ const AppointmentList = () => {
           date: newData.isoDate,
           time: newData.time,
           slotKey: newData.slotKey,
-          status: "scheduled",
+          status: "confirmed",
         }),
       });
 

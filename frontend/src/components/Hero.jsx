@@ -53,7 +53,7 @@ function Hero({ page }) {
         {/* Slides */}
         {slides.map((slide, index) => (
           <div
-            key={slide.id}
+            key={slide._id}
             className={`absolute inset-0 transition-opacity duration-700 ${index === currentSlide ? "opacity-100 z-10" : "opacity-0 z-0"
               }`}
           >

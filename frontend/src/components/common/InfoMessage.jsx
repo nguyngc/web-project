@@ -11,7 +11,7 @@ const InfoMessage = ({ message, onClose }) => {
       variant={isSuccess ? "success" : "info"}
       className={`
         mb-3 border 
-        ${isSuccess ? "bg-green-50 border-green-300" : "bg-blue-50 border-blue-300"}
+        ${isSuccess ? "bg-green-50 border-green-300" : "bg-red-50 border-red-300"}
         flex items-center justify-between py-3 px-4 rounded-lg
       `}
     >
@@ -20,13 +20,13 @@ const InfoMessage = ({ message, onClose }) => {
         {isSuccess ? (
           <CheckCircle className="h-5 w-5 text-green-600" />
         ) : (
-          <Activity className="h-5 w-5 text-blue-600" />
+          <Activity className="h-5 w-5 text-red-600" />
         )}
 
         <span
           className={`
             text-sm
-            ${isSuccess ? "text-green-800" : "text-blue-800"}
+            ${isSuccess ? "text-green-800" : "text-red-800"}
           `}
         >
           {message.text}

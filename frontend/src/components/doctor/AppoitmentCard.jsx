@@ -46,7 +46,7 @@ const AppointmentCard = ({ appt, onAddNotes, onComplete, onCancel, onReschedule 
         </div>
 
         {appt.doctorNotes && (
-          <div className="bg-[#F9FAFB] rounded-lg p-3 flex items-start gap-2">
+          <div className="w-full bg-[#F9FAFB] rounded-lg p-3 flex items-start gap-2">
             <span className="text-[#364153] text-sm font-bold">Notes:</span>
             <span className="text-[#364153] text-sm">{appt.doctorNotes}</span>
           </div>
@@ -66,7 +66,7 @@ const AppointmentCard = ({ appt, onAddNotes, onComplete, onCancel, onReschedule 
           </button>
         )}
 
-        {appt.status === "scheduled" && (
+        {appt.status === "confirmed" && (
           <button
             onClick={() => onComplete(appt)}
             className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-[#3F9C36] hover:bg-[#368230] transition"

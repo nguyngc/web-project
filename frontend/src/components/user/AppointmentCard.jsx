@@ -5,10 +5,10 @@ const AppointmentCard = ({ appt, onReschedule, onCancel }) => {
   console.log(appt);
 
   const isRescheduleDisabled =
-    appt.status === "completed" || appt.status === "cancelled";
+    appt.status === "completed" || appt.status === "confirmed" || appt.status === "cancelled";
 
   const isCancelDisabled =
-    appt.status === "completed" || appt.status === "cancelled";
+    appt.status === "completed" || appt.status === "confirmed" || appt.status === "cancelled";
 
   const serviceName = appt.serviceId?.serviceName || appt.service || "";
   const doctorName = appt.doctorId

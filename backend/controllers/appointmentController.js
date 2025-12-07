@@ -261,6 +261,8 @@ const update = async (req, res) => {
 
     if (requester.role === "doctor") {
       const allowed = [
+        "date",
+        "time",
         "status",
         "diagnosis",
         "rightEye",
