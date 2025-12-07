@@ -15,10 +15,15 @@ router.get("/user/:userId/date/:date", ctrl.getByUserIdAndDate);
 // GET /api/doctor-time/:doctorTimeId
 router.get("/:doctorTimeId", ctrl.getById);
 
-// GET /api/doctor-time/user/:userId/week/:week
-router.get("/user/:userId/week/:week", ctrl.getByWeek);
+
 
 // Protected routes
+// GET /api/doctor-time/user/:userId/date/:date
+// Get schedule of a doctor by userId and date for reschedule by ADMIN/DOCTOR
+router.get("/user/:userId/rescheduledate/:date", requireAuth, ctrl.getByUserIdAndDateForReschedule);
+
+// GET /api/doctor-time/user/:userId/week/:week
+router.get("/user/:userId/week/:week", requireAuth, requireRole("doctor", "admin"), ctrl.getByWeek);
 
 // POST /api/doctor-time
 // - Doctor: create their own schedule

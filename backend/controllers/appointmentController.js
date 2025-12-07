@@ -255,7 +255,7 @@ const update = async (req, res) => {
           message: "Users can only cancel appointments",
         });
       }
-      
+
       updateData = safe;
     }
 
@@ -279,6 +279,15 @@ const update = async (req, res) => {
     }
 
     updateData.modifiedBy = requesterId || "api";
+
+    if (updateData.isoDate) {
+      updateData.date = updateData.isoDate;
+      delete updateData.isoDate;
+    }
+
+    if (updateData.displayDate) {
+      delete updateData.displayDate; // never store display format
+    }
 
     const updated = await Appointment.findByIdAndUpdate(
       appointmentId,

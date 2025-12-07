@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 
 const DoctorProfile = ({ doctorId, users, onBack }) => {
-  const doctor = users.find((u) => u.id === doctorId && u.role === "doctor");
+  const doctor = users.find((u) => u._id === doctorId && u.role === "doctor");
 
   if (!doctor) {
     return (
@@ -41,9 +41,9 @@ const DoctorProfile = ({ doctorId, users, onBack }) => {
           {/* Avatar */}
           <div className="flex-shrink-0">
             <div className="h-20 w-20 rounded-full overflow-hidden bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-2xl font-semibold">
-              {doctor.profilePicture ? (
+              {doctor.doctorInfo?.profilePicture ? (
                 <img
-                  src={doctor.profilePicture}
+                  src={doctor.doctorInfo?.profilePicture}
                   alt={`${doctor.firstName} ${doctor.lastName}`}
                   className="h-full w-full object-cover"
                 />
@@ -62,14 +62,14 @@ const DoctorProfile = ({ doctorId, users, onBack }) => {
 
             {/* Badges */}
             <div className="mt-2 flex flex-wrap gap-2">
-              {doctor.specialization && (
+              {doctor.doctorInfo?.specialization && (
                 <span className="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-700">
-                  {doctor.specialization}
+                  {doctor.doctorInfo?.specialization}
                 </span>
               )}
-              {doctor.licenseNumber && (
+              {doctor.doctorInfo?.licenseNumber && (
                 <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
-                  {doctor.licenseNumber}
+                  {doctor.doctorInfo?.licenseNumber}
                 </span>
               )}
             </div>
@@ -137,7 +137,7 @@ const DoctorProfile = ({ doctorId, users, onBack }) => {
                 Years of Experience
               </p>
               <p className="text-sm text-gray-900">
-                {doctor.yoe ? `${doctor.yoe} years` : "—"}
+                {doctor.doctorInfo?.yoe ? `${doctor.doctorInfo?.yoe} years` : "—"}
               </p>
             </div>
           </div>
@@ -151,7 +151,7 @@ const DoctorProfile = ({ doctorId, users, onBack }) => {
                 Medical License
               </p>
               <p className="text-sm text-gray-900">
-                {doctor.licenseNumber || "—"}
+                {doctor.doctorInfo?.licenseNumber || "—"}
               </p>
             </div>
           </div>
@@ -171,7 +171,7 @@ const DoctorProfile = ({ doctorId, users, onBack }) => {
             </h4>
           </div>
           <div className="rounded-2xl bg-purple-50 border border-purple-100 px-4 py-3 text-sm text-gray-900">
-            {doctor.education || "—"}
+            {doctor.doctorInfo?.education || "—"}
           </div>
         </div>
 
@@ -189,7 +189,7 @@ const DoctorProfile = ({ doctorId, users, onBack }) => {
             </h4>
           </div>
           <div className="rounded-2xl bg-gray-50 border border-gray-100 px-4 py-3 text-sm text-gray-900 leading-relaxed">
-            {doctor.bio ||
+            {doctor.doctorInfo?.bio ||
               "No biography has been provided for this doctor yet."}
           </div>
         </div>

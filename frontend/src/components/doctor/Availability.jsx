@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Check, X } from "lucide-react";
+import { Check, X, ChevronLeft, ChevronRight } from "lucide-react";
 
 const SLOT_MAP = [
   { key: "slot1", time: "09:00 AM" },
@@ -22,9 +22,41 @@ const slotMapToHour = {
 // Generate Monday–Friday
 function getCurrentWeek() {
   const today = new Date();
-  const day = today.getDay(); // Sun=0, Mon=1
-  const monday = new Date(today);
-  monday.setDate(today.getDate() - (day === 0 ? 6 : day - 1));
+  const day = today.getDay(); // 0 = Sun, 6 = Sat
+
+  let start = new Date(today);
+
+  // If Sat (6) or Sun (0) → move to next Monday
+  if (day === 6) {
+    start.setDate(today.getDate() + 2); // next Monday
+  } else if (day === 0) {
+    start.setDate(today.getDate() + 1); // next Monday
+  } else {
+    // Normal weekdays: move back to Monday
+    start.setDate(today.getDate() - (day - 1));
+  }
+
+  const week = [];
+  for (let i = 0; i < 5; i++) {
+    const d = new Date(start);
+    d.setDate(start.getDate() + i);
+    week.push({
+      date: d,
+      label: d.toLocaleDateString("en-US", { weekday: "long" }),
+      dateString: d.toISOString().split("T")[0],
+    });
+  }
+  return week;
+}
+
+function generateWeekFromDate(startDate) {
+  const monday = new Date(startDate);
+  const day = monday.getDay();
+
+  // Ensure start date is Monday
+  if (day !== 1) {
+    monday.setDate(monday.getDate() - ((day === 0 ? 7 : day) - 1));
+  }
 
   const week = [];
   for (let i = 0; i < 5; i++) {
@@ -178,6 +210,37 @@ function Availability() {
         <p className="text-[#717182] text-base">
           Set your available time slots for patient bookings
         </p>
+      </div>
+
+      {/* Week Navigation */}
+      <div className="flex items-center justify-between mb-4">
+
+        <button
+          onClick={() => {
+            const firstDay = new Date(week[0].date);
+            firstDay.setDate(firstDay.getDate() - 7);
+            setWeek(generateWeekFromDate(firstDay));
+          }}
+          className="px-4 py-2 bg-white border border-black/10 rounded-lg text-sm flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          <ChevronLeft className="w-4 h-4 text-[#0A0A0A]" /> Previous Week
+        </button>
+
+        <div className="text-sm text-gray-700 font-medium">
+          Week {getWeekNumber(week[0].dateString)}
+        </div>
+
+        <button
+          onClick={() => {
+            const firstDay = new Date(week[0].date);
+            firstDay.setDate(firstDay.getDate() + 7);
+            setWeek(generateWeekFromDate(firstDay));
+          }}
+          className="px-4 py-2 bg-white border border-black/10 rounded-lg text-sm flex items-center justify-center hover:bg-gray-50 transition-colors"
+        >
+          Next Week <ChevronRight className="w-4 h-4 text-[#0A0A0A]" /> 
+        </button>
+
       </div>
 
       <div className="flex flex-col gap-6">

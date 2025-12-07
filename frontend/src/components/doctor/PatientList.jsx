@@ -1,39 +1,78 @@
-// src/components/PatientList.jsx
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Search } from "lucide-react";
-import appointmentData from "../../data/appointments";
-import userData from "../../data/users";
-import PatientRow from './PatientRow';
-import PatientDetail from '../admin/PatientDetail';
-import Pagination from '../common/Pagination';
+import PatientRow from "./PatientRow";
+import PatientDetail from "../admin/PatientDetail";
+import Pagination from "../common/Pagination";
 
 const PatientList = ({ currentDoctorId }) => {
-  const [appointments] = useState([...appointmentData]);
-  const [users] = useState([...userData]);
+  const token = localStorage.getItem("token");
+
+  const [appointments, setAppointments] = useState([]);
+  const [patients, setPatients] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedPatientId, setSelectedPatientId] = useState(null);
 
   const itemsPerPage = 5;
 
-  // All appointments for this doctor
+  // ---------------------------
+  // LOAD APPOINTMENTS FOR DOCTOR
+  // ---------------------------
+  useEffect(() => {
+    const loadAppointments = async () => {
+      try {
+        const res = await fetch(
+          `/api/appointments?doctorId=${currentDoctorId}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await res.json();
+        setAppointments(data);
+      } catch (err) {
+        console.error("Failed to load appointments:", err);
+      }
+    };
+    loadAppointments();
+  }, [currentDoctorId, token]);
+
+  // ---------------------------
+  // LOAD ALL PATIENT USERS
+  // ---------------------------
+  useEffect(() => {
+    const loadUsers = async () => {
+      try {
+        const res = await fetch(`/api/users?role=user`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        setPatients(data);
+      } catch (err) {
+        console.error("Failed to load users:", err);
+      }
+    };
+    loadUsers();
+  }, [token]);
+
+  // ---------------------------
+  // FILTER APPOINTMENTS BY DOCTOR
+  // ---------------------------
   const doctorAppointments = useMemo(
-    () => appointments.filter((apt) => apt.doctorId === currentDoctorId),
+    () => appointments.filter((apt) => apt.doctorId?._id === currentDoctorId),
     [appointments, currentDoctorId]
   );
 
-  // Helper to get appointments for a patient (for this doctor only)
   const getPatientAppointments = (patientId) =>
-    doctorAppointments.filter((apt) => apt.patientId === patientId);
+    doctorAppointments.filter((apt) => apt.userId?._id === patientId);
 
   const getLastVisit = (patientId) => {
     const appts = getPatientAppointments(patientId).filter(
       (a) => a.status !== "cancelled"
     );
     if (!appts.length) return null;
+
     const latest = [...appts].sort((a, b) =>
       b.date.localeCompare(a.date)
     )[0];
+
     return latest.date;
   };
 
@@ -42,34 +81,41 @@ const PatientList = ({ currentDoctorId }) => {
       (a) => a.status === "completed"
     );
     if (!completed.length) return null;
+
     return [...completed].sort((a, b) =>
       b.date.localeCompare(a.date)
     )[0];
   };
 
-  // Build unique patient records for this doctor
+  // ---------------------------
+  // BUILD UNIQUE PATIENT LIST
+  // ---------------------------
   const patientRecords = useMemo(() => {
     const patientIds = Array.from(
-      new Set(doctorAppointments.map((a) => a.patientId))
+      new Set(doctorAppointments.map((a) => a.userId?._id))
     );
 
     return patientIds
       .map((id) => {
-        const patient = users.find((u) => u.id === id && u.role === "user");
+        const patient = patients.find((u) => u._id === id);
         if (!patient) return null;
-        const lastVisit = getLastVisit(id);
-        const latestCompleted = getLatestCompleted(id);
-        const patientAppts = getPatientAppointments(id);
-        return { patient, lastVisit, latestCompleted, appointments: patientAppts };
+
+        return {
+          patient,
+          lastVisit: getLastVisit(id),
+          latestCompleted: getLatestCompleted(id),
+          appointments: getPatientAppointments(id),
+        };
       })
       .filter(Boolean);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [doctorAppointments, users]);
+  }, [doctorAppointments, patients]);
 
-  // Filter by search (patient name)
+  // ---------------------------
+  // SEARCH
+  // ---------------------------
   const filtered = patientRecords.filter((record) => {
-    const fullName = `${record.patient.firstName} ${record.patient.lastName}`.toLowerCase();
-    return fullName.includes(search.toLowerCase());
+    const name = `${record.patient.firstName} ${record.patient.lastName}`.toLowerCase();
+    return name.includes(search.toLowerCase());
   });
 
   const totalPages = Math.ceil(filtered.length / itemsPerPage);
@@ -79,39 +125,33 @@ const PatientList = ({ currentDoctorId }) => {
     page * itemsPerPage
   );
 
-  const handleRowClick = (patientId) => {
-    setSelectedPatientId(patientId);
-  };
-
-  const handleBackFromDetail = () => {
-    setSelectedPatientId(null);
-  };
-
-  // When a patient is selected → show detail page instead of list
+  // ---------------------------
+  // PATIENT DETAIL VIEW
+  // ---------------------------
   if (selectedPatientId) {
     const patientAppointments = doctorAppointments.filter(
-      (a) => a.patientId === selectedPatientId
+      (a) => a.userId?._id === selectedPatientId
     );
 
     return (
       <PatientDetail
         patientId={selectedPatientId}
         appointments={patientAppointments}
-        users={users}
-        onBack={handleBackFromDetail}
+        users={patients}
+        onBack={() => setSelectedPatientId(null)}
         backLabel="Back to Patient List"
       />
     );
   }
 
-  // List view
+  // ---------------------------
+  // LIST VIEW
+  // ---------------------------
   return (
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div>
-        <h1 className="text-base font-semibold text-[#111827]">
-          Patient Records
-        </h1>
+        <h1 className="text-base font-semibold text-[#111827]">Patient Records</h1>
         <p className="text-sm text-gray-500">
           View patient details, history, and manage prescriptions
         </p>
@@ -136,17 +176,17 @@ const PatientList = ({ currentDoctorId }) => {
       <div className="flex flex-col gap-4">
         {paginated.map(({ patient, lastVisit, latestCompleted }) => (
           <PatientRow
-            key={patient.id}
+            key={patient._id}
             patient={patient}
             lastVisit={lastVisit}
             latestCompleted={latestCompleted}
-            onClick={() => handleRowClick(patient.id)}
+            onClick={() => setSelectedPatientId(patient._id)}
           />
         ))}
 
         {filtered.length === 0 && (
-          <div className="text-sm text-gray-500 bg-white border border-gray-200 rounded-xl px-4 py-6 text-center">
-            No patients found for this doctor.
+          <div className="text-sm text-gray-500 px-4 py-6 text-center">
+            No patients found.
           </div>
         )}
 

@@ -24,7 +24,7 @@ export default function SuccessStep({ appointment }) {
       <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm p-6 w-full max-w-md mb-10">
         <div className="flex items-center gap-3 mb-4">
           <CalendarDays className="h-5 w-5 text-[#2563EB]" />
-          <span className="text-[#1F2937] text-sm">{appointment.date}</span>
+          <span className="text-[#1F2937] text-sm">{appointment.dateDisplay}</span>
         </div>
 
         <div className="flex items-center gap-3 mb-4">

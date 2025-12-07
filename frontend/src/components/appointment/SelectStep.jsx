@@ -123,7 +123,8 @@ export default function SelectStep({ onSelectSlot }) {
     if (!slot.available || !selectedDate || !selectedService || !selectedDoctor) return;
 
     onSelectSlot({
-      date: format(selectedDate, "EEEE, MMMM d, yyyy"),
+      dateISO: format(selectedDate, "yyyy-MM-dd"),   // for backend
+      dateDisplay: format(selectedDate, "EEEE, MMMM d, yyyy"), // for UI
       time: slot.time,
       serviceId: selectedService._id,
       serviceName: selectedService.serviceName,
