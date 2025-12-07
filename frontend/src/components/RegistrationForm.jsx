@@ -89,8 +89,8 @@ const RegistrationForm = ({ onSuccess }) => {
       className="max-w-lg mx-auto bg-white"
     >
       {/* First Name & Last Name */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <Form.Group>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 ">
+        <Form.Group className="mb-6 relative">
           <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
             First Name
           </Form.Label>
@@ -100,12 +100,12 @@ const RegistrationForm = ({ onSuccess }) => {
               required
               {...firstName}
               placeholder="John"
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
             />
           </div>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="mb-6 relative">
           <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
             Last Name
           </Form.Label>
@@ -115,7 +115,7 @@ const RegistrationForm = ({ onSuccess }) => {
               required
               {...lastName}
               placeholder="Doe"
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
             />
           </div>
         </Form.Group>
@@ -198,10 +198,11 @@ const RegistrationForm = ({ onSuccess }) => {
         {errors.confirmPassword && (
           <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>
         )}
-      </Form.Group>
+      </Form.Group >
+
       {/* Birthday */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <Form.Group>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+        <Form.Group className="mb-6 relative">
           <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
             Day of Birth
           </Form.Label>
@@ -210,12 +211,12 @@ const RegistrationForm = ({ onSuccess }) => {
             <Form.Control
               {...dob}
               placeholder="DD/MM/YYYY"
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
             />
           </div>
         </Form.Group>
 
-        <Form.Group>
+        <Form.Group className="mb-6 relative">
           <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
             Gender
           </Form.Label>
