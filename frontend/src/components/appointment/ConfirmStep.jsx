@@ -1,51 +1,52 @@
 import { CalendarDays, Clock, MapPin, CheckCircle2 } from "lucide-react";
+import GradientButton from "../GradientButton";
 
 export default function ConfirmStep({ user, appointment, setStep }) {
   const handleConfirm = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    
-    const res = await fetch("/api/appointments", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        userId: user._id,
-        serviceId: appointment.serviceId,
-        serviceName: appointment.serviceName,
-        doctorId: appointment.doctorId,
-        date: appointment.date,
-        time: appointment.time,
-        status: "confirmed",
-      }),
-    });
+    try {
+      const token = localStorage.getItem("token");
 
-    const data = await res.json();
-    if (res.ok) {
-      setStep(4); 
-    } else {
-      alert(data.message || "Failed to book appointment");
+      const res = await fetch("/api/appointments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          userId: user._id,
+          serviceId: appointment.serviceId,
+          serviceName: appointment.serviceName,
+          doctorId: appointment.doctorId,
+          date: appointment.dateISO,
+          time: appointment.time,
+          status: "confirmed",
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setStep(4);
+      } else {
+        alert(data.message || "Failed to book appointment");
+      }
+    } catch (err) {
+      alert("Network error");
     }
-  } catch (err) {
-    alert("Network error");
-  }
-};
+  };
 
   return (
     <div className="w-full min-h-screen bg-[#F5F6FA] py-8">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Back button */}
-        <button
+        <GradientButton
           onClick={() => setStep(1)}
-          className="mb-6 inline-flex items-center rounded-lg bg-gradient-to-r from-[#3B82F6] to-[#60A5FA] px-4 py-2 text-white text-sm font-medium shadow"
+          isFull={false}
         >
           ← Back to Appointment Selection
-        </button>
+        </GradientButton>
 
-        <h1 className="text-2xl font-semibold text-[#1F2B6C] mb-6">
+        <h1 className="text-2xl font-semibold text-[#1F2B6C] mb-6 pt-5">
           Confirm Your Appointment
         </h1>
 
@@ -61,7 +62,7 @@ export default function ConfirmStep({ user, appointment, setStep }) {
             {/* Date */}
             <div className="flex items-center gap-3 mb-3">
               <CalendarDays className="h-5 w-5 text-[#1D4ED8]" />
-              <span className="text-[#1F2937]">{appointment.date}</span>
+              <span className="text-[#1F2937]">{appointment.dateDisplay}</span>
             </div>
 
             {/* Time */}
@@ -151,12 +152,11 @@ export default function ConfirmStep({ user, appointment, setStep }) {
             </ul>
 
             {/* Confirm button */}
-            <button
+            <GradientButton
               onClick={handleConfirm}
-              className="w-full mt-4 py-3 text-white rounded-xl font-medium text-sm shadow bg-gradient-to-r from-[#2563EB] to-[#60A5FA]"
             >
               Confirm Appointment
-            </button>
+            </GradientButton>
 
           </div>
 

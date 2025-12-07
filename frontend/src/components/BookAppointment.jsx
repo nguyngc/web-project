@@ -30,7 +30,7 @@ function BookAppointment() {
   return (
     <section>
       {step === 1 && <SelectStep onSelectSlot={handleSlotSelect} />}
-      {step === 2 && <AuthStep appointment={appointment} />}
+      {step === 2 && <AuthStep appointment={appointment} setStep={setStep} />}
       {step === 3 && <ConfirmStep user={user} appointment={appointment} setStep={setStep} />}
       {step === 4 && <SuccessStep appointment={appointment} />}
     </section>

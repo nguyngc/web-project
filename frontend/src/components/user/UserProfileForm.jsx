@@ -1,68 +1,27 @@
+
 import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import GradientButton from "../GradientButton";
 import ReadonlyField from "../common/ReadonlyField";
 import { format } from "date-fns";
 
-const ProfileInfoForm = ({ onSave, onCancel, editing, onEdit }) => {
-  const [form, setForm] = useState(null);
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(true);
+const ProfileInfoForm = ({ user, onSave, onCancel, editing }) => {
+  const [form, setForm] = useState(user);
 
-  const token = localStorage.getItem("token");
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const userId = currentUser?._id || currentUser?.id;
-
-  // Fetch profile từ backend khi login
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch(`/api/users/${userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = await res.json();
-        if (res.ok) {
-          setForm(data);
-        } else {
-          console.error("Failed to load profile:", data.message);
-        }
-      } catch (err) {
-        console.error("Network error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (userId) fetchProfile();
-  }, [userId, token]);
-
-  const validate = () => {
-  let e = {};
-  if (!form.firstName) e.firstName = "First name is required";
-  if (!form.lastName) e.lastName = "Last name is required";
-  if (!form.email) e.email = "Email is required";
-  else if (!/\S+@\S+\.\S+/.test(form.email)) e.email = "Invalid email";
-  setErrors(e);
-  return Object.keys(e).length === 0;
-};
+    setForm(user);
+  }, [user]);
 
   const handleChange = (field, value) => {
-    setForm((p) => ({ ...p, [field]: value }));
+    setForm((prev) => ({ ...prev, [field]: value }));
   };
 
   const inputClass =
-    "w-full h-10 bg-[#F3F3F5] rounded-lg border border-transparent px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-vision-blue-accent";
-
-  if (loading) {
-    return <p className="text-sm text-gray-500">Loading profile...</p>;
-  }
-
-  if (!form) {
-    return <p className="text-sm text-red-500">Profile not found</p>;
-  }
+    "w-full h-10 bg-[#F3F3F5] rounded-lg border border-gray-300 px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-vision-blue-accent";
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+      {/* HEADER */}
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-lg font-semibold text-gray-800">My Profile</h2>
@@ -71,7 +30,7 @@ const ProfileInfoForm = ({ onSave, onCancel, editing, onEdit }) => {
 
         {!editing && (
           <button
-            onClick={onEdit}
+            onClick={onSave}
             className="px-4 py-2 bg-gradient-to-b from-[#1C398E] to-[#6E85C3] text-white rounded-lg text-sm"
           >
             Edit Profile
@@ -79,75 +38,124 @@ const ProfileInfoForm = ({ onSave, onCancel, editing, onEdit }) => {
         )}
       </div>
 
-      {/* READONLY MODE */}
+      {/* ================= READONLY MODE ================= */}
       {!editing && (
         <div className="grid md:grid-cols-2 gap-4">
-          <ReadonlyField label="First Name" value={form.firstName} />
-          <ReadonlyField label="Last Name" value={form.lastName} />
+          <ReadonlyField label="First Name" value={user.firstName} />
+          <ReadonlyField label="Last Name" value={user.lastName} />
           <ReadonlyField
-            label="Day of Birth"
-            value={form.dob ? format(new Date(form.dob), "dd/MM/yyyy") : ""}
+            label="Date of Birth"
+            value={user.dob ? format(new Date(user.dob), "dd/MM/yyyy") : ""}
           />
-          <ReadonlyField label="Gender" value={form.gender} />
-          <ReadonlyField label="Email" value={form.email} />
-          <ReadonlyField label="Phone" value={form.phone} />
-          <ReadonlyField label="Address" value={form.address} />
+          <ReadonlyField label="Gender" value={user.gender} />
+          <ReadonlyField label="Email" value={user.email} />
+          <ReadonlyField label="Phone" value={user.phone} />
+
+          {/* Address full width */}
+          <div className="md:col-span-2">
+            <ReadonlyField label="Address" value={user.address} />
+          </div>
         </div>
       )}
 
-      {/* EDIT MODE */}
+      {/* ================= EDIT MODE ================= */}
       {editing && (
         <Form
           onSubmit={(e) => {
             e.preventDefault();
-            if (validate()) onSave(form); // send data
+            onSave(form);
           }}
           className="grid md:grid-cols-2 gap-4"
         >
+          {/* FIRST NAME */}
           <Form.Group>
-            <Form.Label className="text-sm text-gray-700 mb-1">
-              First Name *
-            </Form.Label>
+            <Form.Label className="text-sm text-gray-700 mb-1">First Name *</Form.Label>
             <Form.Control
               required
               className={inputClass}
               value={form.firstName}
               onChange={(e) => handleChange("firstName", e.target.value)}
             />
-            {errors.firstName && (
-              <p className="text-red-600 text-xs">{errors.firstName}</p>
-            )}
           </Form.Group>
 
+          {/* LAST NAME */}
           <Form.Group>
-            <Form.Label className="text-sm text-gray-700 mb-1">
-              Last Name *
-            </Form.Label>
+            <Form.Label className="text-sm text-gray-700 mb-1">Last Name *</Form.Label>
             <Form.Control
               required
               className={inputClass}
               value={form.lastName}
               onChange={(e) => handleChange("lastName", e.target.value)}
             />
-            {errors.lastName && (
-              <p className="text-red-600 text-xs">{errors.lastName}</p>
-            )}
           </Form.Group>
 
-          <Form.Group className="md:col-span-2">
+          {/* DOB */}
+          <Form.Group>
+            <Form.Label className="text-sm text-gray-700 mb-1">Date of Birth</Form.Label>
+            <Form.Control
+              type="date"
+              className={inputClass}
+              value={form.dob ? form.dob.split("T")[0] : ""}
+              onChange={(e) => handleChange("dob", e.target.value)}
+            />
+          </Form.Group>
+
+          {/* GENDER (RADIO BUTTONS) */}
+          <Form.Group>
+            <Form.Label className="text-sm text-gray-700 mb-1">Gender</Form.Label>
+            <div className="flex gap-6 mt-2">
+              {["Male", "Female", "Other"].map((g) => (
+                <label key={g} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value={g}
+                    checked={form.gender === g}
+                    onChange={(e) => handleChange("gender", e.target.value)}
+                    className="h-4 w-4 text-blue-600 border-gray-300"
+                  />
+                  <span className="text-sm text-gray-700">{g}</span>
+                </label>
+              ))}
+            </div>
+          </Form.Group>
+
+          {/* EMAIL + PHONE IN ONE ROW */}
+          {/* EMAIL (READONLY) */}
+          <Form.Group>
             <Form.Label className="text-sm text-gray-700 mb-1">Email *</Form.Label>
             <Form.Control
               required
+              disabled
               type="email"
-              className={inputClass}
+              className={`${inputClass} bg-gray-200 cursor-not-allowed`}
               value={form.email}
-              onChange={(e) => handleChange("email", e.target.value)}
             />
-            {errors.email && (
-              <p className="text-red-600 text-xs">{errors.email}</p>
-            )}
+            <p className="text-xs text-gray-500 mt-1">Email cannot be changed.</p>
           </Form.Group>
 
+          {/* PHONE */}
+          <Form.Group>
+            <Form.Label className="text-sm text-gray-700 mb-1">Phone</Form.Label>
+            <Form.Control
+              className={inputClass}
+              value={form.phone}
+              onChange={(e) => handleChange("phone", e.target.value)}
+            />
+          </Form.Group>
+
+
+          {/* ADDRESS - FULL WIDTH */}
+          <Form.Group className="md:col-span-2">
+            <Form.Label className="text-sm text-gray-700 mb-1">Address</Form.Label>
+            <Form.Control
+              className={inputClass}
+              value={form.address}
+              onChange={(e) => handleChange("address", e.target.value)}
+            />
+          </Form.Group>
+
+          {/* BUTTONS */}
           <div className="md:col-span-2 flex gap-3 mt-3">
             <Button
               onClick={onCancel}

@@ -11,8 +11,8 @@ const ChangePasswordSection = ({ onPasswordChange }) => {
 
   const validate = () => {
     if (!current) return "Please enter your current password";
-    if (newPass.length < 8)
-      return "New password must be at least 8 characters";
+    if (newPass.length < 6)
+      return "New password must be at least 6 characters";
     if (newPass !== confirmPass)
       return "New password and confirmation do not match";
     return null;
@@ -58,7 +58,7 @@ const ChangePasswordSection = ({ onPasswordChange }) => {
             placeholder="Enter new password"
           />
           <p className="text-xs text-gray-500 mt-1">
-            Password must be at least 8 characters long
+            Password must be at least 6 characters long
           </p>
         </div>
 

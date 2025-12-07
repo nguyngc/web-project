@@ -5,7 +5,7 @@ import {
 import StatusBox from "../common/StatusBox";
 
 const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Back" }) => {
-  const patient = users.find(u => u.id === patientId);
+  const patient = users.find(u => u._id === patientId);
 
   if (!patient) {
     return (
@@ -51,7 +51,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
                 {patient.firstName} {patient.lastName}
               </h2>
               <p className="text-sm text-gray-500">
-                Patient ID: {patient.id}
+                Patient ID: {patient._id}
               </p>
             </div>
           </div>
@@ -79,7 +79,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
             <InfoTile
               icon={<Calendar className="w-4 h-4 text-gray-400" />}
               label="Date of Birth"
-              value={patient.dateOfBirth}
+              value={patient.dob}
             />
             <InfoTile
               icon={<MapPin className="w-4 h-4 text-gray-400" />}
@@ -90,10 +90,10 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
         </div>
 
         {/* Divider */}
-        <div className="my-6 h-px bg-gray-100" />
+        {/* <div className="my-6 h-px bg-gray-100" /> */}
 
         {/* Medical Information */}
-        <div>
+        {/* <div>
           <SectionTitle
             icon={<Heart className="w-4 h-4 text-red-500" />}
             title="Medical Information"
@@ -118,13 +118,13 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
               value={patient.medicalHistory}
             />
           </div>
-        </div>
+        </div> */}
 
         {/* Divider */}
-        <div className="my-6 h-px bg-gray-100" />
+        {/* <div className="my-6 h-px bg-gray-100" /> */}
 
         {/* Emergency + Insurance */}
-        <div className="grid gap-6 md:grid-cols-2">
+        {/* <div className="grid gap-6 md:grid-cols-2">
           <div>
             <SectionTitle
               icon={<AlertCircle className="w-4 h-4 text-amber-500" />}
@@ -146,7 +146,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
               <InfoLine label="Policy Number" value={patient.insuranceNumber} />
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
 
       {/* Medical Records */}
@@ -172,13 +172,13 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
 
           {patientAppointments.map((visit) => (
             <div
-              key={visit.id}
+              key={visit._id}
               className="rounded-2xl border border-gray-100 bg-white shadow-[0_0_0_1px_rgba(15,23,42,0.02)]"
             >
               <div
                 className={`rounded-2xl border-l-4 ${visit.status === "completed"
                   ? "border-l-emerald-500"
-                  : visit.status === "scheduled"
+                  : visit.status === "confirmed"
                     ? "border-l-blue-500"
                     : "border-l-gray-300"
                   } px-5 py-4 md:px-6 md:py-5`}
@@ -267,7 +267,7 @@ const VisitHeader = ({ visit }) => {
   const statusColor =
     visit.status === "completed"
       ? "bg-emerald-50 text-emerald-700"
-      : visit.status === "scheduled"
+      : visit.status === "confirmed"
         ? "bg-blue-50 text-blue-700"
         : "bg-gray-100 text-gray-600";
 

@@ -83,6 +83,9 @@ const RegistrationForm = ({ onSuccess }) => {
     };
   }
 
+  const inputClass =
+    "w-full h-12 bg-gray-50 rounded-lg border border-gray-200 pl-3 pr-10 focus:border-blue-500 focus:ring-1 focus:ring-blue-200";
+
   return (
     <Form
       onSubmit={handleRegister}
@@ -100,7 +103,7 @@ const RegistrationForm = ({ onSuccess }) => {
               required
               {...firstName}
               placeholder="John"
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
+              className={`pl-10 ${inputClass}`}
             />
           </div>
         </Form.Group>
@@ -115,7 +118,7 @@ const RegistrationForm = ({ onSuccess }) => {
               required
               {...lastName}
               placeholder="Doe"
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
+              className={`pl-10 ${inputClass}`}
             />
           </div>
         </Form.Group>
@@ -132,7 +135,7 @@ const RegistrationForm = ({ onSuccess }) => {
             required
             {...email}
             placeholder="john.doe@example.com"
-            className={`w-full pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-10 ${inputClass}`}
           />
         </div>
       </Form.Group>
@@ -148,7 +151,7 @@ const RegistrationForm = ({ onSuccess }) => {
             required
             {...phone}
             placeholder="(123) 123-4567"
-            className={`w-full pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-10 ${inputClass}`}
           />
         </div>
       </Form.Group>
@@ -163,7 +166,7 @@ const RegistrationForm = ({ onSuccess }) => {
             required
             {...password}
             placeholder="Create a password"
-            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-3 pr-10 ${inputClass}`}
           />
           <button
             type="button"
@@ -185,7 +188,7 @@ const RegistrationForm = ({ onSuccess }) => {
             required
             {...confirmPassword}
             placeholder="Re-enter your password"
-            className={`w-full pl-3 pr-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full pl-3 pr-10 ${inputClass}`}
           />
           <button
             type="button"
@@ -207,11 +210,10 @@ const RegistrationForm = ({ onSuccess }) => {
             Day of Birth
           </Form.Label>
           <div className="relative">
-            {/* <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
             <Form.Control
               {...dob}
               placeholder="DD/MM/YYYY"
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
+              className={`${inputClass}`}
             />
           </div>
         </Form.Group>
@@ -222,14 +224,44 @@ const RegistrationForm = ({ onSuccess }) => {
           </Form.Label>
           <div className="relative">
             {/* <Gender className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
-            <select
-              {...gender}
-              className={`pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg w-full`}
-            >
-              <option value="">Select gender</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
+            <div className="flex items-center gap-6 mt-2">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Male"
+                  checked={gender.value === "Male"}
+                  onChange={(e) => gender.onChange(e)}
+                  className="h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">Male</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Female"
+                  checked={gender.value === "Female"}
+                  onChange={(e) => gender.onChange(e)}
+                  className="h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">Female</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="gender"
+                  value="Other"
+                  checked={gender.value === "Other"}
+                  onChange={(e) => gender.onChange(e)}
+                  className="h-4 w-4 text-blue-600 border-gray-300"
+                />
+                <span className="text-sm text-gray-700">Other</span>
+              </label>
+            </div>
+
           </div>
         </Form.Group>
 
@@ -240,12 +272,11 @@ const RegistrationForm = ({ onSuccess }) => {
           Address
         </Form.Label>
         <div className="relative">
-          {/* <address className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-5 w-5" /> */}
           <Form.Control
             required
             {...address}
             placeholder="Vuoritie 4D 02103 Espoo"
-            className={`w-full pl-10 h-12 bg-gray-50 border focus:border-blue-500 focus:ring focus:ring-blue-200 rounded-lg`}
+            className={`w-full ${inputClass}`}
           />
         </div>
       </Form.Group>

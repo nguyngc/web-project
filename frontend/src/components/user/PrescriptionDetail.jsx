@@ -64,13 +64,13 @@ const PrescriptionDetail = ({ appt, onBack }) => {
             {appt.rightEye && (
               <div>
                 <strong>Right Eye:</strong>{" "}
-                SPH {appt.rightEye.sphere}, CYL {appt.rightEye.cylinder}, AXIS {appt.rightEye.axis}
+                {appt.rightEye}
               </div>
             )}
             {appt.leftEye && (
               <div>
                 <strong>Left Eye:</strong>{" "}
-                SPH {appt.leftEye.sphere}, CYL {appt.leftEye.cylinder}, AXIS {appt.leftEye.axis}
+                {appt.leftEye}
               </div>
             )}
           </div>

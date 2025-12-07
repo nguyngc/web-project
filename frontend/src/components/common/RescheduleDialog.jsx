@@ -51,7 +51,9 @@ const isPastSlot = (isoDate, hour) => {
 };
 
 const RescheduleDialog = ({ open, appointment, onClose, onSave }) => {
-  // doctorId may be string or object
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const role = currentUser.role;
+
   const doctorId =
     typeof appointment?.doctorId === "string"
       ? appointment.doctorId
@@ -108,7 +110,10 @@ const RescheduleDialog = ({ open, appointment, onClose, onSave }) => {
 
       try {
         const res = await fetch(
-          `/api/doctor-time/user/${doctorId}/date/${selectedDate}`
+          `/api/doctor-time/user/${doctorId}/rescheduledate/${selectedDate}`,
+          {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          }
         );
 
         if (res.ok) {
@@ -116,7 +121,34 @@ const RescheduleDialog = ({ open, appointment, onClose, onSave }) => {
           // availableTime is an object like {slot1:true, slot2:false,...}
           setAvailableTime(data.availableTime || {});
         } else {
-          // Doctor has no record for that day → assume all slots available
+          // No doctorTime entry — handle based on role
+          if (role === "doctor" || role === "admin") {
+            // They can reschedule into ANY future date → allow all slots
+            setAvailableTime({
+              slot1: true,
+              slot2: true,
+              slot3: true,
+              slot4: true,
+              slot5: true,
+              slot6: true,
+            });
+          } else {
+            // NORMAL USER → doctor has no schedule → disable all slots
+            setAvailableTime({
+              slot1: false,
+              slot2: false,
+              slot3: false,
+              slot4: false,
+              slot5: false,
+              slot6: false,
+            });
+          }
+        }
+      } catch (err) {
+        console.error("load doctorTime error", err);
+        // No doctorTime entry — handle based on role
+        if (role === "doctor" || role === "admin") {
+          // They can reschedule into ANY future date → allow all slots
           setAvailableTime({
             slot1: true,
             slot2: true,
@@ -125,17 +157,17 @@ const RescheduleDialog = ({ open, appointment, onClose, onSave }) => {
             slot5: true,
             slot6: true,
           });
+        } else {
+          // NORMAL USER → doctor has no schedule → disable all slots
+          setAvailableTime({
+            slot1: false,
+            slot2: false,
+            slot3: false,
+            slot4: false,
+            slot5: false,
+            slot6: false,
+          });
         }
-      } catch (err) {
-        console.error("load doctorTime error", err);
-        setAvailableTime({
-          slot1: true,
-          slot2: true,
-          slot3: true,
-          slot4: true,
-          slot5: true,
-          slot6: true,
-        });
       } finally {
         // don't clear loading here; bookedSlots effect finishes it
       }
@@ -300,8 +332,8 @@ const RescheduleDialog = ({ open, appointment, onClose, onSave }) => {
             onClick={handleSave}
             disabled={!selectedSlotKey}
             className={`px-4 py-2 rounded-lg text-sm text-white ${!selectedSlotKey
-                ? "bg-gray-300 cursor-not-allowed"
-                : "bg-[#2563EB] hover:bg-[#1D4ED8]"
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-[#2563EB] hover:bg-[#1D4ED8]"
               }`}
           >
             Save changes

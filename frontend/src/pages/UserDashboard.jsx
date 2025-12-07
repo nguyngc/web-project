@@ -58,20 +58,23 @@ function UserDashboard({ userId }) {
               <DashboardSidebar onSelect={setActiveTab} activeTab={activeTab} />
             </aside>
 
-            <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-6">
-              {activeTab === "profile" && (
+            {activeTab === "profile" && (
+              <section className="flex-1 flex flex-col gap-6">
                 <UserProfile />
-              )}
+              </section>
+            )}
 
-              {activeTab === "appointments" && (
-                <Appointments />
-              )}
+            {activeTab !== "profile" && (
+              <section className="flex-1 bg-white rounded-[14px] border border-black/10 p-6 flex flex-col gap-6">
+                {activeTab === "appointments" && (
+                  <Appointments />
+                )}
 
-              {activeTab === "prescriptions" && (
-                <Prescriptions />
-              )}
-
-            </section>
+                {activeTab === "prescriptions" && (
+                  <Prescriptions />
+                )}
+              </section>
+            )}
           </div>
         </main>
       </div>

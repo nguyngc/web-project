@@ -3,7 +3,7 @@ import { CalendarDays, Clock, MapPin } from "lucide-react";
 
 export default function SuccessStep({ appointment }) {
   return (
-    <div className="w-full min-h-screen bg-[#F5F6FA] flex flex-col items-center justify-center px-4 py-10">
+    <div className="w-full bg-[#F5F6FA] flex flex-col items-center justify-center px-4 py-10">
 
       {/* Green Success Badge */}
       <div className="flex items-center justify-center w-20 h-20 rounded-full bg-[#DCFCE7] mb-6">
@@ -24,7 +24,7 @@ export default function SuccessStep({ appointment }) {
       <div className="bg-white border border-[#E5E7EB] rounded-2xl shadow-sm p-6 w-full max-w-md mb-10">
         <div className="flex items-center gap-3 mb-4">
           <CalendarDays className="h-5 w-5 text-[#2563EB]" />
-          <span className="text-[#1F2937] text-sm">{appointment.date}</span>
+          <span className="text-[#1F2937] text-sm">{appointment.dateDisplay}</span>
         </div>
 
         <div className="flex items-center gap-3 mb-4">
@@ -45,7 +45,7 @@ export default function SuccessStep({ appointment }) {
         <Link
           to="/profile"
           state={{ tab: "appointments" }}
-          className="w-full md:w-auto px-6 py-3 bg-gradient-to-r from-[#2563EB] to-[#60A5FA] 
+          className="w-full md:w-auto px-6 py-3 bg-gradient-to-b from-[rgba(21,158,236,0.5)] to-[#159EEC]  
                      text-white rounded-xl text-sm font-medium shadow text-center"
         >
           View My Appointments

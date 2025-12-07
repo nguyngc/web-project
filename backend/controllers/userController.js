@@ -193,6 +193,7 @@ const signup = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        profilePicture: user.doctorInfo?.profilePicture
       },
       token,
     });
@@ -232,6 +233,7 @@ const login = async (req, res) => {
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        profilePicture: user.doctorInfo?.profilePicture
       },
       token,
     });
