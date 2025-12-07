@@ -8,7 +8,6 @@ import GradientButton from "./GradientButton";
 
 const LoginForm = ({ onForgot, onSuccess }) => {
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
@@ -17,28 +16,8 @@ const LoginForm = ({ onForgot, onSuccess }) => {
 
   const { login, error, isLoading } = useLogin("/api/users/login");
 
-  const validate = () => {
-    let valid = true;
-    const newErrors = { email: "", password: "" };
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email.value)) {
-      newErrors.email = "Please enter a valid email address.";
-      valid = false;
-    }
-
-    if (password.value.length < 6) {
-      newErrors.password = "Password must be at least 6 characters.";
-      valid = false;
-    }
-
-    setErrors(newErrors);
-    return valid;
-  };
-
   const handleLogin = async (e) => {
   e.preventDefault();
-  if (!validate()) return;
 
   const result = await login(
     {
@@ -81,15 +60,12 @@ const LoginForm = ({ onForgot, onSuccess }) => {
           />
           <Form.Control
             {...email}
+            required
             type="email"
             placeholder="email@example.com"
-            className={`w-full pl-10 h-12 bg-gray-50 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 ${errors.email ? "border-red-500" : "border-gray-200"
-              }`}
+            className={`w-full pl-10 h-12 bg-gray-50 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-200`}
           />
         </div>
-        {errors.email && (
-          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-        )}
       </Form.Group>
 
       {/* Password */}
@@ -99,11 +75,11 @@ const LoginForm = ({ onForgot, onSuccess }) => {
         </label>
         <div className="relative">
           <Form.Control
+          required
             {...password}
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
-            className={`h-12 w-full bg-gray-50 pl-3 rounded-lg border focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-10 ${errors.password ? "border-red-500" : "border-gray-200"
-              }`}
+            className={`h-12 w-full bg-gray-50 pl-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-200 pr-10`}
           />
           <button
             type="button"
@@ -113,9 +89,6 @@ const LoginForm = ({ onForgot, onSuccess }) => {
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         </div>
-        {errors.password && (
-          <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-        )}
       </Form.Group>
 
       {/* Remember + Forgot */}
