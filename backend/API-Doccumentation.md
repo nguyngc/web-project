@@ -313,7 +313,12 @@ Public endpoints:
     - `status`
 - GET `/api/doctor-time/:doctorTimeId`
 - GET `/api/doctor-time/user/:userId/date/:date`
+
+Protected endpoints:
 - GET `/api/doctor-time/user/:userId/week/:week`
+  - Access: doctor, admin (token required).
+- GET `/api/doctor-time/user/:userId/rescheduledate/:date`
+  - Access: doctor, admin (token required); auto-creates a schedule with all slots open if none exists.
 
 Doctor/Admin endpoints:
 - POST `/api/doctor-time`
@@ -324,7 +329,7 @@ Doctor/Admin endpoints:
   - Merges `availableTime`.
 - DELETE `/api/doctor-time/:doctorTimeId`
 - PATCH `/api/doctor-time/:doctorTimeId/toggle/:slotName`
-  - Valid slots in code: `slot1`, `slot2`, `slot3`, `slot4`.
+  - Valid slots in code: `slot1`, `slot2`, `slot3`, `slot4` (current controller only toggles these; model defines slot1–slot6).
 
 ---
 
