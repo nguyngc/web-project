@@ -171,13 +171,29 @@ const signup = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Parse dob if provided (handle DD/MM/YYYY or ISO formats)
+    let parsedDob = null;
+    if (dob) {
+      // Check if it's in DD/MM/YYYY format
+      if (dob.includes('/')) {
+        const [day, month, year] = dob.split('/');
+        parsedDob = new Date(`${year}-${month}-${day}`);
+      } else {
+        parsedDob = new Date(dob);
+      }
+      // Validate date
+      if (isNaN(parsedDob.getTime())) {
+        parsedDob = null;
+      }
+    }
+
     const user = await User.create({
       firstName,
       lastName,
       email,
       password: hashedPassword,
       role: "user", // signup only user (patient)
-      dob: dob || null,
+      dob: parsedDob,
       gender: gender || null,
       phone: phone || "",
       address: address || "",
