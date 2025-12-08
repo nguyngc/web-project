@@ -170,7 +170,7 @@ const AppointmentList = () => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ status: "scheduled" }),
+      body: JSON.stringify({ status: "confirmed" }),
     });
 
     const updated = await res.json();
@@ -178,7 +178,7 @@ const AppointmentList = () => {
       setAppointments(prev =>
         prev.map(a => a._id === updated._id ? { ...a, status: updated.status } : a)
       );
-      showMsg("Appointment confirmed as Scheduled");
+      showMsg("Appointment confirmed as confirmed");
     } else {
       showMsg("Failed to confirm appointment", "error");
     }
