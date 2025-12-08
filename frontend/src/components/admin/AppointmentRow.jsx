@@ -1,4 +1,4 @@
-import { CalendarClock, XCircle } from "lucide-react";
+import { CalendarClock, XCircle, CheckCircle } from "lucide-react";
 import StatusBox from "../common/StatusBox";
 
 const AppointmentRow = ({
@@ -7,11 +7,15 @@ const AppointmentRow = ({
   onCancel,
   onDoctorClick,
   onPatientClick,
+  onConfirm,       // thêm handler confirm
+  isAdmin          // thêm flag admin
 }) => {
   const isRescheduleDisabled =
     appt.status === "completed" || appt.status === "cancelled";
 
   const isCancelDisabled = appt.status !== "scheduled";
+
+  const canConfirm = isAdmin && appt.status === "pending";
 
   return (
     <div className="
@@ -30,24 +34,24 @@ const AppointmentRow = ({
 
       {/* Doctor */}
       <div
-        className="flex-1 md:w-[150px] text-sm text-[#1C398E] cursor-pointer hover:underline"
+        className="w-[150px] text-sm text-[#1C398E] cursor-pointer hover:underline"
         onClick={() => onDoctorClick(appt.doctorId)}
       >
         {appt.doctorName}
       </div>
 
-      {/* Date + Time (grouped on mobile) */}
-      <div className="flex md:block items-center gap-2 text-sm md:w-[130px]">
-        <span>{appt.date} — {appt.time}</span>
+      {/* Date + Time */}
+      <div className="w-[130px] text-sm">
+        {appt.date} — {appt.time}
       </div>
 
       {/* Service */}
-      <div className="flex-1 md:w-[150px] text-sm">
+      <div className="w-[150px] text-sm">
         {appt.serviceId?.serviceName}
       </div>
 
       {/* Status */}
-      <div className="md:w-[85px]">
+      <div className="w-[85px]">
         <StatusBox variant={appt.status}>
           {appt.status
             ? appt.status.charAt(0).toUpperCase() + appt.status.slice(1)
@@ -56,7 +60,17 @@ const AppointmentRow = ({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2 md:w-[70px] mt-2 md:mt-0">
+      <div className="flex gap-2 w-[70px] mt-2 md:mt-0">
+        {/* Confirm (Admin only) */}
+        {canConfirm && (
+          <button
+            onClick={() => onConfirm(appt)}
+            disabled={appt.status !== "pending"}
+            className="w-8 h-8 flex items-center justify-center rounded-lg border border-black/10 bg-green-50 hover:bg-green-100"
+          >
+            <CheckCircle className="w-4 h-4 text-green-600" />
+          </button>
+        )}
 
         {/* Reschedule */}
         <button
@@ -85,7 +99,6 @@ const AppointmentRow = ({
         >
           <XCircle className="w-4 h-4 text-red-600" />
         </button>
-
       </div>
     </div>
   );
