@@ -1,8 +1,7 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import GradientButton from "../GradientButton";
-import ReadonlyField from "../common/ReadonlyField";
 
 const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
   const initialForm = {
@@ -22,6 +21,24 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
   };
 
   const [form, setForm] = useState(initialForm);
+
+  useEffect(() => {
+    setForm({
+      ...user,
+      dob: user.dob || "",
+      gender: user.gender || "",
+      phone: user.phone || "",
+      address: user.address || "",
+      doctorInfo: {
+        specialization: user.doctorInfo?.specialization || "",
+        licenseNumber: user.doctorInfo?.licenseNumber || "",
+        yoe: user.doctorInfo?.yoe || "",
+        education: user.doctorInfo?.education || "",
+        bio: user.doctorInfo?.bio || "",
+        profilePicture: user.doctorInfo?.profilePicture || "",
+      }
+    });
+  }, [user]);
 
   // FIXED: nested update support
   const updateNested = (path, value) => {
@@ -46,14 +63,23 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
   const labelClass = "text-sm text-gray-700 mb-1";
 
   // READONLY FIELD with consistent UI
-  const Readonly = ({ label, value }) => (
-    <div className="flex flex-col">
-      <label className={labelClass}>{label}</label>
-      <div className="h-10 bg-[#F3F3F5] rounded-lg px-3 flex items-center text-sm text-gray-700 border border-transparent">
-        {value || "-"}
-      </div>
+  const Readonly = ({ label, value, multiline = false }) => {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-sm font-medium text-gray-700">{label}</span>
+
+      {multiline ? (
+        <p className="bg-gray-100 p-3 rounded-lg whitespace-pre-line leading-relaxed text-gray-800">
+          {value}
+        </p>
+      ) : (
+        <p className="bg-gray-100 p-3 rounded-lg text-gray-800">
+          {value}
+        </p>
+      )}
     </div>
   );
+};
 
   // File upload handler for doctor profile picture
   const handleProfilePicture = (file) => {
@@ -132,12 +158,13 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
             <Readonly
               label="Education"
               value={user.doctorInfo?.education}
+              multiline
             />
           </div>
 
           {/* Bio (full width) */}
           <div className="md:col-span-2">
-            <Readonly label="Bio" value={user.doctorInfo?.bio} />
+            <Readonly label="Bio" value={user.doctorInfo?.bio} multiline/>
           </div>
         </div>
       )}
@@ -204,7 +231,7 @@ const DoctorProfileForm = ({ user, onSave, onCancel, editing }) => {
           <Form.Group>
             <Form.Label className={labelClass}>Email *</Form.Label>
             <Form.Control
-              required
+              disabled
               className={inputClass}
               value={form.email}
               onChange={(e) => handleChange("email", e.target.value)}
