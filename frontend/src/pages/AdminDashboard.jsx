@@ -10,6 +10,7 @@ import ServiceList from "../components/admin/ServiceList";
 import ArticleList from "../components/admin/ArticleList";
 import BannerList from "../components/admin/BannerList";
 import Profile from "../components/admin/Profile";
+import FaqAdmin from "../components/admin/FAQList";
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("users");
@@ -80,6 +81,10 @@ const AdminDashboard = () => {
 
                 {activeTab === "banners" && (
                   <BannerList />
+                )}
+
+                {activeTab === "faqs" && (
+                  <FaqAdmin />
                 )}
 
                 {activeTab === "activities" && (
