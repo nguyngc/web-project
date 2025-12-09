@@ -146,7 +146,7 @@ const ServiceList = () => {
           {paginated.map((svc) => {
             return (
               <ServiceRow
-                key={svc.id}
+                key={svc._id}
                 service={svc}
                 onToggleStatus={handleToggleStatus}
                 onEdit={handleEdit}
