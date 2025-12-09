@@ -56,9 +56,9 @@ app.use("/api/doctor-time", doctorTimeRoutes);
 app.post("/api/chat-ai", optionalAuth, chatAi);
 
 // Health check / root route
-app.get("/", (req, res) => {
-  res.send("Eye Clinic API is running");
-});
+// app.get("/", (req, res) => {
+//   res.send("Eye Clinic API is running");
+// });
 
 // 404 handler for unknown endpoints
 app.use('/api', unknownEndpoint);
@@ -74,3 +74,5 @@ app.listen(port, () => {
 app.use((req, res) => {
   res.sendFile(__dirname + '/view/index.html');
 });
+
+module.exports = app;
