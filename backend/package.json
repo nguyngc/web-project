@@ -7,6 +7,11 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "jest",
+    
+    "build:view": "rm -rf view && cd ../frontend/ && npm run build && cp -r dist ../backend/view",  
+    "push":"git add . && git commit -m \"Update frontend build\" && git push",
+    "deploy": "npm run build:view && npm run push", 
+
     "data:import": "node seeder",
     "data:destroy": "node seeder -d"
   },
