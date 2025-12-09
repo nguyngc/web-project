@@ -216,9 +216,9 @@ const AppointmentList = () => {
           {/* Table Header */}
           <div className="hidden md:flex items-start gap-2.5 px-1.5 py-2 border-b border-black/10 font-medium text-[#0A0A0A]">
             <div className="flex-1 text-sm">Patient</div>
-            <div className="flex-1 w-[150px] text-sm">Doctor</div>
+            <div className="w-[150px] text-sm">Doctor</div>
             <div className="w-[130px] text-sm">Date Time</div>
-            <div className="flex-1 w-[150px] text-sm">Service</div>
+            <div className="w-[150px] text-sm">Service</div>
             <div className="w-[85px] text-sm">Status</div>
             <div className="w-[70px] text-sm">Actions</div>
           </div>
