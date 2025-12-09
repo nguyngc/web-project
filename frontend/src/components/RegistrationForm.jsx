@@ -204,7 +204,7 @@ const RegistrationForm = ({ onSuccess }) => {
       </Form.Group >
 
       {/* Birthday */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Form.Group className="mb-6 relative">
           <Form.Label className="text-sm font-semibold text-gray-900 mb-1 block">
             Day of Birth

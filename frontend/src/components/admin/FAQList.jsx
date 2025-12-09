@@ -84,12 +84,12 @@ const FqaList = () => {
         setFqas((prev) =>
           prev.map((b) => (b._id === updated._id ? updated : b))
         );
-        showMessage("Fqa updated successfully");
+        showMessage("FAQ updated successfully");
       } else {
         console.log(formData);
         const created = await createFqa(formData);
         setFqas((prev) => [created, ...prev]);
-        showMessage("Fqa created successfully");
+        showMessage("FAQ created successfully");
       }
 
       setShowForm(false);
@@ -110,7 +110,7 @@ const FqaList = () => {
       setFqas((prev) =>
         prev.filter((b) => b._id !== fqaToDelete._id)
       );
-      showMessage("Fqa deleted successfully");
+      showMessage("FAQ deleted successfully");
     } catch (err) {
       showMessage(err.message, "error");
     }
@@ -127,10 +127,10 @@ const FqaList = () => {
       <div className="flex flex-col md:flex-row justify-between md:items-center">
         <div>
           <h1 className="text-base font-semibold text-[#111827]">
-            Fqa Management
+            FAQ Management
           </h1>
           <p className="text-sm text-gray-500">
-            Manage and organize homepage fqas
+            Manage and organize homepage FAQs
           </p>
         </div>
 
@@ -142,7 +142,7 @@ const FqaList = () => {
           text-white text-sm"
           >
             <Plus className="w-4 h-4" />
-            Add New Fqa
+            Add New FAQ
           </button>
         )}
       </div>
@@ -173,7 +173,7 @@ const FqaList = () => {
             <Search className="w-4 h-4 text-gray-500" />
             <input
               className="flex-1 bg-transparent outline-none text-sm"
-              placeholder="Search fqas..."
+              placeholder="Search FAQs..."
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -182,7 +182,7 @@ const FqaList = () => {
             />
           </div>
 
-          {loading && <p>Loading fqas...</p>}
+          {loading && <p>Loading FAQs...</p>}
 
           {!loading &&
             paginated.map((fqa, index) => (
@@ -200,7 +200,7 @@ const FqaList = () => {
             itemsPerPage={itemsPerPage}
             totalItems={filtered.length}
             onPageChange={setPage}
-            itemLabel="fqas"
+            itemLabel="FAQs"
           />
         </div>
       )}
@@ -208,15 +208,15 @@ const FqaList = () => {
       {/* DELETE CONFIRM DIALOG */}
       <ConfirmDialog
         show={deleteDialogOpen}
-        question="Delete Fqa"
+        question="Delete FAQ"
         message={
           <>
-            Are you sure you want to delete fqa{" "}
+            Are you sure you want to delete FAQ {" "}
             <strong>{fqaToDelete?.question}</strong>? This action cannot be
             undone.
           </>
         }
-        confirmText="Delete Fqa"
+        confirmText="Delete FAQ"
         confirmVariant="danger"
         onConfirm={confirmDeleteFqa}
         onCancel={() => setDeleteDialogOpen(false)}

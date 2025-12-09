@@ -3,7 +3,7 @@ import articleImage1 from "../assets/images/article-1.jpeg";
 import articleImage2 from "../assets/images/article-2.jpeg";
 import doctorDashboard from "../assets/images/doctor-dashboard.jpg";
 import adminDashboard from "../assets/images/doctor-dashboard.jpg";
-import { Facebook, Twitter, Linkedin, Instagram, User, Users, FileText, Calendar, LayoutDashboard, Activity, Grid, Settings } from "lucide-react";
+import { Facebook, Twitter, Linkedin, Instagram, User, Users, FileText, Calendar, LayoutDashboard, Activity, Table2, Settings, FileQuestionIcon } from "lucide-react";
 
 const websiteInfo = {
   name: "iVision Eye Clinic",
@@ -173,9 +173,8 @@ const menuItems = {
     { key: "appointments", Icon: Calendar, label: "Appointments" },
     { key: "services", Icon: Settings, label: "Services" },
     { key: "contents", Icon: FileText, label: "Contents" },
-    { key: "banners", Icon: Grid, label: "Banners" },
-    { key: "faqs", Icon: Grid, label: "FAQs" },
-    // { key: "activities", Icon: Activity, label: "Recent Activities" },
+    { key: "banners", Icon: Table2, label: "Banners" },
+    { key: "faqs", Icon: FileQuestionIcon, label: "FAQs" },
     { key: "profile", Icon: User, label: "My Profile" },
   ]
 };

@@ -54,12 +54,12 @@ const FQAForm = ({
   return (
     <div className="bg-white p-8 rounded-xl shadow-md">
       <h2 className="font-semibold text-gray-800 mb-2">
-        {mode === "add" ? "Add New Fqa" : "Edit Fqa"}
+        {mode === "add" ? "Add New FAQ" : "Edit FAQ"}
       </h2>
       <p className="text-gray-500 mb-6">
         {mode === "add"
-          ? "Create a new fqa slide with the required information below"
-          : "Update fqa information below"}
+          ? "Create a new FAQ slide with the required information below"
+          : "Update FAQ information below"}
       </p>
 
       <Form
@@ -69,16 +69,12 @@ const FQAForm = ({
         }}
         className="flex flex-col gap-4"
       >
-        <h3 className="font-semibold text-gray-700">Fqa Information</h3>
-
-        
-
-        
-
+        <h3 className="font-semibold text-gray-700">FAQ Information</h3>
         {/* Question */}
         <Form.Group>
           <label className={labelClass}>Question *</label>
           <Form.Control
+            required
             className={inputClass}
             value={form.question}
             onChange={(e) => handleChange("question", e.target.value)}
@@ -89,15 +85,12 @@ const FQAForm = ({
         <Form.Group>
           <label className={labelClass}>Answer *</label>
           <Form.Control
+            required
             className={inputClass}
             value={form.answer}
             onChange={(e) => handleChange("answer", e.target.value)}
           />
         </Form.Group>
-
-        
-
-        
 
         {/* Buttons */}
         <div className="flex justify-end gap-3 mt-4">
@@ -109,7 +102,7 @@ const FQAForm = ({
           </Button>
 
           <GradientButton type="submit" isFull={false}>
-            {mode === "add" ? "Create Fqa" : "Update Fqa"}
+            {mode === "add" ? "Create FAQ" : "Update FAQ"}
           </GradientButton>
         </div>
       </Form>
