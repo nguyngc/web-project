@@ -9,6 +9,7 @@ import AppointmentList from "../components/admin/AppointmentList";
 import ServiceList from "../components/admin/ServiceList";
 import ArticleList from "../components/admin/ArticleList";
 import BannerList from "../components/admin/BannerList";
+import FAQList from "../components/admin/FAQList";
 import Profile from "../components/admin/Profile";
 
 const AdminDashboard = () => {
@@ -82,9 +83,9 @@ const AdminDashboard = () => {
                   <BannerList />
                 )}
 
-                {activeTab === "activities" && (
+                {activeTab === "faq" && (
                   <>
-                    <p>Activities List</p>
+                    <FAQList />
                   </>
                 )}
               </section>
