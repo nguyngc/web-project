@@ -23,17 +23,14 @@ const slotMapToHour = {
 function getCurrentWeek() {
   const today = new Date();
   const day = today.getDay(); // 0 = Sun, 6 = Sat
-
   let start = new Date(today);
 
-  // If Sat (6) or Sun (0) → move to next Monday
   if (day === 6) {
     start.setDate(today.getDate() + 2); // next Monday
   } else if (day === 0) {
     start.setDate(today.getDate() + 1); // next Monday
   } else {
-    // Normal weekdays: move back to Monday
-    start.setDate(today.getDate() - (day - 1));
+    start.setDate(today.getDate() - (day - 1)); // move back to Monday
   }
 
   const week = [];
@@ -53,7 +50,6 @@ function generateWeekFromDate(startDate) {
   const monday = new Date(startDate);
   const day = monday.getDay();
 
-  // Ensure start date is Monday
   if (day !== 1) {
     monday.setDate(monday.getDate() - ((day === 0 ? 7 : day) - 1));
   }
@@ -106,7 +102,6 @@ function Availability() {
 
       const weeklyData = res.ok ? await res.json() : [];
 
-      // Convert to map: date => record
       const map = {};
       for (const record of weeklyData) {
         map[record.date] = {
@@ -115,22 +110,25 @@ function Availability() {
         };
       }
 
-      // Ensure UI has data for all five days
       const result = {};
       for (let day of week) {
         if (map[day.dateString]) {
-          result[day.dateString] = map[day.dateString];
+          result[day.dateString] = {
+            ...map[day.dateString],
+            isWorkingDay: true,
+          };
         } else {
           result[day.dateString] = {
             id: null,
             availableTime: {
-              slot1: true,
-              slot2: true,
-              slot3: true,
-              slot4: true,
-              slot5: true,
-              slot6: true,
+              slot1: false,
+              slot2: false,
+              slot3: false,
+              slot4: false,
+              slot5: false,
+              slot6: false,
             },
+            isWorkingDay: false,
           };
         }
       }
@@ -141,7 +139,6 @@ function Availability() {
     loadAvailability();
   }, [week, user._id]);
 
-  // Toggle a slot and send to backend
   const toggleSlot = async (dateString, slotKey) => {
     const day = schedule[dateString];
     const updatedTime = {
@@ -157,7 +154,6 @@ function Availability() {
       week: getWeekNumber(dateString),
     };
 
-    // Update UI optimistically
     setSchedule({
       ...schedule,
       [dateString]: {
@@ -166,9 +162,7 @@ function Availability() {
       },
     });
 
-    // Decide CREATE vs UPDATE
     if (doctorTimeId) {
-      // UPDATE existing schedule
       await fetch(`/api/doctor-time/${doctorTimeId}`, {
         method: "PUT",
         headers: {
@@ -178,7 +172,6 @@ function Availability() {
         body: JSON.stringify(payload),
       });
     } else {
-      // CREATE new schedule
       const res = await fetch("/api/doctor-time", {
         method: "POST",
         headers: {
@@ -190,13 +183,12 @@ function Availability() {
 
       if (res.ok) {
         const created = await res.json();
-
-        // Update new ID in schedule
         setSchedule((prev) => ({
           ...prev,
           [dateString]: {
             id: created._id,
             availableTime: created.availableTime,
+            isWorkingDay: true,
           },
         }));
       }
@@ -214,7 +206,6 @@ function Availability() {
 
       {/* Week Navigation */}
       <div className="flex items-center justify-between mb-4">
-
         <button
           onClick={() => {
             const firstDay = new Date(week[0].date);
@@ -238,76 +229,79 @@ function Availability() {
           }}
           className="px-4 py-2 bg-white border border-black/10 rounded-lg text-sm flex items-center justify-center hover:bg-gray-50 transition-colors"
         >
-          Next Week <ChevronRight className="w-4 h-4 text-[#0A0A0A]" /> 
+          Next Week <ChevronRight className="w-4 h-4 text-[#0A0A0A]" />
         </button>
-
       </div>
 
       <div className="flex flex-col gap-6">
-        {week.map((day) => (
-          <div
-            key={day.dateString}
-            className="border border-black/10 rounded-lg p-4 flex flex-col gap-4"
-          >
-            <h3 className="text-[#101828] text-base capitalize">
-              {day.label} ({day.dateString})
-            </h3>
+        {week.map((day) => {
+          const dayData = schedule[day.dateString];
+          return (
+            <div
+              key={day.dateString}
+              className="border border-black/10 rounded-lg p-4 flex flex-col gap-4"
+            >
+              <h3 className="text-[#101828] text-base capitalize">
+                {day.label} ({day.dateString})
+              </h3>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {SLOT_MAP.map((slot) => {
-                const dayData = schedule[day.dateString];
-                const available = dayData?.availableTime?.[slot.key];
+              {!dayData?.isWorkingDay && (
+                <p className="text-sm text-gray-500 italic">Không trực</p>
+              )}
 
-                // Determine if day is in the past
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                {SLOT_MAP.map((slot) => {
+                  const available = dayData?.availableTime?.[slot.key];
 
-                const slotDate = new Date(day.dateString);
-                slotDate.setHours(0, 0, 0, 0);
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
 
-                const isPastDay = slotDate < today;
+                  const slotDate = new Date(day.dateString);
+                  slotDate.setHours(0, 0, 0, 0);
 
-                // Determine if slot time is already passed today
-                let isPastTime = false;
-                if (!isPastDay && slotDate.getTime() === today.getTime()) {
-                  const now = new Date();
-                  const slotHour = slotMapToHour[slot.key]; // <-- FIXED
+                  const isPastDay = slotDate < today;
 
-                  const slotTime = new Date(day.dateString);
-                  slotTime.setHours(slotHour, 0, 0, 0);
+                  let isPastTime = false;
+                  if (!isPastDay && slotDate.getTime() === today.getTime()) {
+                    const now = new Date();
+                    const slotHour = slotMapToHour[slot.key];
+                    const slotTime = new Date(day.dateString);
+                    slotTime.setHours(slotHour, 0, 0, 0);
+                    isPastTime = slotTime < now;
+                  }
 
-                  isPastTime = slotTime < now;
-                }
+                  // Nếu không phải ngày trực → disable toàn bộ
+                  const disabledDay = !dayData?.isWorkingDay;
 
+                  // Điều kiện disabled cuối cùng
+                  const disabled = disabledDay || isPastDay || isPastTime;
 
-                // True disabled state
-                const disabled = isPastDay || isPastTime;
-
-                return (
-                  <button
-                    key={slot.key}
-                    disabled={disabled}
-                    onClick={() => !disabled && toggleSlot(day.dateString, slot.key)}
-                    className={`px-3.5 py-3.5 rounded-lg border flex justify-between items-center transition-all
+                  return (
+                    <button
+                      key={slot.key}
+                      disabled={disabled}
+                      onClick={() => !disabled && toggleSlot(day.dateString, slot.key)}
+                      className={`px-3.5 py-3.5 rounded-lg border flex justify-between items-center transition-all
                       ${disabled
-                        ? "opacity-50 cursor-not-allowed bg-gray-200 border-gray-300"
-                        : available
-                          ? "bg-[#F0FDF4] border-[#3F9C36]"
-                          : "bg-[#F3F4F6] border-[#D1D5DC]"
-                      }`}
-                  >
-                    <span className="text-[#0A0A0A] text-sm">{slot.time}</span>
-                    {available ? (
-                      <Check className="w-4 h-4 text-[#00A63E]" />
-                    ) : (
-                      <X className="w-4 h-4 text-[#99A1AF]" />
-                    )}
-                  </button>
-                );
-              })}
+                          ? "opacity-50 cursor-not-allowed bg-gray-200 border-gray-300"
+                          : available
+                            ? "bg-[#F0FDF4] border-[#3F9C36]"
+                            : "bg-[#F3F4F6] border-[#D1D5DC]"
+                        }`}
+                    >
+                      <span className="text-[#0A0A0A] text-sm">{slot.time}</span>
+                      {available ? (
+                        <Check className="w-4 h-4 text-[#00A63E]" />
+                      ) : (
+                        <X className="w-4 h-4 text-[#99A1AF]" />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}        
       </div>
     </div>
   );
