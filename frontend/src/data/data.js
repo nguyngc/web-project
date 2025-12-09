@@ -174,7 +174,7 @@ const menuItems = {
     { key: "services", Icon: Settings, label: "Services" },
     { key: "contents", Icon: FileText, label: "Contents" },
     { key: "banners", Icon: Table2, label: "Banners" },
-    { key: "faq", Icon: FileQuestionIcon, label: "FAQ" },
+    { key: "faqs", Icon: FileQuestionIcon, label: "FAQs" },
     { key: "profile", Icon: User, label: "My Profile" },
   ]
 };
