@@ -5,6 +5,7 @@ import LoginForm from "../components/LoginForm";
 import RegistrationForm from "../components/RegistrationForm";
 import ForgotPassword from "../components/ForgotPassword";
 import Image from "react-bootstrap/Image";
+import eyeImage from "../assets/images/eye-glasses.jpg";
 
 const Login = () => {
   const [activeTab, setActiveTab] = useState("login");
@@ -20,7 +21,7 @@ const Login = () => {
           {/* Left Image */}
           <div className="flex-1">
             <Image
-              src="../src/assets/images/eye-glasses.jpg"
+              src={eyeImage}
               alt="Eye glasses"
               className="object-cover rounded-xl shadow w-full h-full"
             />
