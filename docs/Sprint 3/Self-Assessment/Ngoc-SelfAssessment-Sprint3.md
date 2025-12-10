@@ -6,14 +6,18 @@
     - News/News Detail page
     - Appointment Flow
     - Admin Dashboard: 
-        - User Management: User List, User Form
-        - Appointment Management: Appointment List, Patient Detail, Doctor Profile, Reschedule Appointment
-        - Services Management: Service List, Service Form
-        - Content (Articles) Management: Article List, Article Form
-        - Banner Management: Banner List, Banner Form
-        - Admin Profile
+      - User Management: User List, User Form
+      - Appointment Management: Appointment List, Patient Detail, Doctor Profile, Reschedule Appointment
+      - Services Management: Service List, Service Form
+      - Content (Articles) Management: Article List, Article Form
+      - Banner Management: Banner List, Banner Form
+      - Admin Profile
+    - Doctor Dashboard:
+      - Availability
 
 I spent this sprint wiring the frontend pages and components to the backend API. I implemented data fetching, mutations (create/update/delete), client-side validation and basic error handling across the News pages, the full Appointment flow, and the Admin Dashboard sections listed. I created a small api client layer and reusable hooks for requests, added loading and error states to the UI, and handled common edge cases such as empty lists, server validation errors, and optimistic UI updates for a faster feel.
+
+I also contributed to the deployment process for the Render environment.
 
 ---
 
