@@ -11,6 +11,8 @@
     - Doctor Dashboard:
         - DoctorProfile
         - AppointmentList
+    - Admin Dashboard:
+        - FQAs
 In this sprint, I focused on connecting frontend components and pages with backend APIs for the following parts: ContactFormMap, ServiceSection, AppointmentCard, Login, Register, User Dashboard (UserProfile, Appointments, Prescriptions), and Doctor Dashboard (DoctorProfile, AppointmentList). I implemented data fetching from the API, as well as create/update/delete operations related to user profiles, appointments, and prescriptions. I also added client-side validation, basic error handling, loading/error states in the UI, and addressed special cases such as empty lists and server validation errors. In addition, I built a small API client layer and reusable hooks for requests, which helped make the code cleaner and easier to maintain.
 
 ---
@@ -18,8 +20,11 @@ In this sprint, I focused on connecting frontend components and pages with backe
 ### 1. Functionality
 - **Does the code meet the requirements?**
   - [x] Implements all assigned features across Auth (Login/Register), User Dashboard (UserProfile, Appointments, Prescriptions), and Doctor Dashboard (DoctorProfile, AppointmentList).  
-  - [x] Handles edge cases such as empty lists, invalid input, duplicate submissions, and server validation errors.  
-  - [ ] Minor race conditions remain when rescheduling appointments simultaneously in multiple tabs.  
+  - [x] Handles edge cases such as empty lists, invalid input, duplicate submissions, and server validation errors. 
+  - [ ] Minor race conditions remain when rescheduling appointments simultaneously in multiple tabs.
+    - Duplicate booking not checked 
+    - Conflict detection not implemented
+    - Overlapping appointments not validated  
 
 - **Integration**
   - [x] Works correctly with other parts of the application.  
@@ -91,6 +96,7 @@ Notable optimizations already applied:
   3. Add E2E test coverage for Appointment flow and a critical Admin CRUD flow using Playwright or Cypress.
   4. Perform an accessibility audit and fix identified issues (aria, focus management, color contrast).
   5. Address the reschedule race condition by adding server-side conflict detection UI and client-side retry/backoff handling.
+  6. Update backend to send email for ContactForm.
 
 ---
 
