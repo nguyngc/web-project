@@ -10,9 +10,13 @@ const swaggerDocument = {
       "REST API documentation for the iVision Clinic system (users, appointments, services, articles, banners, FAQ, doctor schedules).",
   },
   servers: [
+    // {
+    //   url: "http://localhost:4000",
+    //   description: "Local development",
+    // },
     {
-      url: "http://localhost:4000",
-      description: "Local development",
+      url: "https://ivision.onrender.com",
+      description: "Production development",
     },
   ],
   components: {
