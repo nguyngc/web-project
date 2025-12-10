@@ -79,7 +79,7 @@ const PatientDetail = ({ patientId, appointments, users, onBack, backLabel = "Ba
             <InfoTile
               icon={<Calendar className="w-4 h-4 text-gray-400" />}
               label="Date of Birth"
-              value={patient.dob}
+              value={patient.dob ? patient.dob.split("T")[0] : ""}
             />
             <InfoTile
               icon={<MapPin className="w-4 h-4 text-gray-400" />}

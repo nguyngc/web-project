@@ -34,7 +34,7 @@ const AppointmentRow = ({
 
       {/* Doctor */}
       <div
-        className="w-[150px] text-sm text-[#1C398E] cursor-pointer hover:underline"
+        className="w-[120px] text-sm text-[#1C398E] cursor-pointer hover:underline"
         onClick={() => onDoctorClick(appt.doctorId)}
       >
         {appt.doctorName}
@@ -60,7 +60,7 @@ const AppointmentRow = ({
       </div>
 
       {/* Actions */}
-      <div className="flex gap-2 w-[70px] mt-2 md:mt-0">
+      <div className="flex gap-2 w-[110px] mt-2 md:mt-0">
         {/* Confirm (Admin only) */}
         {canConfirm && (
           <button
