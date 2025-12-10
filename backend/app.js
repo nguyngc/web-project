@@ -25,6 +25,9 @@ const doctorTimeRoutes = require("./routes/doctorTimeRoutes");
 // controller chat AI
 const chatAi = require("./controllers/chatAi");
 
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger");
+
 const app = express();
 
 // Connect to MongoDB
@@ -42,6 +45,9 @@ app.use(express.static('view'));
 
 // Log all incoming requests (method, path, body)
 app.use(requestLogger);
+
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // API routes
 app.use("/api/faq", faqRoutes);

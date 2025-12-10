@@ -7,11 +7,9 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "test": "jest",
-    
-    "build:view": "rm -rf view && cd ../frontend/ && npm run build && cp -r dist ../backend/view",  
-    "push":"git add . && git commit -m \"Update frontend build\" && git push",
-    "deploy": "npm run build:view && npm run push", 
-
+    "build:view": "rm -rf view && cd ../frontend/ && npm run build && cp -r dist ../backend/view",
+    "push": "git add . && git commit -m \"Update frontend build\" && git push",
+    "deploy": "npm run build:view && npm run push",
     "data:import": "node seeder",
     "data:destroy": "node seeder -d"
   },
@@ -28,7 +26,9 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.3",
-    "multer": "^2.0.2"
+    "multer": "^2.0.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "jest": "^30.2.0",
